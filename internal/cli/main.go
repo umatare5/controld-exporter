@@ -73,7 +73,7 @@ func registerWebTelemetryPathFlag() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
 			Name:    config.WebTelemetryPathFlagName,
-			Usage:   "Set the path to expose metrics",
+			Usage:   "Path for the metrics endpoint.",
 			Aliases: []string{"p"},
 			Value:   "/metrics",
 		},

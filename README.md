@@ -37,7 +37,7 @@ VERSION:
 GLOBAL OPTIONS:
    --web.listen-address string             Address to bind the HTTP server to. (default: "0.0.0.0")
    --web.listen-port int                   Port number to bind the HTTP server to. (default: 10034)
-   --web.telemetry-path string, -p string  Set the path to expose metrics (default: "/metrics")
+   --web.telemetry-path string, -p string  Path for the metrics endpoint. (default: "/metrics")
    --controld.api-key string, -k string    API key for authenticating with the Control D API. [$CTRLD_API_KEY]
    --controld.business-mode                Enable the metrics collection available in the business subscription. (default: false)
    --log.level string                      Set the logging level. One of: [debug, info, warn, error] (default: "info")
