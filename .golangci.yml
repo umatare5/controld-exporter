@@ -1,0 +1,58 @@
+# golangci-lint configuration file
+# More information: https://golangci-lint.run/usage/configuration/
+
+run:
+  # All linters (as a shortcut to quickly enable everything)
+  linters:
+    enable-all: false
+  # Enable specific linters (you can customize this based on your needs)
+  enabled:
+    - govet              # Reports suspicious constructs
+    - structcheck        # Unused struct field detector
+    - errcheck           # Check for unhandled errors
+    - gosimple           # Simplify your Go code
+    - staticcheck        # Comprehensive static analysis
+    - ineffassign        # Detects ineffective assignments
+    - unused             # Finds unused variables
+    - deadcode           # Finds unused code
+    - typecheck          # Go "types" system checks
+    - gofmt              # Checks gofmt formatting
+    - misspell           # Detect spelling errors
+    - gocyclo            # Cyclomatic complexity check
+    - lll                # Long line linter
+  # Exclude specific default linters if you want
+  disabled:
+    - scopelint          # (Optional) Scope-specific checks that may be noisy
+
+# Settings for specific linters
+linters-settings:
+  gocyclo:
+    min-complexity: 15    # Set the threshold for cyclomatic complexity
+  misspell:
+    locale: US            # Ensure spell checks in American English
+  lll:
+    line-length: 100 # Set the maximum line length to 100 characters
+
+issues:
+  # Exclude specific warning types (refine as needed in your project)
+  exclude-rules:
+    - linters:
+        - gocyclo
+      text: "cyclomatic complexity"
+  exclude-use-default: false
+  severity: warning
+
+# Files and folders to ignore
+exclude:
+  - vendor/               # Ignore vendor directory
+  - build/                # Ignore build outputs
+  - testdata/             # Ignore test data
+
+build:
+  goos: [linux, darwin, windows]  # Cross-platform development focus
+  goarch: [amd64, arm64]
+
+# Advanced settings for caching
+cache:
+  max-size: 512mb
+  max-age: 0 # Set to "0" to not expire caches
