@@ -1,0 +1,64 @@
+groups:
+  - name: controld
+    rules:
+      # Billing Rules
+      - alert: BillingStatusFailed
+        expr: controld_billing_status != 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Billing transaction failed"
+          description: "A billing transaction has failed. Please check the billing status."
+      - alert: BillingRefundedStatusFailed
+        expr: controld_billing_refunded_status != 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Billing refund transaction failed"
+          description: "A billing refund transaction has failed. Please check the billing refund status."
+      - alert: BillingAmountHigh
+        expr: controld_billing_subscription_amount_total{currency="USD"} > 2 # 2 means 1 subscription
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Billing amount is too high"
+            description: "The billing amount is too high. Please check the connected clients."
+      # Health Check Rules
+      - alert: DNSServiceJapanDown
+        expr: controld_network_health_code{service_name="dns", country_name="JP"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "DNS service in Japan is down"
+          description: "DNS service in Japan is down. Please investigate the impact."
+      - alert: APIServiceJapanDown
+        expr: controld_network_health_code{service_name="api", country_name="JP"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API service in Japan is down"
+          description: "API service in Japan is down. Please investigate the impact."
+      # Query Rules
+      - alert: QueryBlockingRateHigh
+        expr: 100 *
+              sum(increase(controld_stats_last_queries_count{type="blocked"}[5m]))
+              / sum(increase(controld_stats_last_queries_count[5m]))
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Blocking rate is continuously high"
+          description: "The blocking rate is continuously high. Please investigate the query logs."
+      - alert: UnknownQueryHigh
+        expr: controld_stats_last_queries_count{type="unknown"} > 10
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Unknown query count is continuously high"
+          description: "The number of unknown queries is continuously high. Please investigate the query logs."
