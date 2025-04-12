@@ -1,0 +1,46 @@
+# .goreleaser.yml
+
+project_name: controld-exporter
+
+env:
+  - GO111MODULE=on
+
+# Build destination
+github_urls:
+  # set to true if you use a self-signed certificate
+  skip_tls_verify: false
+
+builds:
+  - main: main.go
+    id: controld-exporter
+    binary: controld-exporter
+    targets:
+      - linux_amd64
+      - linux_arm64
+      - darwin_amd64
+      - darwin_arm64
+      - windows_amd64
+    ldflags:
+      - -s -w
+    env:
+      - CGO_ENABLED=0
+    asmflags:
+      - all=-trimpath=.
+    gcflags:
+      - all=-trimpath=.
+
+dockers:
+- id: controld-exporter
+  image_templates:
+  - 'ghcr.io/umatare5/controld-exporter:latest'
+  - 'ghcr.io/umatare5/controld-exporter:{{ .Tag }}'
+  dockerfile: .goreleaser/Dockerfile
+
+archives:
+  - name_template: '{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+
+release:
+  prerelease: auto
+
+checksum:
+  name_template: "{{ .ProjectName }}-v{{ .Version }}_checksums.txt"
