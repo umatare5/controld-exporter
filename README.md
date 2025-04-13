@@ -55,7 +55,7 @@ GLOBAL OPTIONS:
 
 > [!Tip]
 > By default, the controld-exporter starts in personal mode. In this mode, the label `orgId` for each metric will be filled with `000000000`.
-> If you have the business subscription, please enable `--controld.business-mode`. This flag allows the retrieval of organization-related metrics.
+> If you have the business subscription, please enable `--controld.business-mode`. This allows the exporter to collect organization-related metrics.
 
 ## Configuration
 
