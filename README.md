@@ -1,6 +1,9 @@
 # controld-exporter
 
-![](https://github.com/umatare5/controld-exporter/workflows/Go/badge.svg) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/umatare5/controld-exporter/blob/main/LICENSE)
+![GitHub Tag](https://img.shields.io/github/v/tag/umatare5/controld-exporter?label=Latest%20version)
+[![Go Reference](https://pkg.go.dev/badge/umatare5/controld-exporter.svg)](https://pkg.go.dev/github.com/umatare5/controld-exporter)
+[![Go Report Card](https://goreportcard.com/badge/github.com/umatare5/controld-exporter?style=flat-square)](https://goreportcard.com/report/github.com/umatare5/controld-exporter)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/umatare5/controld-exporter/blob/main/LICENSE)
 
 controld-exporter is a third-party Prometheus Exporter for Control D.
 
