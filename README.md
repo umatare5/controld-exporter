@@ -10,7 +10,8 @@ controld-exporter is a third-party Prometheus Exporter for Control D.
 
 > [!Important]
 >
-> To use the Control D API, register with Control D and generate an access token as explained in [the official Getting Started Guide](https://docs.controld.com/reference/get-started).
+> To use the Control D API, register with Control D and generate an access token as explained in:
+> - [Control D - The official Getting Started Guide](https://docs.controld.com/reference/get-started).
 
 ## Quick Start
 
