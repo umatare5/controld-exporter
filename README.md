@@ -22,8 +22,8 @@ controld-exporter is a third-party Prometheus Exporter for Control D.
 docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter
 ```
 
-- `-p`: Publish a container's port `10034/tcp`, to the host `10034/tcp`.
-- `-e`: Forward environment variable `CTRLD_API_KEY` into a container.
+- `-p`: Maps container port `10034/tcp` to host port `10034/tcp`.
+- `-e`: Passes the environment variable `CTRLD_API_KEY` into the container.
 
 > [!Tip]
 > If you prefer using binaries, download them from the [release page](https://github.com/umatare5/controld-exporter/releases).
