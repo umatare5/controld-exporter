@@ -158,7 +158,7 @@ After that, I will manually release using [GitHub Actions: release workflow](htt
 
 ## Acknowledgement
 
-This project was developed with the help of GitHub Copilot. Sincere thanks to all the developers who contributed code, documentation, and ideas that made GitHub Copilot possible.
+This application was developed with the assistance of GitHub Copilot. Many thanks to all the developers whose code, documentation, and ideas made that assistance possible.
 
 ## Licence
 
