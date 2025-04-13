@@ -4,9 +4,9 @@
 
 controld-exporter is a third-party Prometheus Exporter for Control D.
 
-- 💚 Enables health checks for DNS, API and Proxy services.
-- ⚙️ Enables visualizing trends in changes to predefined settings and user-defined settings.
-- 📈 Enables short-term monitoring and long-term observability of costs, stats, and endpoints.
+- 💚 This enables health checks for DNS, API and Proxy services.
+- ⚙️ This enables visualizing trends in changes to predefined settings and user-defined settings.
+- 📈 This enables short-term monitoring and long-term observability of costs, stats, and endpoints.
 
 > [!Important]
 >
