@@ -7,14 +7,14 @@
 
 controld-exporter is a third-party Prometheus Exporter for Control D.
 
-- 💚 This enables the health checks for DNS, API and Proxy services.
-- ⚙️ This enables visualizing trends in changes to predefined settings and user-defined settings.
-- 📈 This enables short-term monitoring and long-term observability of costs, stats, endpoints and others.
+- 💚 Enables health checks for DNS, API, and proxy services  
+- ⚙️ Tracks changes in predefined and custom settings with trend visualization  
+- 📈 Provides short-term monitoring and long-term observability of costs, endpoints, and other statistics
 
 > [!Important]
 >
-> To use the Control D API, register with Control D and generate an access token as explained in:
-> - [Control D - The official Getting Started Guide](https://docs.controld.com/reference/get-started)
+> To access the Control D API, you must register with Control D and generate an access token.
+> - Please refer to the [Control D - The official Getting Started Guide](https://docs.controld.com/reference/get-started)
 
 ## Quick Start
 
@@ -26,9 +26,9 @@ docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter
 - `-e`: Forward environment variable `CTRLD_API_KEY` into a container.
 
 > [!Tip]
-> If you'd like to use binaries, please download them from [release page](https://github.com/umatare5/controld-exporter/releases).
+> If you prefer using binaries, download them from the [release page](https://github.com/umatare5/controld-exporter/releases).
 >
-> - `linux_amd64`, `linux_arm64`, `darwin_amd64`, `darwin_arm64` and `windows_amd64` are supported.
+> - Supported Platforms: `linux_amd64`, `linux_arm64`, `darwin_amd64`, `darwin_arm64` and `windows_amd64`
 
 ## Syntax
 
@@ -100,32 +100,34 @@ This exporter returns following metrics:
 
 ### Exporter
 
-To refer to the usage, please access http://localhost:10034/ after starting the exporter.
+Visit http://localhost:10034/ to verify the exporter is running.
+
+#### Using Docker
 
 ```bash
 $ CTRLD_API_KEY="foobarbaz"
 $ docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter
-INFO[0000] Listening on port 0.0.0.0:10034
+time="2025-04-13T18:50:54Z" level=info msg="Starting the personal mode exporter on port 10034."
 ```
 
-or using a binary:
+#### Using Binary
 
 ```bash
 $ CTRLD_API_KEY="foobarbaz"
 $ ./controld-exporter
-INFO[0000] Listening on port 0.0.0.0:10034
+time="2025-04-13T18:50:54Z" level=info msg="Starting the personal mode exporter on port 10034."
 ```
 
 ### Prometheus Configuration
 
 This section describes how to configure Prometheus to scrape metrics from the controld-exporter.
 
-1. Add the configuration to your Prometheus refering to the [examples/prometheus.yml](./examples/prometheus.yml).
-2. Add the alerting rules to your Prometheus refering to the [examples/prometheus.alert_rules.yml](./examples/prometheus.alert_rules.yml).
+1. Add the job config to your Prometheus YAML file using [examples/prometheus.yml](./examples/prometheus.yml) as a reference.
+2. Set up alerting rules using [examples/prometheus.alert_rules.yml](./examples/prometheus.alert_rules.yml) as a reference.
 
 ### Grafana Dashboard
 
-The schema of sample dashboard is available in [examples/control-d-exporter-dashboard.json](./examples/control-d-exporter-dashboard.json).
+A sample dashboard schema is available at [examples/control-d-exporter-dashboard.json](./examples/control-d-exporter-dashboard.json).
 
 ![Control D Exporter Dashboard](./examples/control-d-exporter-dashboard.png)
 
@@ -133,13 +135,13 @@ The schema of sample dashboard is available in [examples/control-d-exporter-dash
 
 ### Build
 
-The repository includes a ready to use `Dockerfile`. Run the following command to build a new image:
+The repository includes a ready to use `Dockerfile`. To build a new Docker image:
 
 ```bash
 make image
 ```
 
-The new image is named as `$USER/controld-exporter` and exports `10034/tcp` to your host.
+This creates an image named `$USER/controld-exporter` and exposes `10034/tcp`.
 
 ### Release
 
@@ -156,7 +158,7 @@ After that, I will manually release using [GitHub Actions: release workflow](htt
 
 ## Acknowledgement
 
-This project was developed with the assistance of GitHub Copilot. I'd like to express my heartfelt gratitude to all the developers who contributed the code, documentation, and invaluable ideas that make GitHub Copilot possible.
+This project was developed with the help of GitHub Copilot. Sincere thanks to all the developers who contributed code, documentation, and ideas that made GitHub Copilot possible.
 
 ## Licence
 
