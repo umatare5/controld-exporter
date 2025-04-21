@@ -21,7 +21,7 @@ builds:
       - darwin_arm64
       - windows_amd64
     ldflags:
-      - -s -w
+      - -s -w -X github.com/umatare5/controld-exporter/internal/cli.version={{ .Version }}
     env:
       - CGO_ENABLED=0
     asmflags:
