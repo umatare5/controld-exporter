@@ -21,7 +21,7 @@ COPY . .
 RUN go build -o controld-exporter
 
 # Final stage
-FROM alpine:3.21.3
+FROM alpine:3.22.1
 
 ARG UID=60000
 WORKDIR /app
