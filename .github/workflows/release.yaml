@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   release:
-    uses: umatare5/common/.github/workflows/goreleaser.yml@7a4932187171f01b7cec6ed9cb8d94040c7e604e
+    uses: umatare5/common/.github/workflows/goreleaser.yml@eb4ce45eb7d7e2b7a88454e12786e6ab29463ab7
     with:
       go_version: "1.24.5"
       goreleaser_version: "v2.11.1"
