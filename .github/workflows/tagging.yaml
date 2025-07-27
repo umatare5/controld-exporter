@@ -1,4 +1,6 @@
 name: Update Tag on VERSION Change
+permissions:
+  contents: write
 
 on:
   push:
