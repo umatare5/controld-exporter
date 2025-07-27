@@ -244,8 +244,5 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 
 // isRunningInPersonalMode checks if the collector is running in personal mode.
 func (c *Collector) isRunningInPersonalMode() bool {
-	if c.businessModeEnabled {
-		return false
-	}
-	return true
+	return !(c.businessModeEnabled)
 }
