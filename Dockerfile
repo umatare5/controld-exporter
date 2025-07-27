@@ -1,5 +1,4 @@
 # Dockerfile for controld-exporter
-# Optimized for GoReleaser builds
 
 FROM scratch
 
@@ -17,5 +16,3 @@ ENTRYPOINT ["/controld-exporter"]
 
 # Default command shows help
 CMD ["--help"]
-
-# Metadata labels will be set by GoReleaser

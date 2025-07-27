@@ -114,7 +114,7 @@ release:
     docker run --rm ghcr.io/umatare5/controld-exporter:latest --help
 
     # Specific version
-    docker run --rm ghcr.io/umatare5/controld-exporter:{{ .Tag }} command --help
+    docker run --rm ghcr.io/umatare5/controld-exporter:{{ .Tag }} --help
 
     # With environment variables
     docker run --rm -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:{{ .Tag }} command
