@@ -28,8 +28,6 @@ builds:
       - windows_amd64
     ldflags:
       - -s -w -X 'github.com/umatare5/controld-exporter/internal/cli.version={{ .Version }}'
-    flags:
-      - -v
 
 archives:
   - name_template: '{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
@@ -58,12 +56,9 @@ dockers:
       - "--label=org.opencontainers.image.created={{ .Date }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.licenses=MIT"
-    extra_files:
-      - go.mod
-      - go.sum
-      - cmd/
-      - internal/
     goarch: amd64
+    ids:
+      - controld-exporter
   - image_templates:
       - "ghcr.io/umatare5/controld-exporter:latest-arm64"
       - "ghcr.io/umatare5/controld-exporter:{{ .Tag }}-arm64"
@@ -80,12 +75,9 @@ dockers:
       - "--label=org.opencontainers.image.created={{ .Date }}"
       - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
       - "--label=org.opencontainers.image.licenses=MIT"
-    extra_files:
-      - go.mod
-      - go.sum
-      - cmd/
-      - internal/
     goarch: arm64
+    ids:
+      - controld-exporter
 
 # Docker manifest for multi-platform images
 docker_manifests:
