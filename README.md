@@ -141,7 +141,7 @@ The repository includes a ready to use `Dockerfile`. To build a new Docker image
 make image
 ```
 
-This creates an image named `$USER/controld-exporter` and exposes `10034/tcp`.
+This creates an image named `ghcr.io/$USER/controld-exporter` and exposes `10034/tcp`.
 
 ### Release
 
