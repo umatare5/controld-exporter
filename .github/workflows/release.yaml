@@ -1,4 +1,7 @@
 name: Release Application to ghcr.io and Artifacts
+permissions:
+  contents: read
+  packages: write
 
 on:
   workflow_dispatch:
