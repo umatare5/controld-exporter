@@ -12,4 +12,4 @@ permissions:
 
 jobs:
   tag:
-    uses: umatare5/common/.github/workflows/tagging.yml@9d2100ae23eab16f883991b17ff4efc19560d5da # v0.2.0
+    uses: umatare5/common/.github/workflows/tagging.yml@8591a02d1a57f8c3ecac195457aa1bdeb82a30e4 # v0.3.0

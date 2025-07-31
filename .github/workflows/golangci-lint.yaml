@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   lint:
-    uses: umatare5/common/.github/workflows/golangci-lint.yml@9d2100ae23eab16f883991b17ff4efc19560d5da # v0.2.0
+    uses: umatare5/common/.github/workflows/golangci-lint.yml@8591a02d1a57f8c3ecac195457aa1bdeb82a30e4 # v0.3.0
     with:
       go_version: "1.24.5"
       golangci_lint_version: "v1.64.8"
