@@ -1,5 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": [
+    "github>umatare5/common//renovate/default.json",
+    "github>umatare5/common//renovate/github-actions.json"
+  ],
   "dependencyDashboard": false
 }
