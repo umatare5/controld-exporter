@@ -13,4 +13,4 @@ permissions:
 
 jobs:
   actionlint:
-    uses: umatare5/common/.github/workflows/actionlint.yml@v0.8.0
+    uses: umatare5/common/.github/workflows/actionlint.yml@b0d63435dea58265bb07bd6db3d42624abaa91e0 # v0.8.0
