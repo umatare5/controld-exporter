@@ -1,3 +1,3 @@
 [build]
 cmd = "go build -o tmp/controld-exporter ./cmd/main.go"
-bin = "./tmp/controld-exporter --log.level debug"
+bin = "./tmp/controld-exporter"
