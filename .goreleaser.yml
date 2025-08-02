@@ -147,19 +147,20 @@ changelog:
     - title: Features
       regexp: '^.*?feat(\([[:word:]]+\))??!?:.+$'
       order: 0
-    - title: Bug fixes
+    - title: Bug Fixes
       regexp: '^.*?fix(\([[:word:]]+\))??!?:.+$'
       order: 1
-    - title: Documentation updates
+    - title: Documentation Updates
       regexp: '^.*?docs(\([[:word:]]+\))??!?:.+$'
       order: 2
-    - title: Other work
+    - title: Others
       order: 999
   filters:
     exclude:
-      - '^test:'
-      - '^chore:'
+      - '^Merge pull request #'
+      - '^release:'
       - '^ci:'
+      - '^test:'
 
 # Metadata for Go proxy and pkg.go.dev
 metadata:
