@@ -1,0 +1,13 @@
+name: Test and Build
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test-build:
+    uses: umatare5/common/.github/workflows/go-test-build.yml@main
+    with:
+      go_version: "1.24.5"
+      build_cmd_path: "./cmd"
+      build_output_path: "./tmp/controld-exporter"
