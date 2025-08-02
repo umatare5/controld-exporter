@@ -6,7 +6,7 @@ permissions:
 
 jobs:
   test-build:
-    uses: umatare5/common/.github/workflows/go-test-build.yml@v0.8.0
+    uses: umatare5/common/.github/workflows/go-test-build.yml@b0d63435dea58265bb07bd6db3d42624abaa91e0 # v0.8.0
     with:
       go_version: "1.24.5"
       build_cmd_path: "./cmd"
