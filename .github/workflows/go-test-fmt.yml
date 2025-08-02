@@ -1,16 +1,17 @@
-name: Lint Code with golangci-lint
+name: Format and Lint
 
 on:
+  push:
+    branches: ["main"]
   pull_request:
-    branches:
-      - main
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
-  lint:
-    uses: umatare5/common/.github/workflows/golangci-lint.yml@9d2100ae23eab16f883991b17ff4efc19560d5da # v0.2.0
+  fmt:
+    uses: umatare5/common/.github/workflows/go-test-fmt.yml@v0.9.0
     with:
       go_version: "1.24.5"
       golangci_lint_version: "v1.64.8"

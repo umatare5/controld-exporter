@@ -1,7 +1,9 @@
-name: Release Application to ghcr.io and Artifacts
+name: Release Application
 
 on:
-  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths: ["VERSION"]
 
 permissions:
   contents: write
@@ -9,8 +11,11 @@ permissions:
   id-token: write
 
 jobs:
+  tagging:
+    uses: umatare5/common/.github/workflows/tagging.yml@v0.9.0
+
   release:
-    uses: umatare5/common/.github/workflows/goreleaser.yml@9d2100ae23eab16f883991b17ff4efc19560d5da # v0.2.0
+    uses: umatare5/common/.github/workflows/go-release.yml@v0.9.0
     with:
       go_version: "1.24.5"
       goreleaser_version: "v2.11.1"

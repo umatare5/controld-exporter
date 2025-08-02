@@ -1,12 +1,16 @@
 name: Test and Build
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
-  test-build:
-    uses: umatare5/common/.github/workflows/go-test-build.yml@b0d63435dea58265bb07bd6db3d42624abaa91e0 # v0.8.0
+  build:
+    uses: umatare5/common/.github/workflows/go-test-build.yml@v0.9.0
     with:
       go_version: "1.24.5"
       build_cmd_path: "./cmd"
