@@ -1,0 +1,21 @@
+name: Sync Copilot Public Instructions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 13 * * 0' # Weekly on Sunday at 13:00 UTC
+
+permissions:
+  contents: write        # For creating commits and branches
+  pull-requests: write   # For creating pull requests
+
+jobs:
+  sync:
+    uses: umatare5/common/.github/workflows/gh-fetch-instructions.yml@v0.11.0
+    with:
+      source_repo: "github/awesome-copilot"
+      source_branch_name: "main"
+      instructions_files: |
+        go.instructions.md
+        markdown.instructions.md
+        github-actions-ci-cd-best-practices.instructions.md
