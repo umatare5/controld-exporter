@@ -1,20 +1,34 @@
-# controld-exporter
+<div align="center">
 
-![GitHub Tag](https://img.shields.io/github/v/tag/umatare5/controld-exporter?label=Latest%20version)
-[![Test and Build](https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml/badge.svg)](https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml)
-[![Go Reference](https://pkg.go.dev/badge/umatare5/controld-exporter.svg)](https://pkg.go.dev/github.com/umatare5/controld-exporter)
-[![Go Report Card](https://goreportcard.com/badge/github.com/umatare5/controld-exporter?style=flat-square)](https://goreportcard.com/report/github.com/umatare5/controld-exporter)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/umatare5/controld-exporter/blob/main/LICENSE)
+<img src="docs/assets/logo.png" width="200px"/>
 
-controld-exporter is a third-party Prometheus Exporter for Control D.
+  <h1>controld-exporter</h1>
 
-- 💚 Enables health checks for DNS, API, and proxy services  
-- ⚙️ Tracks changes in predefined and custom settings with trend visualization  
+  <p>A third-party Prometheus Exporter for Control D.</p>
+
+  <p>
+    <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/umatare5/controld-exporter?label=Latest%20version" />
+    <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml"><img alt="Test and Build" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml/badge.svg?branch=main" /></a>
+    <a href="https://goreportcard.com/badge/github.com/umatare5/controld-exporter"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/umatare5/controld-exporter" /></a>
+    <a href="https://pkg.go.dev/github.com/umatare5/controld-exporter@main"><img alt="Go Reference" src="https://pkg.go.dev/badge/umatare5/controld-exporter.svg" /></a>
+    <a href="https://www.bestpractices.dev/projects/10969"><img alt="OpenSSF Best Practices" src="https://www.bestpractices.dev/projects/10969/badge" /></a>
+    <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
+  </p>
+
+</div>
+
+## Overview
+
+This exporter allows a prometheus instance to scrape metrics from [Control D](https://controld.com/), a cloud-based DNS and security service.
+
+- 💚 Enables health checks for DNS, API, and proxy services
+- ⚙️ Tracks changes in predefined and custom settings with trend visualization
 - 📈 Provides short-term monitoring and long-term observability of costs, endpoints, and other statistics
 
 > [!Important]
 >
 > To access the Control D API, you must register with Control D and generate an access token.
+>
 > - Please refer to the [Control D - The official Getting Started Guide](https://docs.controld.com/reference/get-started).
 
 ## Quick Start
