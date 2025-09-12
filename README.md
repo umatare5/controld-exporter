@@ -11,7 +11,6 @@
     <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml"><img alt="Test and Build" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml/badge.svg?branch=main" /></a>
     <a href="https://goreportcard.com/badge/github.com/umatare5/controld-exporter"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/umatare5/controld-exporter" /></a>
     <a href="https://pkg.go.dev/github.com/umatare5/controld-exporter@main"><img alt="Go Reference" src="https://pkg.go.dev/badge/umatare5/controld-exporter.svg" /></a>
-    <a href="https://www.bestpractices.dev/projects/10969"><img alt="OpenSSF Best Practices" src="https://www.bestpractices.dev/projects/10969/badge" /></a>
     <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
   </p>
 
