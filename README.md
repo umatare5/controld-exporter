@@ -19,7 +19,7 @@
 
 ## Overview
 
-This exporter allows a prometheus instance to scrape metrics from [Control D](https://controld.com/), a cloud-based DNS and security service.
+This exporter allows a prometheus instance to scrape metrics from [Control D](https://controld.com/), a cloud-based DNS service.
 
 - 💚 Enables health checks for DNS, API, and proxy services
 - ⚙️ Tracks changes in predefined and custom settings with trend visualization
