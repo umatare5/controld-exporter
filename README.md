@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/logo.png" width="200px"/>
+<img src="docs/assets/logo.png" width="180px"/>
 
   <h1>controld-exporter</h1>
 
