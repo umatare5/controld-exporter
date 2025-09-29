@@ -136,7 +136,7 @@ release:
 
 # Generate checksums for source archives
 checksum:
-  name_template: "{{ .ProjectName }}-v{{ .Version }}_checksums.txt"
+  name_template: "{{ .ProjectName }}-{{ .Version }}_checksums.txt"
 
 # Changelog configuration
 changelog:
