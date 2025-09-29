@@ -30,7 +30,7 @@ builds:
       - -s -w -X 'github.com/umatare5/controld-exporter/internal/cli.version={{ .Version }}'
 
 archives:
-  - name_template: '{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: '{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
     files:
       - "*.go"
       - "*.md"
