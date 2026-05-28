@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   sync:
-    uses: umatare5/common/.github/workflows/gh-fetch-instructions.yml@27d895ee9f1410471625dd66c22c0d63bb84b3b7 # v0.13.0
+    uses: umatare5/common/.github/workflows/gh-fetch-instructions.yml@7cfc52a86a80be5604880082503cf36fada25704 # v0.14.0
     with:
       source_repo: "github/awesome-copilot"
       source_branch_name: "main"
