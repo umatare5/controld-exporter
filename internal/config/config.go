@@ -54,7 +54,7 @@ func NewConfig(cli *cli.Command) Config {
 // isValidControlDAPIKeyFlag checks if the ControlD API key is set.
 func isValidControlDAPIKeyFlag(apikey string) error {
 	if apikey == "" {
-		return errors.New("Environment variable 'CTRLD_API_KEY' is not set")
+		return errors.New("environment variable 'CTRLD_API_KEY' is not set")
 	}
 
 	return nil

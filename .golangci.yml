@@ -1,3 +1,5 @@
+version: "2"
+
 # golangci-lint configuration file
 # More information: https://golangci-lint.run/usage/configuration/
 
@@ -9,7 +11,6 @@ linters:
   enable:
     - govet              # Reports suspicious constructs
     - errcheck           # Check for unhandled errors
-    - gosimple           # Simplify your Go code
     - staticcheck        # Comprehensive static analysis
     - ineffassign        # Detects ineffective assignments
     - unused             # Finds unused variables
