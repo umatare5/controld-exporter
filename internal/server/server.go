@@ -90,10 +90,10 @@ func (s *Server) help(w http.ResponseWriter, _ *http.Request) {
 	var builder strings.Builder
 	builder.WriteString("<h1>Prometheus ControlD Exporter</h1>")
 	builder.WriteString("<p>To fetch metrics from ControlD, access the telemetry path:</p>")
-	builder.WriteString(fmt.Sprintf("http://%s%s", listenAddrAndPort, s.Config.WebTelemetryPath))
+	fmt.Fprintf(&builder, "http://%s%s", listenAddrAndPort, s.Config.WebTelemetryPath)
 	builder.WriteString("<p><b>Example:</b></p>")
 	builder.WriteString("<ul>")
-	builder.WriteString(fmt.Sprintf("<li><a href=\"http://%s%s\">http://%s%s</a></li>", listenAddrAndPort, s.Config.WebTelemetryPath, listenAddrAndPort, s.Config.WebTelemetryPath))
+	fmt.Fprintf(&builder, "<li><a href=\"http://%s%s\">http://%s%s</a></li>", listenAddrAndPort, s.Config.WebTelemetryPath, listenAddrAndPort, s.Config.WebTelemetryPath)
 	builder.WriteString("</ul>")
 
 	if _, err := w.Write([]byte(builder.String())); err != nil {
