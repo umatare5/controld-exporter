@@ -29,10 +29,11 @@
 - `make` — Build the `controld-exporter` binary in the repository root
 - `make image` — Build the Docker image
 - `make force-image` — Build the Docker image without cache
+- `pre-commit install --allow-missing-config` — Wire in `no-commit-to-main`, `golangci-lint`, `actionlint`, `gitleaks`, and `markdownlint-cli2` (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
 
 ## Code Style
 
-- Format with `gofmt`; lint with `golangci-lint` (see [.golangci.yml](.golangci.yml)).
+- Linting and formatting are enforced by `golangci-lint` in the pre-commit hook (see [.golangci.yml](.golangci.yml)).
 - Keep metric names, help strings, types, and labels stable unless a SemVer-signaled breaking change is intentional.
 - Keep Control D API logic in `internal/controld` so collectors remain thin and testable.
 - Comments record only what the code cannot say, and never address the reader.
