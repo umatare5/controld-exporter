@@ -5,7 +5,7 @@
 
 ## Tech Stack
 
-- Go 1.25+ (see [go.mod](go.mod))
+- Go 1.27+ (see [go.mod](go.mod))
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang) v1.24+ — metric registration and HTTP handler
 - [`urfave/cli/v3`](https://github.com/urfave/cli) v3.11+ — CLI flags and application lifecycle
 - [`sirupsen/logrus`](https://github.com/sirupsen/logrus) — structured logging
