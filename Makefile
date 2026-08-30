@@ -64,12 +64,13 @@ clean:
 
 # Docker targets
 # The Dockerfile is written for GoReleaser, which hands docker a context holding
-# the binary. Building from the repository root instead cannot work: the binary
-# is not there, and .dockerignore excludes it by name if it is. This target
-# assembles the same context.
+# the binary and the licence notices. Building from the repository root instead
+# cannot work: the binary is not there, and .dockerignore excludes it by name if
+# it is. This target assembles the same context.
 image:
-	mkdir -p $(IMAGE_DIR)
-	CGO_ENABLED=0 GOOS=linux go build $(BUILD_FLAGS) -o $(IMAGE_DIR)/$(BINARY_NAME) ./cmd
+	mkdir -p $(IMAGE_DIR)/linux/$(GOARCH)
+	CGO_ENABLED=0 GOOS=linux go build $(BUILD_FLAGS) -o $(IMAGE_DIR)/linux/$(GOARCH)/$(BINARY_NAME) ./cmd
+	cp LICENSE NOTICE $(IMAGE_DIR)/
 	docker build --platform linux/$(GOARCH) -f Dockerfile -t $(USER)/$(BINARY_NAME) $(IMAGE_DIR)
 
 # Pre-commit targets
