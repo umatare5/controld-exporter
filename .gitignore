@@ -1,14 +1,36 @@
-# Main binary
-controld-exporter
+# Temporary files
+tmp/
+vendor/
 
-# Other files
-.DS_Store
-bin
-dist
-tmp
-vendor
-.envrc
+# Test data files
+testdata/
+
+# Build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+
+# Coverage files
+*.out
+coverage/*
+!coverage/report.out
+!coverage/report.html
 
 # Agent files
 .claude/*
 !.claude/CLAUDE.md
+
+# IDE files
+.idea/
+*.swp
+*.swo
+.env
+.envrc
+
+# OS files
+.DS_Store
+Thumbs.db

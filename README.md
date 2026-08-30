@@ -155,7 +155,7 @@ The repository includes a ready to use `Dockerfile`. To build a new Docker image
 make image
 ```
 
-This creates an image named `ghcr.io/$USER/controld-exporter` and exposes `10034/tcp`.
+This cross-compiles a Linux binary into `./tmp/image` and builds the image from that directory, tagged `$USER/controld-exporter`. Released images are pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser instead.
 
 ### Release
 

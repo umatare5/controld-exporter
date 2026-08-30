@@ -25,11 +25,13 @@
 
 ## Setup and Commands
 
-- `go build ./...` — Compile all packages
-- `make` — Build the `controld-exporter` binary in the repository root
-- `make image` — Build the Docker image
-- `make force-image` — Build the Docker image without cache
-- `pre-commit install --allow-missing-config` — Wire in `no-commit-to-main`, `golangci-lint`, `actionlint`, `gitleaks`, and `markdownlint-cli2` (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
+- `make build` — Build the binary into `tmp/controld-exporter`
+- `make lint` — `golangci-lint run` + `go mod tidy`
+- `make test-unit` — Run unit tests via `gotestsum` with coverage
+- `make test-unit-coverage` — Generate HTML report at `coverage/report.html`
+- `make clean` — Remove build artifacts and `.bak*` files
+- `make image` — Build the Docker image (`$USER/controld-exporter`)
+- `make pre-commit-install` / `pre-commit-test` / `pre-commit-uninstall` — Manage the `no-commit-to-main`, `golangci-lint`, `actionlint`, `gitleaks`, and `markdownlint-cli2` hooks (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
 
 ## Code Style
 

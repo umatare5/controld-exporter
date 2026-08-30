@@ -4,25 +4,32 @@ Thank you for considering a contribution.
 
 ## Commands
 
-The following commands are available for development and testing:
+The following `make` commands are available for development and testing:
 
-| Command                                     | Description                            |
-| :------------------------------------------ | :------------------------------------- |
-| `go build ./...`                            | Compile all packages                   |
-| `golangci-lint run`                         | Run the configured linters             |
-| `golangci-lint fmt`                         | Apply the configured formatters        |
-| `pre-commit install --allow-missing-config` | Install the pre-commit hooks           |
-| `pre-commit run --all-files`                | Run every hook across the whole tree   |
+| Command                     | Description                                   |
+| :-------------------------- | :-------------------------------------------- |
+| `make help`                 | Display available targets and requirements    |
+| `make build`                | Build the binary to `./tmp/controld-exporter` |
+| `make lint`                 | Run golangci-lint and tidy go.mod             |
+| `make test-unit`            | Run unit tests with coverage using gotestsum  |
+| `make test-unit-coverage`   | Generate HTML coverage report                 |
+| `make clean`                | Remove build artifacts and backup files       |
+| `make image`                | Build Docker image                            |
+| `make pre-commit-install`   | Install the pre-commit hooks                  |
+| `make pre-commit-test`      | Run every hook across the tree                |
+| `make pre-commit-uninstall` | Remove the pre-commit hooks                   |
 
-Markdown style is enforced by the `markdownlint-cli2` hook that `pre-commit install` wires in, and again in CI. Links are checked in CI only, because that run reaches third-party hosts. Run `lychee .` to reproduce a link failure locally.
+Markdown style is enforced by the `markdownlint-cli2` hook that `make pre-commit-install` wires in, and again in CI. Links are checked in CI only, because that run reaches third-party hosts. Run `lychee .` to reproduce a link failure locally.
 
 ## Build
 
-Released container images are built and pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser, so a local Docker build is not part of the day-to-day workflow. To build the binary locally:
+The repository includes a ready to use `Dockerfile`. To build a new Docker image:
 
 ```bash
-go build -o tmp/controld-exporter ./cmd
+make image
 ```
+
+This cross-compiles a Linux binary into `./tmp/image`, then builds from that directory because the `Dockerfile` expects the binary at the context root. The image is tagged `$USER/controld-exporter`. Released images are pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser instead.
 
 ## Release
 
