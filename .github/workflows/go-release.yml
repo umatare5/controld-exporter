@@ -8,14 +8,14 @@ on:
 permissions:
   contents: write
   packages: write
-  id-token: write
 
 jobs:
   tagging:
-    uses: umatare5/common/.github/workflows/tagging.yml@ae7dde8aa1448a79660db0d935bbf865d85f58c5 # v0.17.0
+    uses: umatare5/common/.github/workflows/tagging.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
 
   release:
-    uses: umatare5/common/.github/workflows/go-release.yml@ae7dde8aa1448a79660db0d935bbf865d85f58c5 # v0.17.0
+    needs: tagging
+    uses: umatare5/common/.github/workflows/go-release.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
     with:
       go_version: "1.27.0"
-      goreleaser_version: "v2.11.1"
+      goreleaser_version: "v2.18.0"
