@@ -5,7 +5,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 
 	"github.com/umatare5/controld-exporter/internal/controld"
-	"github.com/umatare5/controld-exporter/internal/log"
 )
 
 const (
@@ -40,7 +39,7 @@ func (c *Collector) collectStatsMetrics(ch chan<- prometheus.Metric) {
 func (c *Collector) collectPersonalQueryStatsMetrics(ch chan<- prometheus.Metric) {
 	stats, err := c.client.GetDNSQueriesReport("america")
 	if err != nil {
-		log.Errorf("Error fetching stats for Business: %v", err)
+		c.log.error(statsLogPrefix, errFetchingPersonalMetrics+"%v", err)
 		return
 	}
 
