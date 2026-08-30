@@ -17,6 +17,11 @@ func isSuccess(response map[string]any) bool {
 	return ok && success
 }
 
+// isSuccessStatus checks if the response status is in the 2xx range.
+func isSuccessStatus(resp *http.Response) bool {
+	return resp.StatusCode >= http.StatusOK && resp.StatusCode < http.StatusMultipleChoices
+}
+
 // buildOrgIDHeader creates a header map containing the "X-Force-Org-Id" field.
 func (t *Client) buildOrgIDHeader(orgID string) map[string]string {
 	return map[string]string{"X-Force-Org-Id": orgID}
@@ -77,6 +82,10 @@ func (t *Client) handleResponse(resp *http.Response, endpoint string, result any
 		return err
 	}
 	log.Debugf("Raw JSON response: %s", string(body))
+
+	if !isSuccessStatus(resp) {
+		return fmt.Errorf("unexpected status %q from endpoint: %s", resp.Status, endpoint)
+	}
 
 	var rawResponse map[string]any
 	if err := json.Unmarshal(body, &rawResponse); err != nil {
