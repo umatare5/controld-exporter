@@ -1,0 +1,22 @@
+name: Link Check
+
+on:
+  push:
+    paths:
+      - "**/*.md"
+      - "lychee.toml"
+      - ".github/workflows/lychee.yml"
+  pull_request:
+    paths:
+      - "**/*.md"
+      - "lychee.toml"
+      - ".github/workflows/lychee.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  lychee:
+    uses: umatare5/common/.github/workflows/lychee.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    with:
+      lychee_version: "v0.24.2"

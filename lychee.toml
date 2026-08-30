@@ -1,0 +1,9 @@
+include_fragments = "full"
+require_https = true
+exclude_all_private = true
+# The changelog names the tag the merge of its own release pull request
+# creates, so the release link 404s until that merge lands.
+exclude = [
+  "^https://github\\.com/umatare5/controld-exporter/releases/tag/",
+  "^https://github\\.com/umatare5/controld-exporter/compare/",
+]
