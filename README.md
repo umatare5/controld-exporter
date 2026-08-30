@@ -54,7 +54,7 @@ USAGE:
    controld-exporter [options...]
 
 VERSION:
-   1.2.0
+   1.2.1
 
 GLOBAL OPTIONS:
    --web.listen-address string             Address to bind the HTTP server to. (default: "0.0.0.0")

@@ -4,6 +4,20 @@ Notable changes to the metric surface, one section per release — a short pream
 
 This changelog starts at v1.1.0; earlier releases are described by their [release notes](https://github.com/umatare5/controld-exporter/releases) alone.
 
+## [v1.2.1]
+
+This release reports a failed Control D API call by its HTTP status. No metric, label, flag or HELP string changes.
+
+A request that answers with a non-2xx status is now an error before the body is decoded. `controld_stats_last_queries_count` has been unavailable since Control D removed the analytics endpoint it reads, and that failure logged as `invalid character 'p' after top-level value` because the plain-text `404 page not found` body was decoded as JSON; it now names the status and the endpoint. The metric stays unavailable — only the diagnosis changes.
+
+### Metrics
+
+None.
+
+### Flags
+
+None.
+
 ## [v1.2.0]
 
 This release rebuilds the distribution on Go 1.27 and moves container publishing to GoReleaser `dockers_v2`. No metric, label, flag or HELP string changes.
@@ -29,5 +43,6 @@ None.
 
 This release takes dependency updates only. No metric, label, flag or HELP string changes.
 
+[v1.2.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.1
 [v1.2.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.0
 [v1.1.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.1.0
