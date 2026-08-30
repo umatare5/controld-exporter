@@ -42,7 +42,7 @@
 
 ## Testing Instructions
 
-- Run `go build ./...` and `go vet ./...` before committing.
+- Run `make lint` and `make test-unit` before committing.
 - Place tests next to code under test (`*_test.go`); the repository has no unit tests yet.
 
 ## Commits and PRs
