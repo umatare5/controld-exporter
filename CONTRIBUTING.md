@@ -37,7 +37,8 @@ To release a new version, follow these steps:
 
 1. Add the `## [vX.Y.Z]` section to `CHANGELOG.md` above the previous release, and add that version's release link at the foot of the file.
 2. Update the version in the `VERSION` file.
-3. Submit a pull request with both files.
+3. Update the `VERSION:` line in the `--help` transcript in `README.md`.
+4. Submit a pull request with all three files.
 
 A push to `main` touching `VERSION` runs the [release workflow](https://github.com/umatare5/controld-exporter/actions/workflows/go-release.yml), which tags the commit and publishes the release in the same run. The workflow has no manual trigger, so there is no step to perform by hand.
 
