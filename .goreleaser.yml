@@ -8,7 +8,6 @@ dist: tmp/dist
 
 # Build destination
 github_urls:
-  # set to true if you use a self-signed certificate
   skip_tls_verify: false
 
 before:
@@ -17,95 +16,80 @@ before:
     - go mod verify
 
 builds:
-  - main: cmd/main.go
+  - main: ./cmd
     id: controld-exporter
     binary: controld-exporter
+    flags:
+      - -trimpath
     targets:
       - linux_amd64
       - linux_arm64
       - darwin_amd64
       - darwin_arm64
       - windows_amd64
+    env:
+      - CGO_ENABLED=0
     ldflags:
       - -s -w -X 'github.com/umatare5/controld-exporter/internal/cli.version={{ .Version }}'
+    hooks:
+      post:
+        # The setting is recorded in the binary, so this fails the release if cgo returns
+        - cmd: grep -q CGO_ENABLED=0 {{ .Path }}
 
 archives:
-  - name_template: '{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
+  - name_template: "{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     files:
-      - "*.go"
-      - "*.md"
-      - "go.mod"
-      - "go.sum"
+      - "README.md"
+      - "CHANGELOG.md"
+      - "examples/*.yml"
       - "LICENSE"
+      - "NOTICE"
+      - "SECURITY.md"
+    format_overrides:
+      - goos: windows
+        formats: ["zip"]
 
 # Docker configuration
-dockers:
-  - image_templates:
-      - "ghcr.io/umatare5/controld-exporter:latest-amd64"
-      - "ghcr.io/umatare5/controld-exporter:{{ .Tag }}-amd64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}-amd64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}.{{ .Minor }}-amd64"
-    use: buildx
-    build_flag_templates:
-      - "--platform=linux/amd64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.description=Prometheus Exporter for Control D"
-      - "--label=org.opencontainers.image.url=https://github.com/umatare5/controld-exporter"
-      - "--label=org.opencontainers.image.source=https://github.com/umatare5/controld-exporter"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.created={{ .Date }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.licenses=MIT"
-    goarch: amd64
+dockers_v2:
+  - images:
+      - ghcr.io/umatare5/controld-exporter
+    tags:
+      - latest
+      - "{{ .Tag }}"
+      - "v{{ .Major }}.{{ .Minor }}"
+    platforms:
+      - linux/amd64
+      - linux/arm64
     ids:
       - controld-exporter
-  - image_templates:
-      - "ghcr.io/umatare5/controld-exporter:latest-arm64"
-      - "ghcr.io/umatare5/controld-exporter:{{ .Tag }}-arm64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}-arm64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}.{{ .Minor }}-arm64"
-    use: buildx
-    build_flag_templates:
-      - "--platform=linux/arm64"
-      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
-      - "--label=org.opencontainers.image.description=Prometheus Exporter for Control D"
-      - "--label=org.opencontainers.image.url=https://github.com/umatare5/controld-exporter"
-      - "--label=org.opencontainers.image.source=https://github.com/umatare5/controld-exporter"
-      - "--label=org.opencontainers.image.version={{ .Version }}"
-      - "--label=org.opencontainers.image.created={{ .Date }}"
-      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
-      - "--label=org.opencontainers.image.licenses=MIT"
-    goarch: arm64
-    ids:
-      - controld-exporter
-
-# Docker manifest for multi-platform images
-docker_manifests:
-  - name_template: "ghcr.io/umatare5/controld-exporter:latest"
-    image_templates:
-      - "ghcr.io/umatare5/controld-exporter:latest-amd64"
-      - "ghcr.io/umatare5/controld-exporter:latest-arm64"
-  - name_template: "ghcr.io/umatare5/controld-exporter:{{ .Tag }}"
-    image_templates:
-      - "ghcr.io/umatare5/controld-exporter:{{ .Tag }}-amd64"
-      - "ghcr.io/umatare5/controld-exporter:{{ .Tag }}-arm64"
-  - name_template: "ghcr.io/umatare5/controld-exporter:v{{ .Major }}"
-    image_templates:
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}-amd64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}-arm64"
-  - name_template: "ghcr.io/umatare5/controld-exporter:v{{ .Major }}.{{ .Minor }}"
-    image_templates:
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}.{{ .Minor }}-amd64"
-      - "ghcr.io/umatare5/controld-exporter:v{{ .Major }}.{{ .Minor }}-arm64"
+    # A prerelease must not move latest or the version tags. buildx builds and
+    # pushes in one step, so the whole configuration is disabled instead of
+    # skipping the push; snapshot builds stay enabled for local verification.
+    disable: '{{ and (not .IsSnapshot) (ne .Prerelease "") }}'
+    labels:
+      "org.opencontainers.image.title": "{{ .ProjectName }}"
+      "org.opencontainers.image.description": "Prometheus Exporter for Control D"
+      "org.opencontainers.image.url": "https://github.com/umatare5/controld-exporter"
+      "org.opencontainers.image.source": "https://github.com/umatare5/controld-exporter"
+      "org.opencontainers.image.version": "{{ .Version }}"
+      "org.opencontainers.image.created": "{{ .Date }}"
+      "org.opencontainers.image.revision": "{{ .FullCommit }}"
+      "org.opencontainers.image.licenses": "MIT"
+    extra_files:
+      - "LICENSE"
+      - "NOTICE"
 
 release:
   prerelease: auto
-  draft: false
+  draft: true
   replace_existing_draft: true
   header: |
     ## {{ .ProjectName }} v{{ .Version }}
 
     This release contains the Prometheus Exporter for Control D.
+
+    > [!IMPORTANT]
+    > Read the [CHANGELOG](https://github.com/umatare5/controld-exporter/blob/{{ .Tag }}/CHANGELOG.md) before upgrading.
 
     ### 🐳 Container Images
 
@@ -117,14 +101,12 @@ release:
     docker run --rm ghcr.io/umatare5/controld-exporter:{{ .Tag }} --help
 
     # With environment variables
-    docker run --rm -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:{{ .Tag }} command
+    docker run --rm -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:{{ .Tag }}
     ```
 
     ### 📦 Binary Installation
 
-    ```bash
-    go install github.com/umatare5/controld-exporter@v{{ .Version }}
-    ```
+    Download a prebuilt binary for your platform from the release assets below.
 
   footer: |
     **Full Changelog**: https://github.com/umatare5/controld-exporter/compare/{{ .PreviousTag }}...{{ .Tag }}
@@ -132,11 +114,12 @@ release:
     ### 📚 Documentation
 
     - [README](https://github.com/umatare5/controld-exporter/blob/{{ .Tag }}/README.md)
+    - [CHANGELOG](https://github.com/umatare5/controld-exporter/blob/{{ .Tag }}/CHANGELOG.md)
     - [Container Registry](https://github.com/umatare5/controld-exporter/pkgs/container/controld-exporter)
 
 # Generate checksums for source archives
 checksum:
-  name_template: "{{ .ProjectName }}-{{ .Version }}_checksums.txt"
+  name_template: "{{ .ProjectName }}-v{{ .Version }}_checksums.txt"
 
 # Changelog configuration
 changelog:
@@ -157,11 +140,11 @@ changelog:
       order: 999
   filters:
     exclude:
-      - '^Merge branch '
-      - '^release:'
-      - '^ci:'
-      - '^test:'
+      - "^Merge branch "
+      - "^release:"
+      - "^ci:"
+      - "^test:"
 
 # Metadata for Go proxy and pkg.go.dev
 metadata:
-  mod_timestamp: '{{ .CommitTimestamp }}'
+  mod_timestamp: "{{ .CommitTimestamp }}"

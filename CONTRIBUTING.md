@@ -29,7 +29,7 @@ The repository includes a ready to use `Dockerfile`. To build a new Docker image
 make image
 ```
 
-This cross-compiles a Linux binary into `./tmp/image`, then builds from that directory because the `Dockerfile` expects the binary at the context root. The image is tagged `$USER/controld-exporter`. Released images are pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser instead.
+This cross-compiles a Linux binary into `./tmp/image`, then builds from that directory because the `Dockerfile` expects the GoReleaser context layout. The image is tagged `$USER/controld-exporter` and declares port 10034 without publishing it, so publish it with `docker run -p`. Released images are pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser instead.
 
 ## Release
 
