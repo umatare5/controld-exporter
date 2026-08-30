@@ -1,0 +1,6 @@
+# gitleaks configuration file
+# More information: https://github.com/gitleaks/gitleaks#configuration
+
+# Without this the default ruleset is replaced rather than extended, and nothing is detected.
+[extend]
+useDefault = true
