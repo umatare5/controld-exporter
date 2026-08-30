@@ -1,8 +1,18 @@
 {
-    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
-    "github.copilot.chat.commitMessageGeneration.instructions": [
-        {
-            "file": ".vscode/.copilot-commit-message-instructions.md"
-        }
-    ]
+  "gopls": {
+    "analyses": {
+      "unusedparams": true,
+      "unusedwrite": true
+    }
+  },
+  "go.useLanguageServer": true,
+  "go.lintOnSave": "package",
+  "go.lintTool": "golangci-lint-v2",
+  "go.formatTool": "custom",
+  "go.formatFlags": ["fmt", "--stdin"],
+  "go.alternateTools": {
+    "go": "go",
+    "customFormatter": "golangci-lint",
+    "golangci-lint-v2": "golangci-lint"
+  }
 }
