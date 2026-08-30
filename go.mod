@@ -1,6 +1,6 @@
 module github.com/umatare5/controld-exporter
 
-go 1.25.0
+go 1.27
 
 require (
 	github.com/jinzhu/configor v1.2.2
