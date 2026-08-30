@@ -1,0 +1,6 @@
+coverage:
+  paths:
+    - coverage/report.out
+  acceptable: 0% # No unit tests yet; tighten after tests are added.
+  badge:
+    path: docs/assets/coverage.svg

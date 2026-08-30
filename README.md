@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/logo.png" width="115px"/>
+<img src="docs/assets/logo.png" alt="controld-exporter logo" width="115px"/>
 
   <h1>controld-exporter</h1>
 
@@ -114,7 +114,7 @@ This exporter returns following metrics:
 
 ### Exporter
 
-Visit http://localhost:10034/ to verify the exporter is running.
+Visit <http://localhost:10034/> to verify the exporter is running.
 
 #### Using Docker
 

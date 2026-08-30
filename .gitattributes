@@ -1,0 +1,5 @@
+# The profile is rewritten by `make test-unit`, so its diff reports no
+# reviewable change. octocov reads it from the working tree rather than through
+# git, so suppressing the diff costs it nothing.
+coverage/** linguist-generated=true
+coverage/*.out -diff
