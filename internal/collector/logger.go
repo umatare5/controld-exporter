@@ -16,21 +16,21 @@ const (
 type logger struct{}
 
 // info wraps the log.Infof function to include a prefix in the log messages.
-func (l *logger) info(prefix string, format string, args ...interface{}) {
-	log.Infof(prefix+": "+format, args...)
+func (l *logger) info(prefix, message string) {
+	log.Infof("%s: %s", prefix, message)
 }
 
 // error wraps the log.Errorf function to include a prefix in the log messages.
-func (l *logger) error(prefix string, format string, args ...interface{}) {
+func (l *logger) error(prefix, format string, args ...any) {
 	log.Errorf(prefix+": "+format, args...)
 }
 
-// warn wraps the log.Warnf function to include a prefix in the log messages.
-func (l *logger) warn(prefix string, format string, args ...interface{}) {
-	log.Warnf(prefix+": "+format, args...)
+// warnEmptyData logs the skip-empty-data warning for the given payload.
+func (l *logger) warnEmptyData(prefix string, data any) {
+	log.Warnf("%s: %s%v", prefix, warnSkipEmptyData, data)
 }
 
-// debug wraps the log.Debugf function to include a prefix in the log messages.
-func (l *logger) debug(prefix string, format string, args ...interface{}) {
-	log.Debugf(prefix+": "+format, args...)
+// debugSkipOrgScraping logs the personal-mode skip message.
+func (l *logger) debugSkipOrgScraping(prefix string) {
+	log.Debugf("%s: %s", prefix, logSkipOrgScraping)
 }

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	dummyOrgId = "000000000" // Placeholder for the personal instance
+	dummyOrgID = "000000000" // Placeholder for the personal instance
 )
 
 // isDevicesEmpty checks if the devices array in the response is empty.

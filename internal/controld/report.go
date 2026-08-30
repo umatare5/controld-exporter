@@ -7,49 +7,52 @@ import (
 )
 
 const (
-	DnsQueriesReportEndpoint = "/reports/dns-queries/all-by-verdict/time-series" // Endpoint for DNS query statistics
+	DNSQueriesReportEndpoint = "/reports/dns-queries/all-by-verdict/time-series" // Endpoint for DNS query statistics
 )
 
 // QueryStatsResponse represents the response structure for DNS query statistics.
 type QueryStatsResponse struct {
 	Success bool `json:"success"`
 	Body    struct {
-		EndTs       int    `json:"endTs"`
-		StartTs     int    `json:"startTs"`
+		EndTS       int    `json:"endTs"`
+		StartTS     int    `json:"startTs"`
 		Granularity string `json:"granularity"`
 		Tz          string `json:"tz"`
 		Queries     []struct {
-			Ts    string         `json:"ts"`
+			TS    string         `json:"ts"`
 			Count map[string]int `json:"count"`
 		} `json:"queries"`
 	} `json:"body"`
 }
 
-// GetDnsQueriesReport fetches DNS query statisticswithout additional headers.
-func (t *Client) GetDnsQueriesReport(stats_endpoint string) (*QueryStatsResponse, error) {
-	return t.sendDnsQueriesReportRequest(
-		stats_endpoint, t.buildDnsQueriesReportUri(DnsQueriesReportEndpoint), nil,
+// GetDNSQueriesReport fetches DNS query statistics without additional headers.
+func (t *Client) GetDNSQueriesReport(statsEndpoint string) (*QueryStatsResponse, error) {
+	return t.sendDNSQueriesReportRequest(
+		statsEndpoint, t.buildDNSQueriesReportURI(DNSQueriesReportEndpoint), nil,
 	)
 }
 
-// GetSubOrgDnsQueriesReport fetches DNS query statistics with additional headers for a specific organization.
-func (t *Client) GetSubOrgDnsQueriesReport(stats_endpoint string, orgID string) (*QueryStatsResponse, error) {
-	return t.sendDnsQueriesReportRequest(
-		stats_endpoint, t.buildDnsQueriesReportUri(DnsQueriesReportEndpoint), t.buildOrgIDHeader(orgID),
+// GetSubOrgDNSQueriesReport fetches DNS query statistics with additional headers for a specific organization.
+func (t *Client) GetSubOrgDNSQueriesReport(statsEndpoint, orgID string) (*QueryStatsResponse, error) {
+	return t.sendDNSQueriesReportRequest(
+		statsEndpoint, t.buildDNSQueriesReportURI(DNSQueriesReportEndpoint), t.buildOrgIDHeader(orgID),
 	)
 }
 
-// sendDnsQueriesReportRequest sends a request to fetch DNS query statistics.
-func (t *Client) sendDnsQueriesReportRequest(stats_endpoint string, uri string, headers map[string]string) (*QueryStatsResponse, error) {
+// sendDNSQueriesReportRequest sends a request to fetch DNS query statistics.
+func (t *Client) sendDNSQueriesReportRequest(
+	statsEndpoint, uri string,
+	headers map[string]string,
+) (*QueryStatsResponse, error) {
 	var data QueryStatsResponse
-	if err := t.sendReportAPIRequest(stats_endpoint, uri, headers, &data); err != nil {
+	if err := t.sendReportAPIRequest(statsEndpoint, uri, headers, &data); err != nil {
 		return nil, err
 	}
 	return &data, nil
 }
 
-// buildDnsQueriesReportUri constructs the URI for the DNS queries report.
-func (t *Client) buildDnsQueriesReportUri(baseEndpoint string) string {
+// buildDNSQueriesReportURI constructs the URI for the DNS queries report.
+func (t *Client) buildDNSQueriesReportURI(baseEndpoint string) string {
 	return fmt.Sprintf(
 		"%s?startTs=%d&granularity=%s&tz=%s",
 		baseEndpoint,

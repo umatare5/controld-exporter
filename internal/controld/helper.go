@@ -29,8 +29,8 @@ func (t *Client) sendAPIRequest(endpoint string, headers map[string]string, resu
 }
 
 // sendReportAPIRequest constructs the full URI for Analytics API and delegates the request to sendRequest.
-func (t *Client) sendReportAPIRequest(stats_endpoint, endpoint string, headers map[string]string, result any) error {
-	uri := "https://" + stats_endpoint + ".analytics.controld.com" + endpoint
+func (t *Client) sendReportAPIRequest(statsEndpoint, endpoint string, headers map[string]string, result any) error {
+	uri := "https://" + statsEndpoint + ".analytics.controld.com" + endpoint
 	return t.sendRequest(uri, headers, result)
 }
 
@@ -58,12 +58,12 @@ func (t *Client) sendRequest(uri string, headers map[string]string, result any) 
 }
 
 func (t *Client) createRequest(url string, headers map[string]string) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(context.Background(), "GET", url, nil)
+	req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, url, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", t.apiKey))
+	req.Header.Set("Authorization", "Bearer "+t.apiKey)
 	for key, value := range headers {
 		req.Header.Set(key, value)
 	}

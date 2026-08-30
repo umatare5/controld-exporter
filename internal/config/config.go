@@ -3,10 +3,11 @@ package config
 
 import (
 	"errors"
-	"log"
 
 	"github.com/jinzhu/configor"
 	cli "github.com/urfave/cli/v3"
+
+	"github.com/umatare5/controld-exporter/internal/log"
 )
 
 const (
@@ -29,14 +30,14 @@ type Config struct {
 }
 
 // NewConfig initializes a Config struct, loads configuration values, and validates the API key.
-func NewConfig(cli *cli.Command) Config {
+func NewConfig(cmd *cli.Command) Config {
 	config := Config{
-		WebListenAddress:     cli.String(WebListenAddressFlagName),
-		WebListenPort:        int(cli.Int(WebListenPortFlagName)),
-		WebTelemetryPath:     cli.String(WebTelemetryPathFlagName),
-		ControlDAPIKey:       cli.String(ControlDAPIKeyFlagName),
-		ControlDBusinessMode: cli.Bool(ControlDBusinessModeFlagName),
-		LogLevel:             cli.String(LogLevelFlagName),
+		WebListenAddress:     cmd.String(WebListenAddressFlagName),
+		WebListenPort:        cmd.Int(WebListenPortFlagName),
+		WebTelemetryPath:     cmd.String(WebTelemetryPathFlagName),
+		ControlDAPIKey:       cmd.String(ControlDAPIKeyFlagName),
+		ControlDBusinessMode: cmd.Bool(ControlDBusinessModeFlagName),
+		LogLevel:             cmd.String(LogLevelFlagName),
 	}
 
 	err := configor.New(&configor.Config{}).Load(&config)

@@ -1,36 +1,255 @@
 version: "2"
 
-# golangci-lint configuration file
-# More information: https://golangci-lint.run/usage/configuration/
-
+########################
+# 1. Execution settings
+########################
 run:
   timeout: 5m
-  # Removed modules-download-mode to allow flexible module operations
+  tests: true                      # Analyze *_test.go files as well
+  issues-exit-code: 1              # Fail CI if any issue is found
 
-linters:
-  enable:
-    - govet              # Reports suspicious constructs
-    - errcheck           # Check for unhandled errors
-    - staticcheck        # Comprehensive static analysis
-    - ineffassign        # Detects ineffective assignments
-    - unused             # Finds unused variables
-
-# Settings for specific linters
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: false
-
+########################
+# 2. Issues quota
+########################
 issues:
-  # Exclude specific warning types
-  exclude-rules:
-    - linters:
-        - gocyclo
-      text: "(?i)cyclomatic complexity"
-  exclude-use-default: false
+  max-issues-per-linter: 0         # Do not cap issues per linter
+  max-same-issues: 0               # Do not deduplicate identical issues
 
-# Files and folders to ignore
-skip-dirs:
-  - vendor
-  - build
-  - tmp
+########################
+# 3. Enabled linters
+########################
+linters:
+  default: none
+  enable:
+    # Core correctness & security
+    - govet
+    - staticcheck
+    - exhaustive
+    - errcheck
+    - ineffassign
+    - unused
+    - errchkjson
+    - errorlint
+    - gosec
+    - goconst
+    - gocritic
+    - mnd
+    - revive
+    - unparam
+    - unconvert
+    - bodyclose
+    - asasalint
+    - misspell
+    - usestdlibvars
+    - testifylint
+    - perfsprint
+    - paralleltest
+    - tagliatelle
+    - thelper
+    - testpackage
+
+    # Modernization related to Go 1.22–1.25
+    - intrange               # Prefer `for i := range n` where applicable (Go 1.22) [external linter]
+    - copyloopvar            # Detect legacy loop-var copies; has autofix
+    - exptostd               # Suggest std replacements for x/exp/*
+
+    # Logging hygiene (slog)
+    - sloglint               # Enforce consistent slog usage
+    - loggercheck            # Validate slog key/value shapes
+
+    # API/style consistency that reduces long-term churn
+    - nilnesserr             # Detect inconsistent nil/err returns
+    - predeclared            # Avoid shadowing predeclared identifiers
+    - godot                  # Enforce periods at the end of doc comments
+    - whitespace             # Normalize whitespace
+    - fatcontext             # Avoid capturing/propagating "fat" contexts
+    - nosprintfhostport      # Safer host:port formatting
+    - depguard               # Belt-and-suspenders dependency rules
+
+  ########################
+  # 4. Per-linter settings
+  # https://golangci-lint.run/docs/linters/configuration/
+  ########################
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    staticcheck:
+      checks:
+        - all
+        - "-SA1012"
+
+    errchkjson:
+      check-error-free-encoding: true
+
+    errorlint:
+      errorf: true
+      asserts: true
+
+    goconst:
+      min-len: 2
+      min-occurrences: 3
+      ignore-tests: true         # Test tables enumerate vendor enum values; they are not duplication
+
+    gocritic:
+      enable-all: true
+      disabled-checks:
+        - hugeParam
+        - rangeValCopy
+        - commentedOutCode
+        - whyNoLint
+
+    mnd:
+      checks: [argument,assign,case,return]
+      ignored-functions: ["time.Duration"]
+
+    revive:
+      confidence: 0.8
+      rules:
+        - name: indent-error-flow
+          arguments: [preserveScope]
+        - name: function-length
+          arguments: [80, 0]
+        - name: error-strings
+        - name: error-naming
+        - name: var-naming
+          arguments:
+          # White List to preserve readability. I maintain these words by hands.
+          - [
+              # Control D domain vocabulary
+              "ORG", "POP"
+            ]
+          # Black List to avoid confusion with common initialisms.
+          - [
+              # Networking Protocols
+              "DNS", "IP", "IPv4", "IPv6", "HTTP", "HTTPS", "TLS", "PXY",
+              # API surface
+              "API", "ID", "URL", "JSON", "IATA"
+            ]
+          - - skip-initialism-name-checks: false
+
+    misspell:
+      locale: US
+
+    perfsprint:
+      int-conversion: true
+      err-error: true
+      errorf: true
+      sprintf1: true
+
+    paralleltest:
+      ignore-missing: false
+
+    tagliatelle:
+      case:
+        rules:
+          json: snake
+
+    testifylint:
+      enable-all: true
+      disable:
+        - float-compare
+
+    govet:
+      enable-all: true
+      disable:
+        - shadow                 # Prevent noisy false positives
+        - fieldalignment         # Avoid churn with marginal benefits
+
+    sloglint:                    # See options: https://github.com/go-simpler/sloglint
+      no-mixed-args: true        # Do not mix key/value pairs and Attrs
+      no-global: ""              # Allow default global logger usage for simplicity
+
+    copyloopvar:
+      check-alias: true          # Also flag aliasing the loop variable
+
+    depguard:
+      rules:
+        main:
+          list-mode: lax
+          files: [ $all ]
+          allow:
+            - $gostd
+          deny:
+            - pkg: "log$"
+              desc: "Use the repository logger (internal/log, logrus) instead of log package"
+            - pkg: "golang.org/x/exp/maps$"
+              desc: "Use std `maps` and built-ins (e.g., clear) instead of x/exp/maps"
+            - pkg: "golang.org/x/exp/slices$"
+              desc: "Use std `slices` instead of x/exp/slices"
+            - pkg: "github.com/pkg/errors$"
+              desc: "Use std `errors`"
+            - pkg: "math/rand$"
+              desc: "Use `math/rand/v2` on Go 1.22+"
+
+  ########################
+  # 5. Exclusions
+  ########################
+  exclusions:
+    generated: lax
+    warn-unused: false
+    paths:
+      - vendor/
+      - build/
+      - tmp/
+      - examples/
+    rules:
+      - path: _test\.go
+        linters:
+          - errcheck     # Allow ignoring errors in tests
+          - goconst      # Allow constant duplication in tests
+          - gosec        # Allow test helpers to use weak crypto, etc.
+          - ineffassign  # Allow ineffectual assignments in tests
+          - mnd          # Allow magic numbers in tests
+          - perfsprint   # Allow fmt.Errorf in tests
+          - staticcheck  # Allow ignoring some staticcheck issues in tests
+          - unused       # Allow unused code in tests
+          - tagliatelle  # Allow API-matching JSON tags in fixtures
+          - testpackage  # Allow same-package tests for internal access
+      - path: ^cmd/
+        linters:
+          - mnd          # Allow magic numbers for CLI configuration
+      - path: ^internal/controld/
+        linters:
+          - tagliatelle  # JSON tags mirror the Control D API field names verbatim
+      - path: ^internal/server/
+        linters:
+          - errcheck     # Allow ignoring write errors in HTTP handlers
+          - mnd          # Allow magic numbers for HTTP server configuration
+      - path: ^internal/cli/
+        linters:
+          - goconst      # Flag category labels repeat once per flag in a group
+          - mnd          # Allow magic numbers for CLI configuration
+          - revive       # Allow long main functions for CLI setup
+
+########################
+# 6. Code formatters
+########################
+formatters:
+  enable:
+    - gci
+    - gofumpt
+    - goimports
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/umatare5)  # Adjust to your module root
+    gofumpt:
+      extra:
+        group-params: true
+        clothe-returns: true
+    goimports:
+      local-prefixes:
+        - github.com/umatare5
+    golines:
+      max-len: 120
+
+########################
+# 7. Output settings
+########################
+output:
+  show-stats: false

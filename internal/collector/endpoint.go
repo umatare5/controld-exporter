@@ -3,6 +3,7 @@ package collector
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/umatare5/controld-exporter/internal/controld"
 )
 
@@ -14,7 +15,7 @@ const (
 func (c *Collector) collectEndpointMetrics(ch chan<- prometheus.Metric) {
 	if c.isRunningInPersonalMode() {
 		c.collectPersonalEndpointMetrics(ch)
-		c.log.debug(endpointLogPrefix, logSkipOrgScraping)
+		c.log.debugSkipOrgScraping(endpointLogPrefix)
 		return
 	}
 
@@ -42,7 +43,7 @@ func (c *Collector) collectPersonalEndpointMetrics(ch chan<- prometheus.Metric) 
 		return
 	}
 
-	c.storeEndpointMetrics(ch, endpoints, dummyOrgId)
+	c.storeEndpointMetrics(ch, endpoints, dummyOrgID)
 }
 
 // collectMainOrgEndpointMetrics collects metrics for endpoints in the main organization.
@@ -56,7 +57,10 @@ func (c *Collector) collectMainOrgEndpointMetrics(ch chan<- prometheus.Metric, o
 }
 
 // collectSubOrgEndpointMetrics collects metrics for endpoints in sub organizations.
-func (c *Collector) collectSubOrgEndpointMetrics(ch chan<- prometheus.Metric, subOrgs *controld.SubOrganizationsResponse) {
+func (c *Collector) collectSubOrgEndpointMetrics(
+	ch chan<- prometheus.Metric,
+	subOrgs *controld.SubOrganizationsResponse,
+) {
 	subOrgIDs := extractSubOrganizationIDs(subOrgs)
 	for _, subOrgID := range subOrgIDs {
 		endpoints, err := c.client.GetSubOrgDevices(subOrgID)
@@ -69,15 +73,19 @@ func (c *Collector) collectSubOrgEndpointMetrics(ch chan<- prometheus.Metric, su
 }
 
 // storeEndpointMetrics stores endpoint metrics in the Prometheus channel.
-func (c *Collector) storeEndpointMetrics(ch chan<- prometheus.Metric, endpoints *controld.DevicesResponse, orgID string) {
+func (c *Collector) storeEndpointMetrics(
+	ch chan<- prometheus.Metric,
+	endpoints *controld.DevicesResponse,
+	orgID string,
+) {
 	if isDevicesEmpty(endpoints) {
-		c.log.warn(endpointLogPrefix, warnSkipEmptyData+"%v", endpoints)
+		c.log.warnEmptyData(endpointLogPrefix, endpoints)
 		return
 	}
 
 	for _, endpoint := range endpoints.Body.Devices {
 		ch <- prometheus.MustNewConstMetric(
-			controld_endpoint_clients_total,
+			controldEndpointClientsTotal,
 			prometheus.GaugeValue,
 			float64(endpoint.ClientCount),
 			endpoint.Name,

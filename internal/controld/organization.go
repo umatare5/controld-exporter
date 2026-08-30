@@ -27,7 +27,7 @@ type OrganizationResponse struct {
 			Type                 string   `json:"type"`                   // Type of the organization
 			BillingMethod        int      `json:"billing_method"`         // Billing method
 			Status               int      `json:"status"`                 // Status of the organization
-			StatsEndpoint        string   `json:"stats_endpoint"`         // Endpoint for statistics
+			StatsEndpoint        string   `json:"statsEndpoint"`          // Endpoint for statistics
 			ContactEmail         string   `json:"contact_email"`          // Contact email address
 			OktaDomain           string   `json:"okta_domain"`            // Okta domain
 			TrialEnd             string   `json:"trial_end"`              // Trial end date
@@ -71,7 +71,7 @@ type SubOrganizationsResponse struct {
 		SubOrganizations []struct {
 			ParentProfile        string `json:"parent_profile"`         // Parent profile ID
 			ContactName          string `json:"contact_name"`           // Name of the contact person
-			StatsEndpoint        string `json:"stats_endpoint"`         // Endpoint for statistics
+			StatsEndpoint        string `json:"statsEndpoint"`          // Endpoint for statistics
 			SiemEnabled          int    `json:"siem_enabled"`           // Indicates if SIEM is enabled
 			AllowOverrides       string `json:"allow_overrides"`        // Indicates if overrides are allowed
 			MaxLegacyResolvers   int    `json:"max_legacy_resolvers"`   // Maximum number of legacy resolvers

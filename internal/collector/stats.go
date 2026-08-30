@@ -3,6 +3,7 @@ package collector
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/umatare5/controld-exporter/internal/controld"
 	"github.com/umatare5/controld-exporter/internal/log"
 )
@@ -15,7 +16,7 @@ const (
 func (c *Collector) collectStatsMetrics(ch chan<- prometheus.Metric) {
 	if c.isRunningInPersonalMode() {
 		c.collectPersonalQueryStatsMetrics(ch)
-		c.log.debug(statsLogPrefix, logSkipOrgScraping)
+		c.log.debugSkipOrgScraping(statsLogPrefix)
 		return
 	}
 
@@ -37,18 +38,22 @@ func (c *Collector) collectStatsMetrics(ch chan<- prometheus.Metric) {
 
 // collectPersonalQueryStatsMetrics collects DNS query statistics for the personal instance.
 func (c *Collector) collectPersonalQueryStatsMetrics(ch chan<- prometheus.Metric) {
-	stats, err := c.client.GetDnsQueriesReport("america")
+	stats, err := c.client.GetDNSQueriesReport("america")
 	if err != nil {
 		log.Errorf("Error fetching stats for Business: %v", err)
 		return
 	}
 
-	c.storeStatsMetrics(ch, stats, dummyOrgId)
+	c.storeStatsMetrics(ch, stats, dummyOrgID)
 }
 
 // collectMainOrgQueryStatsMetrics collects DNS query statistics for the main organization.
-func (c *Collector) collectMainOrgQueryStatsMetrics(ch chan<- prometheus.Metric, org *controld.OrganizationResponse, statsEndpoint string) {
-	stats, err := c.client.GetDnsQueriesReport(statsEndpoint)
+func (c *Collector) collectMainOrgQueryStatsMetrics(
+	ch chan<- prometheus.Metric,
+	org *controld.OrganizationResponse,
+	statsEndpoint string,
+) {
+	stats, err := c.client.GetDNSQueriesReport(statsEndpoint)
 	if err != nil {
 		c.log.error(statsLogPrefix, errFetchingMainOrgMetrics+"%v", err)
 		return
@@ -58,10 +63,14 @@ func (c *Collector) collectMainOrgQueryStatsMetrics(ch chan<- prometheus.Metric,
 }
 
 // collectSubOrgQueryStatsMetrics collects DNS query statistics for sub organizations.
-func (c *Collector) collectSubOrgQueryStatsMetrics(ch chan<- prometheus.Metric, subOrgs *controld.SubOrganizationsResponse, statsEndpoint string) {
+func (c *Collector) collectSubOrgQueryStatsMetrics(
+	ch chan<- prometheus.Metric,
+	subOrgs *controld.SubOrganizationsResponse,
+	statsEndpoint string,
+) {
 	subOrgIDs := extractSubOrganizationIDs(subOrgs)
 	for _, subOrgID := range subOrgIDs {
-		stats, err := c.client.GetSubOrgDnsQueriesReport(statsEndpoint, subOrgID)
+		stats, err := c.client.GetSubOrgDNSQueriesReport(statsEndpoint, subOrgID)
 		if err != nil {
 			c.log.error(statsLogPrefix, errFetchingSubOrgMetrics+"%s: %v", subOrgID, err)
 			continue
@@ -73,7 +82,7 @@ func (c *Collector) collectSubOrgQueryStatsMetrics(ch chan<- prometheus.Metric, 
 // storeStatsMetrics stores DNS query statistics metrics in the Prometheus channel.
 func (c *Collector) storeStatsMetrics(ch chan<- prometheus.Metric, stats *controld.QueryStatsResponse, orgID string) {
 	if isQueryStatsEmpty(stats) {
-		c.log.warn(statsLogPrefix, warnSkipEmptyData+"%v", stats)
+		c.log.warnEmptyData(statsLogPrefix, stats)
 		return
 	}
 
@@ -81,7 +90,7 @@ func (c *Collector) storeStatsMetrics(ch chan<- prometheus.Metric, stats *contro
 	for queryType, count := range query.Count {
 		queryTypeLabel := mapQueryTypeToLabel(queryType)
 		ch <- prometheus.MustNewConstMetric(
-			controld_stats_last_queries_count,
+			controldStatsLastQueriesCount,
 			prometheus.CounterValue,
 			float64(count),
 			queryTypeLabel,
