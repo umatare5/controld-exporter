@@ -3,6 +3,7 @@ package collector
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/umatare5/controld-exporter/internal/controld"
 )
 
@@ -14,7 +15,7 @@ const (
 func (c *Collector) collectServiceMetrics(ch chan<- prometheus.Metric) {
 	if c.isRunningInPersonalMode() {
 		c.collectPersonalServicesCategoryMetrics(ch)
-		c.log.debug(serviceLogPrefix, logSkipOrgScraping)
+		c.log.debugSkipOrgScraping(serviceLogPrefix)
 		return
 	}
 
@@ -34,54 +35,64 @@ func (c *Collector) collectServiceMetrics(ch chan<- prometheus.Metric) {
 	c.collectSubOrgServicesCategoryMetrics(ch, subOrgs)
 }
 
-// collectPersonalServicesCategoryMetrics collects metrics for ServiceCategories in the personal instance.
+// collectPersonalServicesCategoryMetrics collects metrics for serviceCategories in the personal instance.
 func (c *Collector) collectPersonalServicesCategoryMetrics(ch chan<- prometheus.Metric) {
-	ServiceCategories, err := c.client.GetServiceCategories()
+	serviceCategories, err := c.client.GetServiceCategories()
 	if err != nil {
 		c.log.error(serviceLogPrefix, errFetchingPersonalMetrics+"%v", err)
 		return
 	}
 
-	c.storeServicesCategoryMetrics(ch, ServiceCategories, dummyOrgId)
+	c.storeServicesCategoryMetrics(ch, serviceCategories, dummyOrgID)
 }
 
-// collectMainOrgServicesCategoryMetrics collects metrics for ServiceCategories in the main organization.
-func (c *Collector) collectMainOrgServicesCategoryMetrics(ch chan<- prometheus.Metric, org *controld.OrganizationResponse) {
-	ServiceCategories, err := c.client.GetServiceCategories()
+// collectMainOrgServicesCategoryMetrics collects metrics for serviceCategories in the main organization.
+func (c *Collector) collectMainOrgServicesCategoryMetrics(
+	ch chan<- prometheus.Metric,
+	org *controld.OrganizationResponse,
+) {
+	serviceCategories, err := c.client.GetServiceCategories()
 	if err != nil {
 		c.log.error(serviceLogPrefix, errFetchingMainOrgMetrics+"%v", err)
 		return
 	}
 
-	c.storeServicesCategoryMetrics(ch, ServiceCategories, org.Body.Organization.PK)
+	c.storeServicesCategoryMetrics(ch, serviceCategories, org.Body.Organization.PK)
 }
 
-// collectSubOrgServicesCategoryMetrics collects metrics for ServiceCategories in sub organizations.
-func (c *Collector) collectSubOrgServicesCategoryMetrics(ch chan<- prometheus.Metric, subOrgs *controld.SubOrganizationsResponse) {
+// collectSubOrgServicesCategoryMetrics collects metrics for serviceCategories in sub organizations.
+func (c *Collector) collectSubOrgServicesCategoryMetrics(
+	ch chan<- prometheus.Metric,
+	subOrgs *controld.SubOrganizationsResponse,
+) {
 	subOrgIDs := extractSubOrganizationIDs(subOrgs)
 	for _, subOrgID := range subOrgIDs {
-		ServiceCategories, err := c.client.GetSubOrgServiceCategories(subOrgID)
+		serviceCategories, err := c.client.GetSubOrgServiceCategories(subOrgID)
 		if err != nil {
 			c.log.error(serviceLogPrefix, errFetchingSubOrgMetrics+"%s: %v", subOrgID, err)
 			continue
 		}
-		c.storeServicesCategoryMetrics(ch, ServiceCategories, subOrgID)
+		c.storeServicesCategoryMetrics(ch, serviceCategories, subOrgID)
 	}
 }
 
-// storeServicesCategoryMetrics stores ServicesCategory metrics in the Prometheus channel.
-func (c *Collector) storeServicesCategoryMetrics(ch chan<- prometheus.Metric, ServiceCategories *controld.ServiceCategoriesResponse, orgID string) {
-	if isServiceCategoriesEmpty(ServiceCategories) {
-		c.log.warn(serviceLogPrefix, warnSkipEmptyData+"%v", ServiceCategories)
+// storeServicesCategoryMetrics stores servicesCategory metrics in the Prometheus channel.
+func (c *Collector) storeServicesCategoryMetrics(
+	ch chan<- prometheus.Metric,
+	serviceCategories *controld.ServiceCategoriesResponse,
+	orgID string,
+) {
+	if isServiceCategoriesEmpty(serviceCategories) {
+		c.log.warnEmptyData(serviceLogPrefix, serviceCategories)
 		return
 	}
 
-	for _, ServicesCategory := range ServiceCategories.Body.Categories {
+	for _, servicesCategory := range serviceCategories.Body.Categories {
 		ch <- prometheus.MustNewConstMetric(
-			controld_service_categories_total,
+			controldServiceCategoriesTotal,
 			prometheus.GaugeValue,
-			float64(ServicesCategory.Count),
-			ServicesCategory.PK,
+			float64(servicesCategory.Count),
+			servicesCategory.PK,
 			orgID,
 		)
 	}

@@ -5,10 +5,11 @@ import (
 	"context"
 	"os"
 
+	cli "github.com/urfave/cli/v3"
+
 	"github.com/umatare5/controld-exporter/internal/config"
 	"github.com/umatare5/controld-exporter/internal/log"
 	"github.com/umatare5/controld-exporter/internal/server"
-	cli "github.com/urfave/cli/v3"
 )
 
 // Run initializes and starts the CLI application.
@@ -21,7 +22,7 @@ func Run() {
 		Flags:     registerFlags(),
 		Action: func(ctx context.Context, cli *cli.Command) error {
 			config := config.NewConfig(cli)
-			exporter, _ := server.NewServer(&config)
+			exporter := server.NewServer(&config)
 
 			exporter.Start()
 

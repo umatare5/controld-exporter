@@ -7,7 +7,7 @@ import (
 
 var logger = logrus.New()
 
-// SetLogLevel sets the log level based on the debug flag
+// SetLogLevel sets the log level based on the debug flag.
 func SetLogLevel(logLevel string) {
 	if logLevel == "warn" {
 		logger.SetLevel(logrus.WarnLevel)

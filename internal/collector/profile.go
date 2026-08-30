@@ -3,6 +3,7 @@ package collector
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/umatare5/controld-exporter/internal/controld"
 )
 
@@ -14,7 +15,7 @@ const (
 func (c *Collector) collectProfileMetrics(ch chan<- prometheus.Metric) {
 	if c.isRunningInPersonalMode() {
 		c.collectPersonalProfileMetrics(ch)
-		c.log.debug(profileLogPrefix, logSkipOrgScraping)
+		c.log.debugSkipOrgScraping(profileLogPrefix)
 		return
 	}
 
@@ -42,7 +43,7 @@ func (c *Collector) collectPersonalProfileMetrics(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	c.storeProfileMetrics(ch, profiles, dummyOrgId)
+	c.storeProfileMetrics(ch, profiles, dummyOrgID)
 }
 
 // collectMainOrgProfileMetrics collects metrics for profiles in the main organization.
@@ -69,57 +70,61 @@ func (c *Collector) collectSubOrgProfileMetrics(ch chan<- prometheus.Metric, org
 }
 
 // storeProfileMetrics stores profile metrics in the Prometheus channel.
-func (c *Collector) storeProfileMetrics(ch chan<- prometheus.Metric, profiles *controld.ProfilesResponse, orgID string) {
+func (c *Collector) storeProfileMetrics(
+	ch chan<- prometheus.Metric,
+	profiles *controld.ProfilesResponse,
+	orgID string,
+) {
 	if isProfilesEmpty(profiles) {
-		c.log.warn(profileLogPrefix, warnSkipEmptyData+"%v", profiles)
+		c.log.warnEmptyData(profileLogPrefix, profiles)
 		return
 	}
 
 	for _, profile := range profiles.Body.Profiles {
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_preset_filters_total,
+			controldProfilePresetFiltersTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Flt.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_content_filters_total,
+			controldProfileContentFiltersTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Cflt.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_ip_filters_total,
+			controldProfileIPFiltersTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Cflt.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_rules_total,
+			controldProfileRulesTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Rule.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_services_total,
+			controldProfileServicesTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Svc.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_groups_total,
+			controldProfileGroupsTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Grp.Count),
 			profile.Name,
 			orgID,
 		)
 		ch <- prometheus.MustNewConstMetric(
-			controld_profile_enabled_option_total,
+			controldProfileEnabledOptionTotal,
 			prometheus.GaugeValue,
 			float64(profile.Profile.Opt.Count),
 			profile.Name,

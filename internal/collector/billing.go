@@ -27,27 +27,27 @@ func (c *Collector) collectBillingPayments(ch chan<- prometheus.Metric) {
 	}
 
 	if isPaymentsEmpty(payments) {
-		c.log.warn(billingPaymentsLogPrefix, warnSkipEmptyData+"%v", payments)
+		c.log.warnEmptyData(billingPaymentsLogPrefix, payments)
 		return
 	}
 
 	for _, payment := range payments.Body.Payments {
 		ch <- prometheus.MustNewConstMetric(
-			controld_billing_status,
+			controldBillingStatus,
 			prometheus.GaugeValue,
 			float64(payment.Transaction.Status),
 			payment.PK,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
-			controld_billing_refunded_status,
+			controldBillingRefundedStatus,
 			prometheus.GaugeValue,
 			float64(payment.Transaction.Refunded),
 			payment.PK,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
-			controld_billing_subscription_amount_total,
+			controldBillingSubscriptionAmountTotal,
 			prometheus.GaugeValue,
 			float64(payment.Amount),
 			payment.PK,
@@ -55,7 +55,7 @@ func (c *Collector) collectBillingPayments(ch chan<- prometheus.Metric) {
 		)
 
 		ch <- prometheus.MustNewConstMetric(
-			controld_billing_subscription_amount_total,
+			controldBillingSubscriptionAmountTotal,
 			prometheus.GaugeValue,
 			float64(payment.CurrencyAmount),
 			payment.PK,
@@ -73,13 +73,13 @@ func (c *Collector) collectBillingSubscriptions(ch chan<- prometheus.Metric) {
 	}
 
 	if isSubscriptionsEmpty(subscriptions) {
-		c.log.warn(billingPaymentsLogPrefix, warnSkipEmptyData+"%v", subscriptions)
+		c.log.warnEmptyData(billingPaymentsLogPrefix, subscriptions)
 		return
 	}
 
 	for _, subscription := range subscriptions.Body.Subscriptions {
 		ch <- prometheus.MustNewConstMetric(
-			controld_billing_subscription_nextbill_timestamp,
+			controldBillingSubscriptionNextbillTimestamp,
 			prometheus.GaugeValue,
 			float64(subscription.NextBill),
 			subscription.PK,

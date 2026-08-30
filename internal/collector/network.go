@@ -24,7 +24,7 @@ func (c *Collector) collectNetworkHealthStatus(ch chan<- prometheus.Metric) {
 
 	for _, node := range network.Body.Network {
 		ch <- prometheus.MustNewConstMetric(
-			controld_network_health_code,
+			controldNetworkHealthCode,
 			prometheus.GaugeValue,
 			float64(node.Status.API),
 			node.CityName,
@@ -34,7 +34,7 @@ func (c *Collector) collectNetworkHealthStatus(ch chan<- prometheus.Metric) {
 		)
 
 		ch <- prometheus.MustNewConstMetric(
-			controld_network_health_code,
+			controldNetworkHealthCode,
 			prometheus.GaugeValue,
 			float64(node.Status.DNS),
 			node.CityName,
@@ -44,7 +44,7 @@ func (c *Collector) collectNetworkHealthStatus(ch chan<- prometheus.Metric) {
 		)
 
 		ch <- prometheus.MustNewConstMetric(
-			controld_network_health_code,
+			controldNetworkHealthCode,
 			prometheus.GaugeValue,
 			float64(node.Status.PXY),
 			node.CityName,

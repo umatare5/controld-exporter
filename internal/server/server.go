@@ -11,6 +11,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+
 	"github.com/umatare5/controld-exporter/internal/collector"
 	"github.com/umatare5/controld-exporter/internal/config"
 	"github.com/umatare5/controld-exporter/internal/controld"
@@ -24,11 +25,11 @@ type Server struct {
 }
 
 // NewServer initializes and returns a new Server instance.
-func NewServer(config *config.Config) (Server, error) {
+func NewServer(cfg *config.Config) Server {
 	return Server{
-		Client: controld.NewClient(config.ControlDAPIKey),
-		Config: config,
-	}, nil
+		Client: controld.NewClient(cfg.ControlDAPIKey),
+		Config: cfg,
+	}
 }
 
 // Start configures and launches the HTTP server to serve metrics and help pages.
@@ -93,7 +94,14 @@ func (s *Server) help(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintf(&builder, "http://%s%s", listenAddrAndPort, s.Config.WebTelemetryPath)
 	builder.WriteString("<p><b>Example:</b></p>")
 	builder.WriteString("<ul>")
-	fmt.Fprintf(&builder, "<li><a href=\"http://%s%s\">http://%s%s</a></li>", listenAddrAndPort, s.Config.WebTelemetryPath, listenAddrAndPort, s.Config.WebTelemetryPath)
+	fmt.Fprintf(
+		&builder,
+		"<li><a href=\"http://%s%s\">http://%s%s</a></li>",
+		listenAddrAndPort,
+		s.Config.WebTelemetryPath,
+		listenAddrAndPort,
+		s.Config.WebTelemetryPath,
+	)
 	builder.WriteString("</ul>")
 
 	if _, err := w.Write([]byte(builder.String())); err != nil {
