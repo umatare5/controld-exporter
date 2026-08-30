@@ -54,14 +54,14 @@ USAGE:
    controld-exporter [options...]
 
 VERSION:
-   v1.0.0
+   1.2.0
 
 GLOBAL OPTIONS:
    --web.listen-address string             Address to bind the HTTP server to. (default: "0.0.0.0")
    --web.listen-port int                   Port number to bind the HTTP server to. (default: 10034)
    --web.telemetry-path string, -p string  Path for the metrics endpoint. (default: "/metrics")
    --controld.api-key string, -k string    API key for authenticating with the Control D API. [$CTRLD_API_KEY]
-   --controld.business-mode                Enable the metrics collection available in the business subscription. (default: false)
+   --controld.business-mode                Enable the metrics collection available in the business subscription.
    --log.level string                      Set the logging level. One of: [debug, info, warn, error] (default: "info")
    --help, -h                              show help
    --version, -v                           print the version
