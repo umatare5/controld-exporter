@@ -5,7 +5,7 @@ go 1.27
 require (
 	github.com/jinzhu/configor v1.2.2
 	github.com/prometheus/client_golang v1.24.1
-	github.com/sirupsen/logrus v1.10.1
+	github.com/sirupsen/logrus v1.10.2
 	github.com/urfave/cli/v3 v3.11.0
 )
 
