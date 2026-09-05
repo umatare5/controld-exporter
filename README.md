@@ -18,7 +18,7 @@
 
 ## Overview
 
-This exporter reads the [Control D](https://controld.com/) API with one account token and publishes the account's state as Prometheus metrics.
+This exporter reads the [Control D](https://controld.com/) API and publishes the account state as Prometheus metrics.
 
 - 💚 **Service Health**: Control D's own DNS, API and proxy status, per point of presence
 - ⚙️ **Configuration Drift**: Filter, rule and option counts per profile, so an edit is visible as a step
@@ -53,7 +53,7 @@ curl -s http://localhost:10034/metrics | head
 >
 > **Supported Platforms:** `linux_amd64`, `linux_arm64`, `darwin_amd64`, `darwin_arm64` and `windows_amd64`
 
-## Syntax
+## Flags
 
 `controld-exporter --help` prints every flag, and [`docs/help.md`](docs/help.md) carries the same list.
 
@@ -67,6 +67,14 @@ curl -s http://localhost:10034/metrics | head
 > [!IMPORTANT]
 > The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one the exporter terminates on the first scrape.
 
+## Environment Variables
+
+This exporter reads one environment variable:
+
+| Environment Variable | Description                    |
+| :------------------- | :----------------------------- |
+| `CTRLD_API_KEY`      | Control D API token (required) |
+
 ## Endpoints
 
 The exporter serves two endpoints:
@@ -78,44 +86,48 @@ Nothing is cached between requests, so a scrape costs one Control D API call per
 
 ## Metrics
 
-Every series is namespaced `controld_` and grouped by the collector that reads it. See [`docs/collectors.md`](docs/collectors.md) for the full catalogue, the labels and the per-family caveats.
+Every series is namespaced `controld_`. The series a dashboard usually starts from:
 
-| Collector      | Publishes                                          |
-| :------------- | :------------------------------------------------- |
-| `billing`      | Payment status, amount and next billing instant    |
-| `endpoint`     | Clients counted against each device                |
-| `network`      | Control D service status per point of presence     |
-| `profile`      | Filter, rule, group and option counts per profile  |
-| `service`      | Services in each category                          |
-| `stats`        | DNS queries by verdict, over the last minute       |
-| `organization` | Organization and sub-organization inventory counts |
+| Metric                                             | Type    | Description                             |
+| :------------------------------------------------- | :------ | :-------------------------------------- |
+| `controld_network_health_code`                     | Gauge   | Service status of one point of presence |
+| `controld_billing_status`                          | Gauge   | Transaction status of one payment       |
+| `controld_billing_subscription_nextbill_timestamp` | Gauge   | Next billing instant, in Unix seconds   |
+| `controld_endpoint_clients_total`                  | Gauge   | Clients counted against one device      |
+| `controld_profile_rules_total`                     | Gauge   | Rules on one profile                    |
+| `controld_service_categories_total`                | Gauge   | Services in one category                |
+| `controld_stats_last_queries_count`                | Counter | DNS queries of one verdict              |
+| `controld_organization_users_total`                | Gauge   | Users of the organization               |
+
+See [`docs/collectors.md`](docs/collectors.md) for all metrics.
 
 ### Exporter Health Metrics
 
-The exporter publishes no series about itself, so a failed scrape is read from what is missing rather than from what is reported.
+The exporter publishes no series about itself, so a failed scrape shows as missing series.
 
-- **No exporter series** — there is no scrape duration, no error counter and no `up`-style gauge under the `controld_` namespace.
-- **No runtime series either** — the Go and process collectors are registered on a registry no handler serves, so a scrape carries neither `go_` nor `process_`.
-- **Absence is the signal** — every collector withholds its whole family on failure rather than publishing `0`, so a gap is what a failure looks like.
+- **No exporter series** — no scrape duration, no error counter, no `up`-style gauge.
+- **No runtime series** — the Go and process collectors sit on a registry no handler serves.
+- **Absence is the signal** — a failing collector withholds its family instead of publishing `0`.
 
 > [!IMPORTANT]
-> A scrape whose every collector failed still answers 200 with an empty body, so the target's own `up` stays 1 and cannot separate a revoked API key from an account with nothing configured. Alert on the absence of a series the account always has — [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) does that with `absent()`.
+> A scrape whose collectors all failed still answers 200 with an empty body, so the target's own `up` stays 1. Alert on the absence of a series the account always has, as [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) does with `absent()`.
 
 > [!NOTE]
-> The failing endpoint and its status are logged at `error`, and `--log.level debug` adds the request URI and the decoded body, so the log is where the cause is read. See [`docs/README.md`](docs/README.md) for the absence rules each collector follows.
+> The failing endpoint and its status are logged at `error`, and `--log.level debug` adds the request URI and the decoded body. See [`docs/README.md`](docs/README.md) for the absence rules each collector follows.
 
 ## Use Cases
 
-### Prometheus Configuration
+### Job Configuration Example
 
-1. Add the job config to your Prometheus YAML file using [`examples/prometheus.yml`](examples/prometheus.yml) as a reference.
-2. Set up alerting rules using [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) as a reference.
+Add the job from [`examples/prometheus.yml`](examples/prometheus.yml) to your Prometheus configuration.
 
-The scrape job sets `scrape_interval: 60s` and `scrape_timeout: 50s` because each scrape waits on the Control D API rather than on a cached snapshot.
+### Alerting Rules Configuration Example
+
+Add the rules from [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) to your configuration.
 
 ### Grafana Dashboard
 
-A sample dashboard schema is available at [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporter-dashboard.json).
+Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporter-dashboard.json) to add the dashboard.
 
 ![Control D Exporter Dashboard](examples/control-d-exporter-dashboard.png)
 
