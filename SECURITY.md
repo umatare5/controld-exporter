@@ -1,23 +1,46 @@
 # Security Policy
 
-## Supported versions
+## Supported Versions
 
-Only the latest release carries fixes, and no older tag gets a patch branch. Reproduce a finding against the latest release before reporting it.
+Only the most recent tagged release carries fixes — reproduce a finding against it before reporting.
 
-## Reporting a vulnerability
+## Reporting a Vulnerability
 
-Report privately through GitHub Security Advisories, never an issue or a pull request — open the repository's **Security** tab and choose **Report a vulnerability**.
+Report privately through [GitHub Security Advisories](https://github.com/umatare5/controld-exporter/security/advisories/new). **Please do not report a vulnerability through a public GitHub issue or a pull request.**
 
-One maintainer works on this in their own time, so no response time is promised. The advisory goes out after the fix ships and credits the reporter unless they ask otherwise.
+The response is best effort, with no promised window. The advisory goes out once the fix ships, carries a CVE request, and credits the reporter unless they ask otherwise.
 
-## What this exporter holds and exposes
+## What to Include
 
-This exporter reads the Control D API with one account token and exposes the data as Prometheus metrics. The token's privileges determine what the exporter can read.
+**Redact these first.** None of them belongs in a report.
 
-- **Credential** — one Control D API token, which makes the exporter exactly as sensitive as that token, so prefer `CTRLD_API_KEY` to `--controld.api-key`.
-- **Metrics** — unauthenticated plain HTTP carrying billing status, device names, profile names, and organization identifiers as label values, so keep it on a controlled path.
-- **Logs** — `--log.level debug` writes each raw API response to the log unredacted, so treat debug logs as sensitive as the account itself.
+- The Control D API token, from a log line, a process listing or a container definition
+- An organization or sub-organization primary key, which the `orgId` label carries
+- A device or profile name, which the `name` label carries verbatim from the account
 
-## Out of scope
+Then include the following:
 
-A defect in the Control D service or its API belongs to **Control D** — report it there, not to this third-party exporter.
+- **Affected versions** (required): The `controld-exporter` release, and whether `--controld.business-mode` was set
+- **Reproduction steps** (required): The flags and environment variables, and the endpoint the exporter was reading
+- **Output** (required): The `/metrics` body or the log lines, with every value above removed
+- **Impact assessment** (required): The exploit scenario, and what it reaches
+- **Suggested fix** (optional): Proposed remediation, if any
+- **Disclosure status** (required): Whether it is shared elsewhere, and your plan for sharing it
+
+## Scope
+
+In scope:
+
+- The API token reaching a log line at any level, or the landing page, or the `/metrics` body
+- The API token reaching the process table other than through `--controld.api-key`, whose cost is documented
+- Certificate verification weakened on the path to the Control D API, which no flag is meant to relax
+- A request reaching an organization or sub-organization the configured mode did not name
+- The published container image
+
+Out of scope:
+
+- `/metrics` served unauthenticated over plain HTTP, which is the exporter's documented posture — put it behind a controlled path
+- Account data appearing in `/metrics` labels, which is what the exporter exists to publish
+- A dependency advisory with no path reachable from `./cmd` — show the path, or a `govulncheck` finding
+- A Control D service or API defect, which belongs to Control D rather than to this third-party exporter
+- An operator's own configuration, which [`docs/help.md`](docs/help.md) covers
