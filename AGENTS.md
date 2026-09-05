@@ -41,7 +41,7 @@
 - Keep Control D API logic in `internal/controld` so collectors remain thin and testable.
 - Comments record only what the code cannot say, and never address the reader.
 
-## Testing Instructions
+## Testing
 
 - Run `make lint` and `make test-unit` before committing.
 - Place tests next to code under test (`*_test.go`); the repository has no unit tests yet.
