@@ -69,10 +69,10 @@ curl -s http://localhost:10034/metrics | head
 
 ## Endpoints
 
-| Path       | Serves                                         |
-| :--------- | :--------------------------------------------- |
-| `/`        | A landing page linking the telemetry path      |
-| `/metrics` | The Control D series, rebuilt on every request |
+The exporter serves two endpoints:
+
+- `/` — landing page, which prints the telemetry path when reached at <http://localhost:10034/>
+- `/metrics` — metrics endpoint, configurable via `--web.telemetry-path`
 
 Nothing is cached between requests, so a scrape costs one Control D API call per collector and its latency is the API's. See [`docs/README.md`](docs/README.md) for the scrape path and the timeouts around it.
 
@@ -90,8 +90,19 @@ Every series is namespaced `controld_` and grouped by the collector that reads i
 | `stats`        | DNS queries by verdict, over the last minute       |
 | `organization` | Organization and sub-organization inventory counts |
 
+### Exporter Health Metrics
+
+The exporter publishes no series about itself, so a failed scrape is read from what is missing rather than from what is reported.
+
+- **No exporter series** — there is no scrape duration, no error counter and no `up`-style gauge under the `controld_` namespace.
+- **No runtime series either** — the Go and process collectors are registered on a registry no handler serves, so a scrape carries neither `go_` nor `process_`.
+- **Absence is the signal** — every collector withholds its whole family on failure rather than publishing `0`, so a gap is what a failure looks like.
+
+> [!IMPORTANT]
+> A scrape whose every collector failed still answers 200 with an empty body, so the target's own `up` stays 1 and cannot separate a revoked API key from an account with nothing configured. Alert on the absence of a series the account always has — [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) does that with `absent()`.
+
 > [!NOTE]
-> No series describes the exporter itself, and a scrape whose every collector failed still answers 200 with an empty body. Alert on the absence of a series the account always has — [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) does that with `absent()`.
+> The failing endpoint and its status are logged at `error`, and `--log.level debug` adds the request URI and the decoded body, so the log is where the cause is read. See [`docs/README.md`](docs/README.md) for the absence rules each collector follows.
 
 ## Use Cases
 
@@ -118,8 +129,4 @@ I launched this project with the help of **GitHub Copilot Coding Assistant**, an
 
 ## Licence
 
-[MIT](LICENSE)
-
-## Author
-
-[umatare5](https://github.com/umatare5)
+MIT. The binary statically links Apache-2.0, MIT and BSD 3-Clause dependencies, whose notices are reproduced in [`NOTICE`](NOTICE) and shipped alongside [`LICENSE`](LICENSE) in every release archive and container image.

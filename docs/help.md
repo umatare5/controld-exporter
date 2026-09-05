@@ -2,8 +2,6 @@
 
 The `controld-exporter --help` text, transcribed from the binary.
 
-## controld-exporter
-
 ```text
 NAME:
    controld-exporter - A Prometheus exporter for metrics from the Control D

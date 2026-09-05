@@ -87,8 +87,7 @@
             "## Use Cases", "*",
             "## Contributing", "*",
             "## Acknowledgement", "*",
-            "## Licence", "*",
-            "## Author"
+            "## Licence"
           ]
         }
       }
@@ -145,7 +144,6 @@
           "match_case": true,
           "headings": [
             "# Help",
-            "## controld-exporter", "*",
             "## Notes"
           ]
         }
