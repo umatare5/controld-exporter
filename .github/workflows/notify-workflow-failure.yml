@@ -1,0 +1,26 @@
+name: Notify Workflow Failure
+
+on:
+  workflow_run:
+    workflows:
+      [
+        "CodeQL Analysis",
+        "Coverage",
+        "Test and Build",
+        "govulncheck",
+        "Release Snapshot",
+      ]
+    types: ["completed"]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    if: github.event.workflow_run.event == 'schedule' && github.event.workflow_run.conclusion == 'failure'
+    permissions:
+      issues: write
+    uses: umatare5/common/.github/workflows/notify-workflow-failure.yml@8044b3c0ce0dce6411ec179c3ec0e675219c117f # v0.21.0
+    with:
+      workflow_name: ${{ github.event.workflow_run.name }}
+      run_url: ${{ github.event.workflow_run.html_url }}
