@@ -137,7 +137,7 @@ time="2025-04-13T18:50:54Z" level=info msg="Starting the personal mode exporter 
 This section describes how to configure Prometheus to scrape metrics from the controld-exporter.
 
 1. Add the job config to your Prometheus YAML file using [examples/prometheus.yml](./examples/prometheus.yml) as a reference.
-2. Set up alerting rules using [examples/prometheus.alert_rules.yml](./examples/prometheus.alert_rules.yml) as a reference.
+2. Set up alerting rules using [examples/prometheus_alert_rules.yml](./examples/prometheus_alert_rules.yml) as a reference.
 
 ### Grafana Dashboard
 

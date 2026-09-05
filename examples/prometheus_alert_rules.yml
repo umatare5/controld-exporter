@@ -1,0 +1,98 @@
+---
+# Alerting rules for controld-exporter.
+# Every series here is rebuilt from scratch on each scrape, so a failed Control D
+# call withholds the series rather than publishing a zero. Absence is therefore
+# the primary failure signal, and ControlDMetricsMissing is what reads it.
+groups:
+  - name: controld-exporter
+    rules:
+      - alert: ControlDMetricsMissing
+        expr: absent(controld_network_health_code)
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "controld-exporter is publishing no Control D data"
+          description: >-
+            The /network call failed or returned an empty node list, so every
+            health series is withheld. The scrape still returns 200 and the
+            target's own up stays 1, so no other rule here can fire while this
+            one does.
+
+      - alert: BillingStatusFailed
+        expr: controld_billing_status != 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Control D payment {{ $labels.id }} carries a non-zero transaction status"
+          description: >-
+            The value is the transaction status Control D returned for this
+            payment, passed through unchanged. A failed charge suspends the
+            subscription the profiles depend on, so the filtering stops before
+            any metric here reports it.
+
+      - alert: BillingRefundedStatusFailed
+        expr: controld_billing_refunded != 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Control D payment {{ $labels.id }} carries a non-zero refund status"
+          description: >-
+            A refund reverses a payment that already renewed the subscription,
+            so the account can read as paid while the entitlement is being
+            withdrawn.
+
+      - alert: BillingAmountHigh
+        expr: controld_billing_subscription_amount_total{currency="USD"} > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Control D payment {{ $labels.id }} exceeds one subscription"
+          description: >-
+            The USD series carries the payment's amount field, and one
+            subscription bills 2, so a larger value means more than one seat or
+            a plan change nobody made. Raise the threshold to match the seat
+            count before enabling this rule.
+
+      - alert: NetworkServiceDown
+        expr: controld_network_health_code{country_name="JP"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Control D {{ $labels.service_name }} is down in {{ $labels.iata_code }}"
+          description: >-
+            The value is the per-node status Control D publishes for this
+            service, so a resolver pinned to this point of presence stops
+            answering while the account itself stays healthy. Narrow
+            country_name and service_name to the nodes the endpoints resolve
+            against.
+
+      - alert: QueryBlockingRateHigh
+        expr: >-
+          100 * sum by (orgId) (controld_stats_last_queries_count{type="blocked"})
+          / sum by (orgId) (controld_stats_last_queries_count) > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Control D is blocking over half the queries in org {{ $labels.orgId }}"
+          description: >-
+            Each series carries the most recent one-minute bucket rather than a
+            running total, so the ratio is taken from the raw values and rate()
+            over them is meaningless. A filter list update is the usual cause.
+
+      - alert: UnknownQueryVerdictSeen
+        expr: controld_stats_last_queries_count{type="unknown"} > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Control D returned a verdict controld-exporter cannot name"
+          description: >-
+            The exporter maps verdict 0, 1 and 3 to blocked, bypassed and
+            redirected, and folds every other code into unknown, so this fires
+            when Control D adds a verdict the exporter predates.
