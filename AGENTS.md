@@ -1,16 +1,16 @@
 # Repository Instructions
 
 > [!IMPORTANT]
-> Read [README.md](README.md) for product overview, flags, metrics, and operator usage.
+> Read [`README.md`](README.md) for product overview, flags, metrics, and operator usage.
 
 ## Tech Stack
 
-- Go 1.27+ (see [go.mod](go.mod))
+- Go 1.27+ (see [`go.mod`](go.mod))
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang) v1.24+ — metric registration and HTTP handler
 - [`urfave/cli/v3`](https://github.com/urfave/cli) v3.11+ — CLI flags and application lifecycle
 - [`sirupsen/logrus`](https://github.com/sirupsen/logrus) — structured logging
 - [`jinzhu/configor`](https://github.com/jinzhu/configor) — environment-variable loading into the config struct
-- [`goreleaser`](https://goreleaser.com/) v2 — cross-platform release builds (see [.goreleaser.yml](.goreleaser.yml))
+- [`goreleaser`](https://goreleaser.com/) v2 — cross-platform release builds (see [`.goreleaser.yml`](.goreleaser.yml))
 
 ## Repository Structure
 
@@ -21,7 +21,8 @@
 - `internal/collector/` — billing, endpoint, network, profile, service, stats, and organization collectors; `prometheus.Collector` implementations
 - `internal/controld/` — Control D API client and response types
 - `internal/log/` — logrus setup
-- `examples/` — Prometheus scrape config, alert rules, and a Grafana dashboard
+- `docs/` — the reference set: `README.md` for the shared rules, `collectors.md` for the catalogue, `configuration.md` for the flags
+- `examples/` — Prometheus scrape config, alert rules with their unit tests, and a Grafana dashboard
 
 ## Setup and Commands
 
@@ -31,11 +32,11 @@
 - `make test-unit-coverage` — Generate HTML report at `coverage/report.html`
 - `make clean` — Remove build artifacts and `.bak*` files
 - `make image` — Build the Docker image (`$USER/controld-exporter`)
-- `make pre-commit-install` / `pre-commit-test` / `pre-commit-uninstall` — Manage the `no-commit-to-main`, `golangci-lint`, `actionlint`, `gitleaks`, and `markdownlint-cli2` hooks (see [.pre-commit-config.yaml](.pre-commit-config.yaml))
+- `make pre-commit-install` / `pre-commit-test` / `pre-commit-uninstall` — Manage the `no-commit-to-main`, `golangci-lint`, `actionlint`, `gitleaks`, and `markdownlint-cli2` hooks (see [`.pre-commit-config.yaml`](.pre-commit-config.yaml))
 
 ## Code Style
 
-- Linting and formatting are enforced by `golangci-lint` in the pre-commit hook (see [.golangci.yml](.golangci.yml)).
+- Linting and formatting are enforced by `golangci-lint` in the pre-commit hook (see [`.golangci.yml`](.golangci.yml)).
 - Keep metric names, help strings, types, and labels stable unless a SemVer-signaled breaking change is intentional.
 - Keep Control D API logic in `internal/controld` so collectors remain thin and testable.
 - Comments record only what the code cannot say, and never address the reader.
@@ -49,7 +50,7 @@
 
 - Use [Conventional Commits](https://www.conventionalcommits.org/) (`feat:`, `fix:`, `chore(deps):`, etc.).
 - Sign off commits with `Signed-off-by:` (DCO).
-- Open PRs against `main`. CI runs lint, build, and CodeQL.
+- Open PRs against `main`. CI runs lint, build, CodeQL, `govulncheck`, and `promtool` over the example rules.
 - Call out any metrics or flag changes explicitly because they affect operator dashboards and alerts.
 
 ## Domain Knowledge

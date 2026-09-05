@@ -82,10 +82,10 @@
             "## Overview", "*",
             "## Quick Start", "*",
             "## Syntax", "*",
-            "## Configuration", "*",
+            "## Endpoints", "*",
             "## Metrics", "*",
-            "## Usage", "*",
-            "## Development", "*",
+            "## Use Cases", "*",
+            "## Contributing", "*",
             "## Acknowledgement", "*",
             "## Licence", "*",
             "## Author"
@@ -101,10 +101,52 @@
           "match_case": true,
           "headings": [
             "# Security Policy",
-            "## Supported versions", "*",
-            "## Reporting a vulnerability", "*",
-            "## What this exporter holds and exposes", "*",
-            "## Out of scope"
+            "## Supported Versions", "*",
+            "## Reporting a Vulnerability", "*",
+            "## What to Include", "*",
+            "## Scope"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/README.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Documentation",
+            "## Technical information", "*"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/collectors.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Collectors",
+            "## Metrics", "*",
+            "## Labels", "*",
+            "## Specifications"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/configuration.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Configuration",
+            "## Flags", "*",
+            "## Notes"
           ]
         }
       }
