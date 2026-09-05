@@ -1,33 +1,40 @@
 # my global config
 global:
-  scrape_interval:     15s # By default, scrape targets every 15 seconds.
-  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
   # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
-  - prometheus.alert_rules.sample.yml
+  - prometheus_alert_rules.yml
 
 # A scrape configuration containing exactly one endpoint to scrape:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 5s
+  - job_name: "prometheus"
 
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
 
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
+  # Every scrape calls the Control D API in series and waits for it, so
+  # scrape_timeout is raised well above the global default and the interval is
+  # kept long enough that two scrapes never overlap.
   - job_name: "controld"
     scrape_interval: 60s
     scrape_timeout: 50s
     static_configs:
-      - targets: [host.docker.internal:10034]
+      - targets: ["host.docker.internal:10034"]
 
 # If you send metrics to Grafana Cloud, use the following configuration:
 #
@@ -35,5 +42,5 @@ scrape_configs:
 #   - url: https://your-username.grafana.net/api/prom/push
 #     basic_auth:
 #       username: 999999
-#       password: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=
+#       password: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=
 #

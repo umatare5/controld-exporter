@@ -29,7 +29,7 @@
             "## Repository Structure", "*",
             "## Setup and Commands", "*",
             "## Code Style", "*",
-            "## Testing Instructions", "*",
+            "## Testing", "*",
             "## Commits and PRs", "*",
             "## Domain Knowledge", "*"
           ]
@@ -81,14 +81,14 @@
           "headings": [
             "## Overview", "*",
             "## Quick Start", "*",
-            "## Syntax", "*",
-            "## Configuration", "*",
+            "## Flags", "*",
+            "## Environment Variables", "*",
+            "## Endpoints", "*",
             "## Metrics", "*",
-            "## Usage", "*",
-            "## Development", "*",
+            "## Use Cases", "*",
+            "## Contributing", "*",
             "## Acknowledgement", "*",
-            "## Licence", "*",
-            "## Author"
+            "## License"
           ]
         }
       }
@@ -101,10 +101,51 @@
           "match_case": true,
           "headings": [
             "# Security Policy",
-            "## Supported versions", "*",
-            "## Reporting a vulnerability", "*",
-            "## What this exporter holds and exposes", "*",
-            "## Out of scope"
+            "## Supported Versions", "*",
+            "## Reporting a Vulnerability", "*",
+            "## What to Include", "*",
+            "## Scope"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/README.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Documentation",
+            "## Technical information", "*"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/collectors.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Collectors",
+            "## Metrics", "*",
+            "## Labels", "*",
+            "## Specifications"
+          ]
+        }
+      }
+    },
+    {
+      "filter": ["docs/help.md"],
+      "combine": "merge",
+      "config": {
+        "MD043": {
+          "match_case": true,
+          "headings": [
+            "# Help",
+            "## Notes"
           ]
         }
       }

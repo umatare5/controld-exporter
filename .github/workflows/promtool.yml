@@ -1,0 +1,23 @@
+name: Prometheus Rules
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  promtool:
+    uses: umatare5/common/.github/workflows/promtool.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    with:
+      promtool_version: "3.14.0"
+      rule_files: |
+        examples/prometheus_alert_rules.yml
+      test_files: |
+        examples/prometheus_alert_rules_test.yml
+      config_files: |
+        examples/prometheus.yml
+      lint: "all"

@@ -1,0 +1,132 @@
+---
+# A firing case is asserted through the ALERTS series the rule under test
+# produces, because exp_alerts also compares exp_annotations and would copy each
+# rule's description into this file.
+rule_files:
+  - prometheus_alert_rules.yml
+
+evaluation_interval: 1m
+
+tests:
+  # No health series ever arrives, so absent() holds from the first evaluation
+  # and for: 10m puts the firing edge at 10m. absent() over a bare name carries
+  # no labels, so neither job nor instance reaches the alert.
+  - interval: 1m
+    input_series:
+      - series: 'controld_billing_status{job="controld",instance="localhost:10034",id="pay_01"}'
+        values: "0+0x20"
+    alert_rule_test:
+      - eval_time: 9m
+        alertname: ControlDMetricsMissing
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="ControlDMetricsMissing"}
+        eval_time: 11m
+        exp_samples:
+          - labels: 'ALERTS{alertname="ControlDMetricsMissing", alertstate="firing", severity="critical"}'
+            value: 1
+
+  # The status turns non-zero at 2m and for: 5m puts the firing edge at 7m, so
+  # 6m must be silent. The zero head catches a comparison written as != null.
+  - interval: 1m
+    input_series:
+      - series: 'controld_billing_status{job="controld",instance="localhost:10034",id="pay_01"}'
+        values: "0 0 1+0x10"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: BillingStatusFailed
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="BillingStatusFailed"}
+        eval_time: 7m
+        exp_samples:
+          - labels: 'ALERTS{alertname="BillingStatusFailed", alertstate="firing", id="pay_01", instance="localhost:10034", job="controld", severity="critical"}'
+            value: 1
+
+  - interval: 1m
+    input_series:
+      - series: 'controld_billing_refunded{job="controld",instance="localhost:10034",id="pay_01"}'
+        values: "0 0 1+0x10"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: BillingRefundedStatusFailed
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="BillingRefundedStatusFailed"}
+        eval_time: 7m
+        exp_samples:
+          - labels: 'ALERTS{alertname="BillingRefundedStatusFailed", alertstate="firing", id="pay_01", instance="localhost:10034", job="controld", severity="critical"}'
+            value: 1
+
+  # A single subscription bills 2, so the head holds the threshold exactly and a
+  # comparison written as >= would fire at 6m and fail this case.
+  - interval: 1m
+    input_series:
+      - series: 'controld_billing_subscription_amount_total{job="controld",instance="localhost:10034",id="pay_01",currency="USD"}'
+        values: "2 2 4+0x10"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: BillingAmountHigh
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="BillingAmountHigh"}
+        eval_time: 7m
+        exp_samples:
+          - labels: 'ALERTS{alertname="BillingAmountHigh", alertstate="firing", currency="USD", id="pay_01", instance="localhost:10034", job="controld", severity="warning"}'
+            value: 1
+
+  # The second node never leaves the healthy value, and the expected sample set
+  # names one series, so a rule matching every node is caught here.
+  - interval: 1m
+    input_series:
+      - series: 'controld_network_health_code{job="controld",instance="localhost:10034",city_name="Tokyo",iata_code="tyo",country_name="JP",service_name="dns"}'
+        values: "1 1 0+0x10"
+      - series: 'controld_network_health_code{job="controld",instance="localhost:10034",city_name="Tokyo",iata_code="tyo",country_name="JP",service_name="api"}'
+        values: "1+0x12"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: NetworkServiceDown
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="NetworkServiceDown"}
+        eval_time: 7m
+        exp_samples:
+          - labels: 'ALERTS{alertname="NetworkServiceDown", alertstate="firing", city_name="Tokyo", country_name="JP", iata_code="tyo", instance="localhost:10034", job="controld", service_name="dns", severity="warning"}'
+            value: 1
+
+  # The head holds the ratio at 10 percent and the tail at 91, so the rule is
+  # exercised on both sides of the threshold. sum by (orgId) drops job and
+  # instance, which is why neither appears in the expected sample.
+  - interval: 1m
+    input_series:
+      - series: 'controld_stats_last_queries_count{job="controld",instance="localhost:10034",orgId="000000000",type="blocked"}'
+        values: "1 1 10+0x15"
+      - series: 'controld_stats_last_queries_count{job="controld",instance="localhost:10034",orgId="000000000",type="bypassed"}'
+        values: "9 9 1+0x15"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: QueryBlockingRateHigh
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="QueryBlockingRateHigh"}
+        eval_time: 7m
+        exp_samples:
+          - labels: 'ALERTS{alertname="QueryBlockingRateHigh", alertstate="firing", orgId="000000000", severity="warning"}'
+            value: 1
+
+  # for: 15m outlasts a single unmapped verdict in one one-minute bucket, which
+  # is the whole point of the threshold; 16m must still be silent.
+  - interval: 1m
+    input_series:
+      - series: 'controld_stats_last_queries_count{job="controld",instance="localhost:10034",orgId="000000000",type="unknown"}'
+        values: "0 0 1+0x20"
+    alert_rule_test:
+      - eval_time: 16m
+        alertname: UnknownQueryVerdictSeen
+        exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="UnknownQueryVerdictSeen"}
+        eval_time: 17m
+        exp_samples:
+          - labels: 'ALERTS{alertname="UnknownQueryVerdictSeen", alertstate="firing", instance="localhost:10034", job="controld", orgId="000000000", severity="warning", type="unknown"}'
+            value: 1

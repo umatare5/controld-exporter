@@ -19,7 +19,9 @@ The following `make` commands are available for development and testing:
 | `make pre-commit-test`      | Run every hook across the tree                |
 | `make pre-commit-uninstall` | Remove the pre-commit hooks                   |
 
-Markdown style is enforced by the `markdownlint-cli2` hook that `make pre-commit-install` wires in, and again in CI. Links are checked in CI only, because that run reaches third-party hosts. Run `lychee .` to reproduce a link failure locally.
+Markdown style is enforced by the `markdownlint-cli2` hook that `make pre-commit-install` wires in, and again in CI. Links are checked in CI only, because that run reaches third-party hosts; run `lychee .` to reproduce a link failure locally.
+
+The example Prometheus rules are checked and unit-tested in CI by `promtool`, which no hook covers. Reproduce that run with `promtool check rules --lint all examples/prometheus_alert_rules.yml` and `promtool test rules examples/prometheus_alert_rules_test.yml`.
 
 ## Build
 
@@ -37,8 +39,7 @@ To release a new version, follow these steps:
 
 1. Add the `## [vX.Y.Z]` section to `CHANGELOG.md` above the previous release, and add that version's release link at the foot of the file.
 2. Update the version in the `VERSION` file.
-3. Update the `VERSION:` line in the `--help` transcript in `README.md`.
-4. Submit a pull request with all three files.
+3. Submit a pull request with both files.
 
 A push to `main` touching `VERSION` runs the [release workflow](https://github.com/umatare5/controld-exporter/actions/workflows/go-release.yml), which tags the commit and publishes the release in the same run. The workflow has no manual trigger, so there is no step to perform by hand.
 
