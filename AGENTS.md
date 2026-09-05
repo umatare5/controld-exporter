@@ -55,11 +55,46 @@
 
 ## Domain Knowledge
 
-- **The API is unversioned, and Control D says breaking changes ship without warning.** A field this exporter decodes can change spelling or disappear between two scrapes, and no request parameter pins the old shape. Every absence guard in `internal/collector` is load-bearing rather than defensive.
-- **The reference describes the API; only a live response defines it.** `/organizations/organization` documents the analytics host as a required `stats_endpoint`. The field a real response carries is `statsEndpoint`, which is what `internal/controld/organization.go` decodes.
-- **Authentication failures answer `400`, never `401` or `403`.** A missing token and an invalid one both return `{"success": false, "error": {"code": 40001}}` under HTTP 400. The first three digits of the error code restate the status, so the status alone cannot separate a revoked key from a malformed request.
-- **Two endpoints need no token at all.** `/network` and `/services/categories` declare `security: []` and answer 200 unauthenticated. Those two collectors keep publishing after a key is revoked, so an alert watching only `controld_network_health_code` cannot detect a dead token.
-- **A sub-organization is read by impersonation rather than by a path.** The parent token repeats the same `/devices` or `/profiles` request under `X-Force-Org-Id: <PK>`, which Control D documents for the Profiles scope alone. Each sub-organization therefore costs a full round trip.
-- **Rate limits are neither documented nor signalled.** No response carries `X-RateLimit-*` or `Retry-After`, and no page states a quota. The scrape interval is the only throttle, and one scrape costs a call per collector plus one per sub-organization.
-- **The analytics host is a separate service that does not speak the JSON envelope.** `https://<statsEndpoint>.analytics.controld.com` is a regional alias absent from the reference. Its report path answers a plain-text `404 page not found`, which is why the client checks the HTTP status before it decodes.
-- **A payload carries more than the metrics need.** A device response holds client hostnames, MAC addresses and IP addresses, and an organization response holds contact names, emails and an Okta client secret. `--log.level debug` prints that body, so it belongs in a lab and never in a log.
+### The API contract
+
+The API is unversioned, and Control D warns that breaking changes ship without notice. A field this exporter decodes can change spelling or disappear between two scrapes, and no request parameter pins the old shape.
+
+- **The reference describes the API; a live response defines it.** `/organizations/organization` documents the analytics host as a required `stats_endpoint`, while `internal/controld/organization.go` decodes `statsEndpoint`.
+- **A documented schema is not a complete one.** `client_count`, the only field `controld_endpoint_clients_total` reads, appears nowhere in the `/devices` schema. Neither do `clients`, `ip_total`, `last_activity` or `ctrld`, and the reference already announces the removal of two of them.
+- **Every absence guard is load-bearing.** A collector that withholds its family on a decode failure is what keeps a vanished field out of Prometheus as a fabricated zero.
+
+### Authentication and cost
+
+Authentication failures answer `400`, never `401` or `403`. A missing token and an invalid one both return `{"success": false, "error": {"code": 40001}}`. The first three digits of the error code restate the HTTP status, so the status alone cannot separate a revoked key from a malformed request.
+
+- **Two endpoints need no token.** `/network` and `/services/categories` declare `security: []` and answer 200 unauthenticated, so they keep publishing after a key is revoked and cannot witness a dead token.
+- **A sub-organization is read by impersonation.** The parent token repeats the same request under `X-Force-Org-Id: <PK>`, which Control D documents for the Profiles scope alone, so each sub-organization costs a full round trip.
+- **Rate limits are neither documented nor signalled.** No response carries `X-RateLimit-*` or `Retry-After`, so the scrape interval is the only throttle.
+
+### Analytics are opt-in
+
+DNS logging is a per-endpoint setting, not an account-wide one: `stats` on an endpoint is `0 = off`, `1 = basic` and `2 = full`, and a new endpoint starts at `0`. An account with real traffic and logging off reports nothing, so an absent `controld_stats_last_queries_count` says the operator never enabled analytics rather than that no query was resolved.
+
+- **Basic is enough for this metric.** Level `1` stores counts of blocks, redirects and bypasses without the queries themselves, which is exactly what the verdict time series reads.
+- **The verdict is a DNS action sent as an integer.** Control D names three — blocked, bypassed and redirected — which `internal/collector/stats.go` maps from `0`, `1` and `3`. The enum is undocumented, so `2` and any future action land in the `unknown` bucket rather than being lost.
+- **The analytics host follows data residency, not the API.** Enabling analytics asks for a storage region, and `statsEndpoint` names the host that region resolves to. Personal mode has no organization to read it from and hardcodes `america`, which is wrong for an account storing elsewhere.
+- **That host does not speak the JSON envelope.** `https://<statsEndpoint>.analytics.controld.com` is absent from the reference and answers a removed report path with a plain-text `404 page not found`. The client checks the HTTP status before it decodes for that reason.
+- **Retention differs by grain.** Raw query logs live one month and aggregate statistics one year, which bounds any backfill but not this exporter, since it reads the newest one-minute bucket alone.
+
+### Anycast decides which node answers
+
+Control D serves DNS from anycast prefixes — `76.76.2.0/24`, `76.76.10.0/24` and `2606:1a40::/48` — so BGP, not the client, picks the point of presence that answers a query. `/network` is therefore a global status board rather than a statement about the path an endpoint takes, and the `iata_code` label names a node the operator's resolvers may never reach.
+
+- **`current_pop` is the only node a scrape proves reachable.** The same body names the node that served the API call, which is the exporter's own path and not the resolvers'.
+- **`-1` is not down.** A live snapshot returns `api` and `dns` at `1` everywhere and `pxy` at `-1` on the majority of nodes, where the transparent proxy is not offered. Reading `!= 1` as unhealthy fires on every proxy-less node, which is why the codes pass through uninterpreted.
+
+### An endpoint is a resolver, not a host
+
+Control D calls a resolver an endpoint and maps it to a physical device by convention alone, so a count of endpoints counts policy attachment points rather than machines.
+
+- **Secure DNS carries identity; legacy DNS cannot.** A DoH URL or a DoT hostname embeds the resolver ID, whereas a legacy resolver is a plain UDP 53 address pair shared by every client, so Control D identifies a legacy client by source IP.
+- **That asymmetry is why an endpoint tracks IPs.** `learn_ip` and the authorized-IP list exist to give legacy queries an identity, and a restricted endpoint refuses an unknown source before it can be learned.
+
+### Payloads carry more than the metrics need
+
+A device response holds client hostnames, MAC addresses and IP addresses, and an organization response holds contact names, emails and an Okta client secret. `--log.level debug` prints that body verbatim, so it belongs in a lab and never in a log, and `CTRLD_API_KEY` belongs in neither.
