@@ -55,7 +55,7 @@ curl -s http://localhost:10034/metrics | head
 
 ## Syntax
 
-`controld-exporter --help` prints every flag, and [`docs/configuration.md`](docs/configuration.md) carries the same list with the defaults and the note each one needs.
+`controld-exporter --help` prints every flag, and [`docs/help.md`](docs/help.md) carries the same list.
 
 | Flag                       | Effect                                             |
 | :------------------------- | :------------------------------------------------- |

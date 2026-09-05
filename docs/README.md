@@ -2,10 +2,10 @@
 
 Reference pages for controld-exporter. The [README](../README.md) covers getting the exporter running and scraped; these pages carry the metric catalogue and the behaviour every collector shares.
 
-| Page                              | Focus                                  |
-| :-------------------------------- | :------------------------------------- |
-| [Collectors](collectors.md)       | The metric families and their labels   |
-| [Configuration](configuration.md) | Flags and defaults, as `--help` prints |
+| Page                        | Focus                                  |
+| :-------------------------- | :------------------------------------- |
+| [Collectors](collectors.md) | The metric families and their labels   |
+| [Help](help.md)             | Flags and defaults, as `--help` prints |
 
 ## Technical information
 

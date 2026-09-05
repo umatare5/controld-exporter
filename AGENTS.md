@@ -21,7 +21,7 @@
 - `internal/collector/` — billing, endpoint, network, profile, service, stats, and organization collectors; `prometheus.Collector` implementations
 - `internal/controld/` — Control D API client and response types
 - `internal/log/` — logrus setup
-- `docs/` — the reference set: `README.md` for the shared rules, `collectors.md` for the catalogue, `configuration.md` for the flags
+- `docs/` — the reference set: `README.md` for the shared rules, `collectors.md` for the catalogue, `help.md` for the flags
 - `examples/` — Prometheus scrape config, alert rules with their unit tests, and a Grafana dashboard
 
 ## Setup and Commands

@@ -138,14 +138,14 @@
       }
     },
     {
-      "filter": ["docs/configuration.md"],
+      "filter": ["docs/help.md"],
       "combine": "merge",
       "config": {
         "MD043": {
           "match_case": true,
           "headings": [
-            "# Configuration",
-            "## Flags", "*",
+            "# Help",
+            "## controld-exporter", "*",
             "## Notes"
           ]
         }

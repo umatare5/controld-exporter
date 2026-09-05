@@ -1,10 +1,10 @@
-# Configuration
+# Help
 
-A verbatim `controld-exporter --help` transcript: every flag and its default.
+The `controld-exporter --help` text, transcribed from the binary.
 
-## Flags
+## controld-exporter
 
-```bash
+```text
 NAME:
    controld-exporter - A Prometheus exporter for metrics from the Control D
 

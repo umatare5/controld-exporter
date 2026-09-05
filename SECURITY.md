@@ -43,4 +43,4 @@ Out of scope:
 - Account data appearing in `/metrics` labels, which is what the exporter exists to publish
 - A dependency advisory with no path reachable from `./cmd` — show the path, or a `govulncheck` finding
 - A Control D service or API defect, which belongs to Control D rather than to this third-party exporter
-- An operator's own configuration, which [`docs/configuration.md`](docs/configuration.md) covers
+- An operator's own configuration, which [`docs/help.md`](docs/help.md) covers
