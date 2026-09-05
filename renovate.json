@@ -1,48 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>umatare5/common//renovate/default.json",
-    "github>umatare5/common//renovate/github-actions.json"
-  ],
-  "dependencyDashboard": false,
-  "pre-commit": { "enabled": true },
-  "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["go_version:\\s*\"(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)\""],
-      "depNameTemplate": "go",
-      "datasourceTemplate": "golang-version"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["golangci_lint_version:\\s*\"(?<currentValue>v\\d+\\.\\d+\\.\\d+)\""],
-      "depNameTemplate": "golangci/golangci-lint",
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["goreleaser_version:\\s*\"(?<currentValue>v\\d+\\.\\d+\\.\\d+)\""],
-      "depNameTemplate": "goreleaser/goreleaser",
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["lychee_version:\\s*\"(?<currentValue>v\\d+\\.\\d+\\.\\d+)\""],
-      "depNameTemplate": "lycheeverse/lychee",
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^lychee-(?<version>v\\d+\\.\\d+\\.\\d+)$"
-    },
-    {
-      "customType": "regex",
-      "managerFilePatterns": ["/^\\.github/workflows/.+\\.ya?ml$/"],
-      "matchStrings": ["promtool_version:\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
-      "depNameTemplate": "prometheus/prometheus",
-      "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v(?<version>.+)$"
-    }
-  ]
+  "extends": ["github>umatare5/common//renovate/go.json"]
 }
