@@ -1,0 +1,15 @@
+name: Release Snapshot
+
+on:
+  schedule:
+    - cron: "0 2 * * 1" # every Monday at 2:00
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    uses: umatare5/common/.github/workflows/go-release-snapshot.yml@8044b3c0ce0dce6411ec179c3ec0e675219c117f # v0.21.0
+    with:
+      go_version: "1.27.0"
+      goreleaser_version: "v2.18.0"
