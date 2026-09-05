@@ -55,8 +55,11 @@
 
 ## Domain Knowledge
 
-- This repository ships a Prometheus exporter binary and container image for Control D, not a reusable Go SDK.
-- The exporter starts in personal mode by default and fills the `orgId` label with `000000000`; `--controld.business-mode` opts in to organization-scoped metrics.
-- Never log `CTRLD_API_KEY` or raw upstream payloads that may contain sensitive data; mask secrets in any diagnostic output.
-- Favor low-cardinality labels and predictable metric behavior over exhaustive upstream mirroring.
-- The exporter listens on `0.0.0.0:10034` and serves metrics at `/metrics` by default; keep the flag surface (`--web.*`, `--controld.*`, `--log.level`) small and stable.
+- **The API is unversioned, and Control D says breaking changes ship without warning.** A field this exporter decodes can change spelling or disappear between two scrapes, and no request parameter pins the old shape. Every absence guard in `internal/collector` is load-bearing rather than defensive.
+- **The reference describes the API; only a live response defines it.** `/organizations/organization` documents the analytics host as a required `stats_endpoint`. The field a real response carries is `statsEndpoint`, which is what `internal/controld/organization.go` decodes.
+- **Authentication failures answer `400`, never `401` or `403`.** A missing token and an invalid one both return `{"success": false, "error": {"code": 40001}}` under HTTP 400. The first three digits of the error code restate the status, so the status alone cannot separate a revoked key from a malformed request.
+- **Two endpoints need no token at all.** `/network` and `/services/categories` declare `security: []` and answer 200 unauthenticated. Those two collectors keep publishing after a key is revoked, so an alert watching only `controld_network_health_code` cannot detect a dead token.
+- **A sub-organization is read by impersonation rather than by a path.** The parent token repeats the same `/devices` or `/profiles` request under `X-Force-Org-Id: <PK>`, which Control D documents for the Profiles scope alone. Each sub-organization therefore costs a full round trip.
+- **Rate limits are neither documented nor signalled.** No response carries `X-RateLimit-*` or `Retry-After`, and no page states a quota. The scrape interval is the only throttle, and one scrape costs a call per collector plus one per sub-organization.
+- **The analytics host is a separate service that does not speak the JSON envelope.** `https://<statsEndpoint>.analytics.controld.com` is a regional alias absent from the reference. Its report path answers a plain-text `404 page not found`, which is why the client checks the HTTP status before it decodes.
+- **A payload carries more than the metrics need.** A device response holds client hostnames, MAC addresses and IP addresses, and an organization response holds contact names, emails and an Okta client secret. `--log.level debug` prints that body, so it belongs in a lab and never in a log.
