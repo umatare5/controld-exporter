@@ -29,7 +29,7 @@ This release rebuilds the distribution on Go 1.27 and moves container publishing
 > - Per-arch image tags (`latest-amd64`, `v1.1.0-arm64`, and the other `-amd64`/`-arm64` suffixes) and the standalone `v1` tag are no longer published; the existing ones stay frozen at v1.1.0. Pull the multi-arch tags (`latest`, `vX.Y.Z`, `vX.Y`) instead.
 > - `docker run` without arguments now starts the exporter instead of printing help, matching the README quick start.
 
-The binaries build with Go 1.27 and pinned `CGO_ENABLED=0` on every platform. The image declares port `10034/tcp` and carries the third-party licence notices, and release archives add `CHANGELOG.md`, `SECURITY.md`, and `NOTICE`.
+The binaries build with Go 1.27 and pinned `CGO_ENABLED=0` on every platform. The image declares port `10034/tcp` and carries the third-party license notices, and release archives add `CHANGELOG.md`, `SECURITY.md`, and `NOTICE`.
 
 ### Metrics
 

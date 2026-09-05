@@ -139,6 +139,6 @@ See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the make targets, the build and the
 
 I launched this project with the help of **GitHub Copilot Coding Assistant**, and I am grateful to the global developer community for their contributions to open source projects and public repositories.
 
-## Licence
+## License
 
 MIT. The binary statically links Apache-2.0, MIT and BSD 3-Clause dependencies, whose notices are reproduced in [`NOTICE`](NOTICE) and shipped alongside [`LICENSE`](LICENSE) in every release archive and container image.

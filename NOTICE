@@ -4,7 +4,7 @@ Copyright (c) 2025 umatare5
 This product is distributed under the MIT License; see the LICENSE file for its
 terms. The binaries and container images published for this project statically
 link the third-party Go modules named below, and this file carries the notices
-their licences require on redistribution in binary form.
+their licenses require on redistribution in binary form.
 
 The list is the set of modules "go list -deps ./cmd" reports for the published
 platforms; the version of each is recorded in go.mod and go.sum. Except where
@@ -23,7 +23,7 @@ The following modules are licensed under the Apache License, Version 2.0.
   gopkg.in/yaml.v3                    (all files except the libyaml ports named below)
 
 The NOTICE files of the modules that carry one are reproduced below as
-Section 4(d) of that licence requires, followed by one copy of the licence
+Section 4(d) of that license requires, followed by one copy of the license
 text, which is byte-identical in the four Prometheus modules.
 
 -------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 -------------------------------------------------------------------------------
-Apache License, Version 2.0 -- licence text
+Apache License, Version 2.0 -- license text
 -------------------------------------------------------------------------------
 
                                  Apache License
@@ -310,11 +310,11 @@ Apache License, Version 2.0 -- licence text
 MIT License
 ===============================================================================
 
-The following modules are licensed under the MIT License. The licence text of
+The following modules are licensed under the MIT License. The license text of
 each is reproduced below, carrying the copyright notice and the permission
-notice that licence requires in all copies or substantial portions. The last
+notice that license requires in all copies or substantial portions. The last
 entry covers the files gopkg.in/yaml.v3 ported from libyaml, which keep their
-original MIT licence.
+original MIT license.
 
 -------------------------------------------------------------------------------
 github.com/urfave/cli/v3
@@ -477,7 +477,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 gopkg.in/yaml.v3 (libyaml ports)
 -------------------------------------------------------------------------------
 
-The MIT terms for the ported files are stated inside the module licence
+The MIT terms for the ported files are stated inside the module license
 reproduced here in full, together with its Apache terms.
 
 This project is covered by two different licenses: MIT and Apache.
@@ -535,9 +535,9 @@ BSD 3-Clause License
 ===============================================================================
 
 The following components are licensed under the BSD 3-Clause License. The
-licence text of each is reproduced below, as its second clause requires of a
+license text of each is reproduced below, as its second clause requires of a
 redistribution in binary form. The last entry is third-party code vendored into
-github.com/prometheus/client_golang under a licence of its own, at
+github.com/prometheus/client_golang under a license of its own, at
 internal/github.com/golang/gddo, and linked through that module.
 
 -------------------------------------------------------------------------------
