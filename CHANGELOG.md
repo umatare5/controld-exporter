@@ -4,6 +4,22 @@ Notable changes to the metric surface, one section per release — a short pream
 
 This changelog starts at v1.1.0; earlier releases are described by their [release notes](https://github.com/umatare5/controld-exporter/releases) alone.
 
+## [Unreleased]
+
+This release links the shared policy pages and narrows the release archives to the two files a redistributed binary needs. No metric, label, flag or HELP string changes.
+
+`SECURITY.md` and `CONTRIBUTING.md` now open with the baseline every exporter under `umatare5` shares and carry only what is specific to this one, so a convention stated once is no longer restated per repository.
+
+Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of the files they held — `examples/prometheus*.yml` are a Prometheus server configuration and its rule files — and each is a click away on the page the archive was downloaded from.
+
+### Metrics
+
+None.
+
+### Flags
+
+None.
+
 ## [v1.2.1]
 
 This release reports a failed Control D API call by its HTTP status. No metric, label, flag or HELP string changes.
@@ -29,7 +45,7 @@ This release rebuilds the distribution on Go 1.27 and moves container publishing
 > - Per-arch image tags (`latest-amd64`, `v1.1.0-arm64`, and the other `-amd64`/`-arm64` suffixes) and the standalone `v1` tag are no longer published; the existing ones stay frozen at v1.1.0. Pull the multi-arch tags (`latest`, `vX.Y.Z`, `vX.Y`) instead.
 > - `docker run` without arguments now starts the exporter instead of printing help, matching the README quick start.
 
-The binaries build with Go 1.27 and pinned `CGO_ENABLED=0` on every platform. The image declares port `10034/tcp` and carries the third-party license notices, and release archives add `CHANGELOG.md`, `SECURITY.md`, and `NOTICE`.
+The binaries build with Go 1.27 and pinned `CGO_ENABLED=0` on every platform. The image declares port `10034/tcp` and carries the third-party license notices, and this release's archives added `CHANGELOG.md`, `SECURITY.md` and `NOTICE` beside the binary.
 
 ### Metrics
 
@@ -43,6 +59,7 @@ None.
 
 This release takes dependency updates only. No metric, label, flag or HELP string changes.
 
+[Unreleased]: https://github.com/umatare5/controld-exporter/compare/v1.2.1...main
 [v1.2.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.1
 [v1.2.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.0
 [v1.1.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.1.0
