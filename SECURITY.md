@@ -1,6 +1,6 @@
 # Security Policy
 
-The [shared policy](https://github.com/umatare5/.github/blob/main/SECURITY.md) covers what every exporter here shares. This page carries the rest.
+The [shared security policy](https://github.com/umatare5/.github/blob/main/SECURITY.md) covers what every exporter here shares. This page carries the rest.
 
 ## What to Include
 
@@ -16,22 +16,31 @@ Reproduction needs the flags in force, whether `--controld.business-mode` was se
 
 This exporter holds one Control D API token, reads the whole account under it and publishes that account's own names, so `/metrics` is a copy of the configuration rather than a measurement of traffic.
 
-- **Token** — `CTRLD_API_KEY` passes it out of the environment, while `--controld.api-key` puts it on the command line, where every account on the host reads it out of `ps`.
-- **Labels** — `orgId` carries an organization or sub-organization primary key and `name` carries a device or profile name verbatim, on an unauthenticated endpoint.
-- **Debug** — `--log.level debug` writes the request URI and the decoded body of every response, so the log holds the whole account and is handled as the token is.
+- **Token** — `CTRLD_API_KEY` passes it out of the environment.
+- **Command line** — `--controld.api-key` puts it there instead.
+- **Process table** — every account on the host reads that line out of `ps`.
+- **Labels** — `orgId` carries an organization or sub-organization primary key.
+- **Names** — `name` carries a device or profile name verbatim.
+- **Endpoint** — both ride an unauthenticated `/metrics`.
+- **Debug** — `--log.level debug` writes the request URI and the decoded body of every response.
+- **Log handling** — the log then holds the whole account, and is handled as the token is.
 
 > [!IMPORTANT]
 > The token travels in an `Authorization` header alone, and no path writes it to the landing page, the `/metrics` body or a log line, so a token reaching any of them is a vulnerability.
 >
 > `--controld.business-mode` fixes the scope every collector reads, and a sub-organization is reached only by repeating a request under an `X-Force-Org-Id` header the organization response named. A request reaching an organization the configured mode did not name is a vulnerability.
 
-## Egress
+## Egress Paths
 
 Nothing leaves the host but the calls one scrape makes, and every one of them carries the token, so the exporter reaches Control D and nothing else.
 
-- **API** — each collector reads `https://api.controld.com` in one or two requests, and business mode adds one per sub-organization, so a scrape's request count grows with the account.
-- **Analytics** — the query report goes to `analytics.controld.com` under `america` in personal mode, and under the label the organization response supplies in business mode.
-- **Certificates** — the requests go through Go's default client, which carries no TLS settings of its own, so verification is on and no flag relaxes it.
+- **API** — each collector reads `https://api.controld.com` in one or two requests.
+- **Sub-organizations** — business mode adds one request each.
+- **Scale** — a scrape's request count therefore grows with the account.
+- **Analytics** — the query report goes to `analytics.controld.com` under `america` in personal mode.
+- **Business mode** — the organization response supplies the label that report goes under.
+- **Certificates** — the requests use Go's default client, which carries no TLS settings of its own.
+- **Verification** — it is therefore on, and no flag relaxes it.
 
 ## Out of Scope
 

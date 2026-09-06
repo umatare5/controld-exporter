@@ -1,6 +1,6 @@
 # Contributing
 
-The [shared conventions](https://github.com/umatare5/.github/blob/main/CONTRIBUTING.md) cover what every exporter here shares. This page carries the rest.
+The [shared contribution guide](https://github.com/umatare5/.github/blob/main/CONTRIBUTING.md) covers what every exporter shares. This page carries the rest.
 
 ## Development
 
@@ -8,8 +8,10 @@ CI runs Format and Lint, Test and Build, Coverage, Prometheus Rules, markdownlin
 
 ## Testing
 
-- **No test exists yet** — the tree carries no `*_test.go`, so `make test-unit` reports zero tests and the CI threshold stays at 0 percent until the first one lands.
-- **The example rules carry the coverage** — `promtool` lints them and runs their assertions in CI, which is the only automated check of the alerting expressions.
+- **No test exists yet** — the tree carries no `*_test.go`, so `make test-unit` reports zero tests.
+- **The threshold is 0 percent** — CI holds it there until the first test lands.
+- **The example rules carry the coverage** — `promtool` lints them and runs their assertions in CI.
+- **That is the only check** — no other automated test covers the alerting expressions.
 
 Three commands reproduce the `Prometheus Rules` job locally.
 
@@ -36,7 +38,8 @@ Every fact has one page that owns it, and the other pages link to it rather than
 | `docs/collectors.md` | The metric catalogue and the labels  |
 | `docs/help.md`       | The verbatim `--help` transcript     |
 
-`CHANGELOG.md` carries one section per release, each with a `### Metrics` and a `### Flags` subsection reading `None.` where that release changed neither, so a reader learns the surface held rather than inferring it from silence.
+> [!NOTE]
+> `CHANGELOG.md` carries one section per release, each with a `### Metrics` and a `### Flags` subsection reading `None.` where that release changed neither, so a reader learns the surface held rather than inferring it from silence.
 
 ## Release
 
