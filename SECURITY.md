@@ -28,17 +28,27 @@ This exporter holds one Control D API token, reads the whole account under it an
 > [!IMPORTANT]
 > The token travels in an `Authorization` header alone, and no path writes it to the landing page, the `/metrics` body or a log line, so a token reaching any of them is a vulnerability.
 >
+> `--controld.api-key` is the one documented way the token reaches the process table, so any other path to it is a vulnerability.
+>
 > `--controld.business-mode` fixes the scope every collector reads, and a sub-organization is reached only by repeating a request under an `X-Force-Org-Id` header the organization response named. A request reaching an organization the configured mode did not name is a vulnerability.
 
 ## Egress Paths
 
 Nothing leaves the host but the calls one scrape makes, and every one of them carries the token, so the exporter reaches Control D and nothing else.
 
-- **API** — each collector reads `https://api.controld.com` in one or two requests.
+### API
+
+- **Host** — each collector reads `https://api.controld.com` in one or two requests.
 - **Sub-organizations** — business mode adds one request each.
 - **Scale** — a scrape's request count therefore grows with the account.
-- **Analytics** — the query report goes to `analytics.controld.com` under `america` in personal mode.
+
+### Analytics
+
+- **Host** — the query report goes to `analytics.controld.com` under `america` in personal mode.
 - **Business mode** — the organization response supplies the label that report goes under.
+
+### Transport
+
 - **Certificates** — the requests use Go's default client, which carries no TLS settings of its own.
 - **Verification** — it is therefore on, and no flag relaxes it.
 
