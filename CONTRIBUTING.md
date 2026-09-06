@@ -1,53 +1,46 @@
 # Contributing
 
-Thank you for considering a contribution.
+The [shared contribution guide](https://github.com/umatare5/.github/blob/main/CONTRIBUTING.md) covers what every exporter shares. This page carries the rest.
 
-## Commands
+## Development
 
-The following `make` commands are available for development and testing:
+CI runs Format and Lint, Test and Build, Coverage, Prometheus Rules, markdownlint, Link Check, actionlint, CodeQL and govulncheck on every pull request.
 
-| Command                     | Description                                   |
-| :-------------------------- | :-------------------------------------------- |
-| `make help`                 | Display available targets and requirements    |
-| `make build`                | Build the binary to `./tmp/controld-exporter` |
-| `make lint`                 | Run golangci-lint and tidy go.mod             |
-| `make test-unit`            | Run unit tests with coverage using gotestsum  |
-| `make test-unit-coverage`   | Generate HTML coverage report                 |
-| `make clean`                | Remove build artifacts and backup files       |
-| `make image`                | Build Docker image                            |
-| `make pre-commit-install`   | Install the pre-commit hooks                  |
-| `make pre-commit-test`      | Run every hook across the tree                |
-| `make pre-commit-uninstall` | Remove the pre-commit hooks                   |
+## Testing
 
-Markdown style is enforced by the `markdownlint-cli2` hook that `make pre-commit-install` wires in, and again in CI. Links are checked in CI only, because that run reaches third-party hosts; run `lychee .` to reproduce a link failure locally.
+- **No test exists yet** — the tree carries no `*_test.go`, so `make test-unit` reports zero tests.
+- **The threshold is 0 percent** — CI holds it there until the first test lands.
+- **The example rules carry the coverage** — `promtool` lints them and runs their assertions in CI.
+- **That is the only check** — no other automated test covers the alerting expressions.
 
-The example Prometheus rules are checked and unit-tested in CI by `promtool`, which no hook covers. Reproduce that run with `promtool check rules --lint all examples/prometheus_alert_rules.yml` and `promtool test rules examples/prometheus_alert_rules_test.yml`.
-
-## Build
-
-The repository includes a ready to use `Dockerfile`. To build a new Docker image:
+Three commands reproduce the `Prometheus Rules` job locally.
 
 ```bash
-make image
+promtool check rules --lint all --lint-fatal examples/prometheus_alert_rules.yml
+promtool test rules examples/prometheus_alert_rules_test.yml
+promtool check config --lint all --lint-fatal examples/prometheus.yml
 ```
 
-This cross-compiles a Linux binary into `./tmp/image`, then builds from that directory because the `Dockerfile` expects the GoReleaser context layout. The image is tagged `$USER/controld-exporter` and declares port 10034 without publishing it, so publish it with `docker run -p`. Released images are pushed to `ghcr.io/umatare5/controld-exporter` by GoReleaser instead.
+## Code Style
+
+No `--collector.<name>` flag exists here, because every collector runs on each scrape and `--controld.business-mode` changes what each one reads rather than whether it runs.
+
+A collector that cannot reach Control D returns without describing a metric, so its whole family is absent for that scrape and no path publishes a `0` standing for a failed call.
+
+## Documentation
+
+Every fact has one page that owns it, and the other pages link to it rather than restating it.
+
+| Page                 | Owns                                 |
+| :------------------- | :----------------------------------- |
+| `README.md`          | What it is, how to run and scrape it |
+| `docs/README.md`     | The rules every collector obeys      |
+| `docs/collectors.md` | The metric catalogue and the labels  |
+| `docs/help.md`       | The verbatim `--help` transcript     |
+
+> [!NOTE]
+> `CHANGELOG.md` carries one section per release, each with a `### Metrics` and a `### Flags` subsection reading `None.` where that release changed neither, so a reader learns the surface held rather than inferring it from silence.
 
 ## Release
 
-To release a new version, follow these steps:
-
-1. Add the `## [vX.Y.Z]` section to `CHANGELOG.md` above the previous release, and add that version's release link at the foot of the file.
-2. Update the version in the `VERSION` file.
-3. Submit a pull request with both files.
-
-A push to `main` touching `VERSION` runs the [release workflow](https://github.com/umatare5/controld-exporter/actions/workflows/go-release.yml), which tags the commit and publishes the release in the same run. The workflow has no manual trigger, so there is no step to perform by hand.
-
-## Pull requests
-
-1. [Fork](https://github.com/umatare5/controld-exporter/fork) the repository
-2. Create a feature branch
-3. Commit your changes
-4. Record any change to the metric surface under a `## [vX.Y.Z]` section for the coming version in `CHANGELOG.md`, adding the section if it is not there yet
-5. Rebase your local changes against the `main` branch
-6. Create a new Pull Request
+The `VERSION:` line in the [`docs/help.md`](docs/help.md) transcript reads `dev` rather than a release number, because the version is stamped at link time and the transcript comes from a locally built binary. The shared procedure's third step therefore has nothing to edit here, and a release pull request carries `CHANGELOG.md` and `VERSION` alone.

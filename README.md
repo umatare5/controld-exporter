@@ -133,7 +133,7 @@ Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporte
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the make targets, the build and the release procedure.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, the tests and the release process.
 
 ## Acknowledgement
 
