@@ -9,14 +9,13 @@
 - [`prometheus/client_golang`](https://github.com/prometheus/client_golang) v1.24+ — metric registration and HTTP handler
 - [`urfave/cli/v3`](https://github.com/urfave/cli) v3.11+ — CLI flags and application lifecycle
 - [`sirupsen/logrus`](https://github.com/sirupsen/logrus) — structured logging
-- [`jinzhu/configor`](https://github.com/jinzhu/configor) — environment-variable loading into the config struct
 - [`goreleaser`](https://goreleaser.com/) v2 — cross-platform release builds (see [`.goreleaser.yml`](.goreleaser.yml))
 
 ## Repository Structure
 
 - `cmd/` — Entry point (`main.go`); calls `internal/cli` for app setup
-- `internal/cli/` — CLI flag definitions and app wiring (urfave/cli/v3)
-- `internal/config/` — flag/env parsing, defaults (`0.0.0.0:10034`), and API-key validation
+- `internal/cli/` — CLI flag definitions, the `CTRLD_API_KEY` environment source, and app wiring (urfave/cli/v3)
+- `internal/config/` — flag reads, defaults (`0.0.0.0:10034`), and API-key validation
 - `internal/server/` — HTTP server serving `/metrics` and the landing page
 - `internal/collector/` — billing, endpoint, network, profile, service, stats, and organization collectors; `prometheus.Collector` implementations
 - `internal/controld/` — Control D API client and response types

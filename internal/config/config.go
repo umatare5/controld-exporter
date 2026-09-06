@@ -4,7 +4,6 @@ package config
 import (
 	"errors"
 
-	"github.com/jinzhu/configor"
 	cli "github.com/urfave/cli/v3"
 
 	"github.com/umatare5/controld-exporter/internal/log"
@@ -38,11 +37,6 @@ func NewConfig(cmd *cli.Command) Config {
 		ControlDAPIKey:       cmd.String(ControlDAPIKeyFlagName),
 		ControlDBusinessMode: cmd.Bool(ControlDBusinessModeFlagName),
 		LogLevel:             cmd.String(LogLevelFlagName),
-	}
-
-	err := configor.New(&configor.Config{}).Load(&config)
-	if err != nil {
-		log.Fatal(err)
 	}
 
 	if err := isValidControlDAPIKeyFlag(config.ControlDAPIKey); err != nil {
