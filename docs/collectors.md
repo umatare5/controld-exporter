@@ -1,8 +1,8 @@
 # Collectors
 
-Every collector runs on each scrape, in the order below, and no flag turns one off. `--controld.business-mode` changes what each one reads rather than whether it runs: personal mode reads the account the key belongs to, business mode the organization beneath it.
+Every collector runs on each scrape and no flag turns one off. `--controld.business-mode` changes what most of them read rather than whether they run: personal mode reads the account the key belongs to, business mode the organization beneath it.
 
-A collector that cannot reach Control D withholds its series for that scrape — the [absence rules](README.md#absence) carry what that looks like in a query.
+A collector that cannot reach Control D withholds its series for that scrape — the [absence rules](README.md#absence) carry what that looks like in a query, and the one collector that breaks them.
 
 ## Metrics
 
@@ -16,7 +16,7 @@ A collector that cannot reach Control D withholds its series for that scrape —
 | `network`      | `controld_network_health_code`                     | Gauge   | Service status of one point of presence |
 | `profile`      | `controld_profile_preset_filters_total`            | Gauge   | Preset filters on one profile           |
 | `profile`      | `controld_profile_content_filters_total`           | Gauge   | Content filters on one profile          |
-| `profile`      | `controld_profile_ip_filters_total`                | Gauge   | IP filters on one profile               |
+| `profile`      | `controld_profile_ip_filters_total`                | Gauge   | Content filters again, see below        |
 | `profile`      | `controld_profile_rules_total`                     | Gauge   | Rules on one profile                    |
 | `profile`      | `controld_profile_services_total`                  | Gauge   | Service filters on one profile          |
 | `profile`      | `controld_profile_groups_total`                    | Gauge   | Group filters on one profile            |
@@ -35,13 +35,13 @@ A collector that cannot reach Control D withholds its series for that scrape —
 
 ## Labels
 
-No label is shared across every family: the billing series key on the payment, the network series on the point of presence, and the rest on a Control D object and the account scope it was read under.
+No label is shared across every family. The billing series key on the payment and the network series on the point of presence, while the rest key on a Control D object or a query verdict, plus the account scope it was read under.
 
 | Label                      | Description                                                  |
 | :------------------------- | :----------------------------------------------------------- |
 | `id`                       | The payment's or subscription's Control D primary key        |
 | `currency`                 | The ISO code the amount beside it is denominated in          |
-| `name`                     | The object's own name, or its primary key where unnamed      |
+| `name`                     | The object's own name, or the category's key on `service`    |
 | `orgId`                    | The account scope the series was read under                  |
 | `city_name`/`country_name` | Where Control D places the point of presence                 |
 | `iata_code`                | The airport code Control D identifies that node by           |
@@ -50,15 +50,17 @@ No label is shared across every family: the billing series key on the payment, t
 
 **`name`**
 
-A profile and an organization carry the name an operator gave them, so renaming one in the Control D dashboard ends the old series and opens a new one. `controld_service_categories_total` carries the category's primary key here instead, because the categories endpoint publishes no separate display name.
+The field is fixed per family rather than chosen per series. The device, profile and organization families carry the name an operator gave the object, so renaming one in the Control D dashboard ends the old series and opens a new one. `controld_service_categories_total` carries the category's primary key instead, although the endpoint supplies a name beside it.
+
+Control D does not require a device or profile name to be unique, and the exporter separates these series by name and `orgId` alone. Two objects sharing both produce one series rather than two: the registry keeps whichever the API listed first and drops the other without a log line, so a count silently goes missing.
 
 **`orgId`**
 
-Personal mode fills it with `000000000`, a value no Control D organization holds, so a dashboard written against it survives being pointed at a business account. Business mode fills it with the organization's key on the account-wide series, and with the sub-organization's key on everything read through `X-Force-Org-Id`.
+Personal mode fills it with `000000000`, a value no Control D organization holds, so a dashboard written against it survives being pointed at a business account. Business mode fills it with the organization's own primary key on the series read for the account, and with a sub-organization's key on the series read for that sub-organization. It never carries the API key, which travels in the `Authorization` header alone.
 
 **`type`**
 
-The report returns a verdict code rather than a name, and the exporter maps `0` to `blocked`, `1` to `bypassed` and `3` to `redirected`. Every other code folds into `unknown`, so a verdict Control D adds after this release lands there rather than opening a series nobody is alerting on.
+The report returns a verdict code rather than a name, and the exporter maps `0` to `blocked`, `1` to `bypassed` and `3` to `redirected`. Every other code folds into `unknown`, so a verdict Control D adds after this release lands there rather than opening a series nobody is alerting on. Two unseen codes in one bucket collide on that one label value, and the registry keeps whichever arrived first.
 
 ## Specifications
 
@@ -71,9 +73,10 @@ they read the account's own payment history, which the organization endpoints do
 - `controld_billing_status` and `controld_billing_refunded` carry the `tx_status` and `tx_refunded` integers unchanged, so the meaning of a non-zero value is Control D's rather than this exporter's.
 - The history is unbounded upstream: every payment the account ever made keeps its own series, so the family grows by one `id` per billing period and never shrinks.
 - `controld_billing_subscription_nextbill_timestamp` comes from the subscription list rather than the payment list, so its `id` values name subscriptions and join to nothing in the other three.
+- `controld_billing_subscription_amount_total` is built from the payment list despite its name and its HELP text, both of which say subscription.
 
 > [!IMPORTANT]
-> `controld_billing_subscription_amount_total` publishes two series per payment: one labelled `currency="USD"` carrying the `amount` field, and one labelled with the payment's own currency carrying `currency_amount`. An account billed in USD produces the same label set twice, which the registry rejects for the whole scrape, so this family is usable only where the account settles in something other than USD.
+> `controld_billing_subscription_amount_total` publishes two series per payment. One carries the `amount` field under `currency="USD"`, the other `currency_amount` under the payment's own currency. An account billed in USD produces that label set twice, and the registry keeps the first and drops the second without failing the scrape, so the family reports `amount` alone.
 
 **`controld_endpoint_clients_total`**
 
@@ -85,6 +88,8 @@ the value is the `api`, `dns` and `pxy` integer each node publishes, passed thro
 
 - The series describe Control D's own infrastructure rather than the account, so they are identical for every exporter reading the same region and duplicate across targets.
 - The node list is whatever `/network` returns at scrape time, so a point of presence withdrawn upstream stops publishing rather than reading unhealthy.
+- `-1` means the service is not offered rather than down, and `proxy` reads it on most nodes, so a rule on `!= 1` fires on all of them. `NetworkServiceDown` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) tests `== 0` for that reason, and so reports an outage but never an absent proxy.
+- The endpoint also names the node that served the call, which is the only one a scrape proves reachable, and the exporter publishes no series for it.
 
 **the seven `controld_profile_*` series**
 
@@ -95,18 +100,20 @@ they count what each profile has configured rather than what it matched, so they
 
 **`controld_stats_last_queries_count`**
 
-it carries the newest one-minute bucket of the DNS query report rather than a running total, so its value falls whenever traffic falls and `rate()` over it reads as a counter reset. Take ratios from the raw values instead.
+it carries one one-minute bucket of the DNS query report rather than a running total, so its value falls whenever traffic falls and `rate()` over it reads as a counter reset. Take ratios from the raw values instead.
 
 - The report is fetched with a start timestamp one minute behind the scrape, so a scrape interval other than 60s either double-counts a bucket or skips one.
 - It is declared to Prometheus as a counter, which is what makes the `_count` suffix and the type disagree; the alert rules in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) are written around that.
+- Its HELP text names `redirect`, `success` and `blocked`, of which only `blocked` is emitted.
 - Control D withdrew the analytics endpoint this series reads, so it has published nothing since then and the failure appears in the log as a non-2xx status rather than as a zero.
 
 **the nine `controld_organization_*` and `controld_sub_organization_*` series**
 
 they need `--controld.business-mode` and an API key belonging to an organization, and neither is published in personal mode at all — a personal-mode dashboard shows no data rather than zeros.
 
-- Sub-organization series are read one request per sub-organization, so a scrape's duration grows linearly with the number of sub-organizations beneath the account.
-- The main organization's response also supplies the analytics hostname the `stats` collector uses, so an organization fetch that fails takes the query counts with it.
+- The four `controld_sub_organization_*` families come from one sub-organization listing the collector reads in memory, so they cost one request however many sub-organizations exist. The per-sub-organization cost is in the device, profile, service and query-report calls, which repeat once each under `X-Force-Org-Id`.
+- Both organization responses are fetched once per scrape and shared with the collectors that need them, and neither is kept past that scrape.
+- The main organization's response supplies the analytics hostname the `stats` collector uses. It supplies it for the sub-organizations too, so one in another region is read from the parent's host.
 
 > [!WARNING]
-> A failed `/organizations/organization` call in business mode reaches the metric-building code with no response to read, which terminates the process rather than skipping the scrape. Keep personal mode until an organization is actually configured.
+> This collector runs first and hands the response to the metric builders before it reads the fetch error, so a failed `/organizations/organization` call dereferences a nil response and panics. The Prometheus client recovers that panic rather than ending the process, but the scrape then carries no family at all: `/metrics` answers 500 and `up` drops to 0. The six collectors queued behind it never run, so keep personal mode until an organization is configured.

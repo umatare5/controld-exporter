@@ -21,9 +21,9 @@
 This exporter reads the [Control D](https://controld.com/) API and publishes the account state as Prometheus metrics.
 
 - 💚 **Service Health**: Control D's own DNS, API and proxy status, per point of presence
-- ⚙️ **Configuration Drift**: Filter, rule and option counts per profile, so an edit is visible as a step
+- ⚙️ **Configuration Drift**: Filter, rule and option counts per profile, so an edit shows as a step
 - 💳 **Billing Visibility**: Payment status, refund status and the next billing instant
-- 🏢 **Organization Scope**: Members, users, routers and profiles across an organization and its sub-organizations
+- 🏢 **Organization Scope**: Members, users, routers and profiles, per organization and sub-org
 
 > [!IMPORTANT]
 > The exporter needs a Control D API token, which is issued from the account dashboard. See the [Control D Getting Started guide](https://docs.controld.com/reference/get-started) for how to register and create one.
@@ -53,53 +53,70 @@ curl -s http://localhost:10034/metrics | head
 >
 > **Supported Platforms:** `linux_amd64`, `linux_arm64`, `darwin_amd64`, `darwin_arm64` and `windows_amd64`
 
+## Collectors
+
+Every collector runs on each scrape, and no flag turns one off.
+
+| Collector      | Publishes                                           |
+| :------------- | :-------------------------------------------------- |
+| `billing`      | Amounts, status, refunds and the next billing date  |
+| `endpoint`     | Clients counted against each device                 |
+| `network`      | Service status per point of presence                |
+| `profile`      | Filter, rule and option counts per profile          |
+| `service`      | Services in each category                           |
+| `stats`        | DNS queries per verdict                             |
+| `organization` | Members, users, routers and profiles, business mode |
+
+> [!NOTE]
+> `--controld.business-mode` changes what a collector reads, not whether it runs. See [Collectors](docs/collectors.md).
+
 ## Flags
 
-`controld-exporter --help` prints every flag, and [`docs/help.md`](docs/help.md) carries the same list.
+`controld-exporter --help` prints every flag, and [`docs/help.md`](docs/help.md) carries the same list with notes.
 
-| Flag                       | Effect                                             |
-| :------------------------- | :------------------------------------------------- |
-| `--controld.api-key`       | The Control D token, or `CTRLD_API_KEY`            |
-| `--controld.business-mode` | Read the organization instead of the account       |
-| `--web.listen-port`        | The port the HTTP server binds, `10034` by default |
-| `--log.level`              | `debug` adds the request URI and the decoded body  |
+- `--controld.api-key` is the only required flag, and `CTRLD_API_KEY` fills it instead.
+- The variable keeps the token off the process table. See [Help](docs/help.md#notes).
+- `--controld.business-mode` widens the account scope of every series that carries `orgId`.
+- `--web.*` set the bind address, the port and the telemetry path.
+- `--log.level debug` adds the request URI and the response body of every call.
 
 > [!IMPORTANT]
-> The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one the exporter terminates on the first scrape.
-
-## Environment Variables
-
-This exporter reads one environment variable:
-
-| Environment Variable | Description                    |
-| :------------------- | :----------------------------- |
-| `CTRLD_API_KEY`      | Control D API token (required) |
+> The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one every scrape answers `500` and publishes nothing at all. See [Account Scope](docs/README.md#account-scope).
 
 ## Endpoints
 
-The exporter serves two endpoints:
+The exporter registers two paths:
 
 - `/` — landing page, which prints the telemetry path when reached at <http://localhost:10034/>
 - `/metrics` — metrics endpoint, configurable via `--web.telemetry-path`
 
-Nothing is cached between requests, so a scrape costs one Control D API call per collector and its latency is the API's. See [`docs/README.md`](docs/README.md) for the scrape path and the timeouts around it.
+Nothing is cached between scrapes, so a scrape's cost grows with the account rather than with the exporter. See [`docs/README.md`](docs/README.md) for the request count, the timeouts around it, and the paths that fall through to the landing page.
 
 ## Metrics
 
-Every series is namespaced `controld_`. The series a dashboard usually starts from:
+Every series is namespaced `controld_`, and the catalogue lives in `docs/`:
 
-| Metric                                             | Type    | Description                             |
-| :------------------------------------------------- | :------ | :-------------------------------------- |
-| `controld_network_health_code`                     | Gauge   | Service status of one point of presence |
-| `controld_billing_status`                          | Gauge   | Transaction status of one payment       |
-| `controld_billing_subscription_nextbill_timestamp` | Gauge   | Next billing instant, in Unix seconds   |
-| `controld_endpoint_clients_total`                  | Gauge   | Clients counted against one device      |
-| `controld_profile_rules_total`                     | Gauge   | Rules on one profile                    |
-| `controld_service_categories_total`                | Gauge   | Services in one category                |
-| `controld_stats_last_queries_count`                | Counter | DNS queries of one verdict              |
-| `controld_organization_users_total`                | Gauge   | Users of the organization               |
+| Page                                 | Covers                                         |
+| :----------------------------------- | :--------------------------------------------- |
+| **[Collectors](docs/collectors.md)** | The seven collectors, their metrics and labels |
+| **[Help](docs/help.md)**             | Flags and defaults, as `--help` prints         |
 
-See [`docs/collectors.md`](docs/collectors.md) for all metrics.
+The series a dashboard usually starts from:
+
+| Collector      | Metric                              | Type    | Description                        |
+| :------------- | :---------------------------------- | :------ | :--------------------------------- |
+| `network`      | `controld_network_health_code`      | Gauge   | Status of one service at one node  |
+| `billing`      | `controld_billing_status`           | Gauge   | Transaction status of one payment  |
+| `endpoint`     | `controld_endpoint_clients_total`   | Gauge   | Clients counted against one device |
+| `profile`      | `controld_profile_rules_total`      | Gauge   | Rules on one profile               |
+| `stats`        | `controld_stats_last_queries_count` | Counter | DNS queries of one verdict         |
+| `organization` | `controld_organization_users_total` | Gauge   | Users of the organization          |
+
+> [!NOTE]
+> See [`docs/README.md`](docs/README.md) for the absence, counter and account-scope rules every collector shares.
+
+> [!IMPORTANT]
+> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. Alert on a family the token gates and the account fills, such as `controld_profile_rules_total`, because `absent(controld_network_health_code)` cannot see that case.
 
 ### Exporter Health Metrics
 
@@ -109,19 +126,18 @@ The exporter publishes no series about itself, so a failed scrape shows as missi
 - **No runtime series** — the Go and process collectors sit on a registry no handler serves.
 - **Absence is the signal** — a failing collector withholds its family instead of publishing `0`.
 
-> [!IMPORTANT]
-> A scrape whose collectors all failed still answers 200 with an empty body, so the target's own `up` stays 1. Alert on the absence of a series the account always has, as [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) does with `absent()`.
-
 > [!NOTE]
-> The failing endpoint and its status are logged at `error`, and `--log.level debug` adds the request URI and the decoded body. See [`docs/README.md`](docs/README.md) for the absence rules each collector follows.
+> See [Exporter Health](docs/README.md#exporter-health) for how each mode fails, and [Absence](docs/README.md#absence) for the rules each collector follows.
 
-## Use Cases
+## Examples
 
-### Job Configuration Example
+### Prometheus Configuration
+
+#### Job Configuration Example
 
 Add the job from [`examples/prometheus.yml`](examples/prometheus.yml) to your Prometheus configuration.
 
-### Alerting Rules Configuration Example
+#### Alerting Rules Configuration Example
 
 Add the rules from [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) to your configuration.
 
@@ -131,13 +147,12 @@ Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporte
 
 ![Control D Exporter Dashboard](examples/control-d-exporter-dashboard.png)
 
+> [!NOTE]
+> The billing panels name `USD` and `JPY`, and blocking-rate panels use `increase()`. See [Dashboards](docs/README.md#dashboards).
+
 ## Contributing
 
 See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, the tests and the release process.
-
-## Acknowledgement
-
-I launched this project with the help of **GitHub Copilot Coding Assistant**, and I am grateful to the global developer community for their contributions to open source projects and public repositories.
 
 ## License
 

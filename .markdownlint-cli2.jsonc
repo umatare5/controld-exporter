@@ -82,13 +82,12 @@
           "headings": [
             "## Overview", "*",
             "## Quick Start", "*",
+            "## Collectors", "*",
             "## Flags", "*",
-            "## Environment Variables", "*",
             "## Endpoints", "*",
             "## Metrics", "*",
-            "## Use Cases", "*",
+            "## Examples", "*",
             "## Contributing", "*",
-            "## Acknowledgement", "*",
             "## License"
           ]
         }
@@ -118,7 +117,7 @@
           "match_case": true,
           "headings": [
             "# Documentation",
-            "## Technical information", "*"
+            "## Technical Information", "*"
           ]
         }
       }

@@ -29,8 +29,8 @@ GLOBAL OPTIONS:
 
 `--controld.business-mode` decides which Control D account scope every collector reads — [Collectors](collectors.md#specifications) carries what each mode publishes and what fills `orgId` without it.
 
-`--log.level debug` writes the full request URI and the decoded body of every Control D response to the log, which is why [`SECURITY.md`](../SECURITY.md) treats a debug log as sensitive as the API key itself.
+`--log.level debug` writes the request URI and the response body of every Control D call to the log. The body is written as received and before the status is checked, so a failed response is logged too, which is why [`SECURITY.md`](../SECURITY.md) treats a debug log as sensitive as the API key itself. The key is not among the headers logged.
 
 `--web.telemetry-path` shares one `http.ServeMux` with the landing page registered at `/`, so setting it to `/` is a duplicate registration and panics at startup rather than replacing the landing page.
 
-The binary reports `dev` for `--version` unless the version is stamped at link time, so a locally built exporter and a release archive of the same commit answer differently.
+The transcript above reads `dev` for `VERSION:` because it comes from a build that stamps nothing. `make build` stamps the contents of [`VERSION`](../VERSION) and a release stamps its tag, so neither answers `dev`.
