@@ -16,6 +16,10 @@ Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of
 
 Statements the code does not support were corrected, and two of them change what to alert on. A failed organization fetch in business mode does not end the process: the scrape answers `500` with no family, and a failed sub-organization fetch answers `200` carrying the organization families alone. `/network` and `/services/categories` need no token, so `absent()` over their families cannot see a revoked key — alert on a family the token gates instead.
 
+The contributor pages now carry a claim and a link where they carried a mechanism. `AGENTS.md` keeps its seven sections and rewrites Domain Knowledge around what Control D does, `CONTRIBUTING.md` states which CI jobs a path filter gates, and `SECURITY.md` names the calls each mode makes.
+
+More statements were corrected against the source. A field the API stops sending publishes as `0` rather than being withheld, a token without access to an endpoint answers `403` with `40301`, the listen defaults live in `internal/cli`, and `statsEndpoint` names a region label in front of `analytics.controld.com` rather than a host.
+
 ### Metrics
 
 None.
