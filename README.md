@@ -152,7 +152,7 @@ Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporte
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, the tests and the release process.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, what CI runs on a pull request, the tests, the code style, the documentation conventions and the release process.
 
 ## License
 

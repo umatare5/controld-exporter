@@ -4,7 +4,12 @@ The [shared contribution guide](https://github.com/umatare5/.github/blob/main/CO
 
 ## Development
 
-CI runs Format and Lint, Test and Build, Coverage, Prometheus Rules, markdownlint, Link Check, actionlint, CodeQL and govulncheck on every pull request.
+CI decides what to run from the branch and the paths a pull request touches, so a Go change never waits on the link check and a Markdown-only change never waits on govulncheck.
+
+- **Always** — Format and Lint, Test and Build, Coverage, Prometheus Rules and CodeQL, into `main`.
+- **Go changes** — govulncheck, when `go.mod`, `go.sum`, a `.go` file or its own workflow moves.
+- **Markdown changes** — markdownlint and Link Check, and on any branch rather than `main` alone.
+- **Workflow changes** — actionlint, also on any branch.
 
 ## Testing
 
@@ -23,9 +28,9 @@ promtool check config --lint all --lint-fatal examples/prometheus.yml
 
 ## Code Style
 
-No `--collector.<name>` flag exists here, because every collector runs on each scrape and `--controld.business-mode` changes what each one reads rather than whether it runs.
+No `--collector.<name>` flag exists here, because every collector runs on each scrape and `--controld.business-mode` changes what four of the seven read rather than whether they run. The organization collector is the one whose output the flag decides, because it emits nothing at all in personal mode.
 
-A collector that cannot reach Control D returns without describing a metric, so its whole family is absent for that scrape and no path publishes a `0` standing for a failed call.
+A collector that cannot reach Control D returns without emitting a sample, so its whole family is absent for that scrape and no path publishes a `0` standing for a failed call. The organization collector does not publish a `0` either. It builds its metrics before it reads the fetch error, so a failed fetch dereferences a nil response and the recovered panic answers the scrape `500` with no family.
 
 ## Documentation
 
@@ -39,8 +44,8 @@ Every fact has one page that owns it, and the other pages link to it rather than
 | `docs/help.md`       | The verbatim `--help` transcript     |
 
 > [!NOTE]
-> `CHANGELOG.md` carries one section per release, each with a `### Metrics` and a `### Flags` subsection reading `None.` where that release changed neither, so a reader learns the surface held rather than inferring it from silence.
+> `CHANGELOG.md` carries one section per release, and every section since v1.2.0 adds a `### Metrics` and a `### Flags` subsection reading `None.` where that release changed neither, so a reader learns the surface held rather than inferring it from silence.
 
 ## Release
 
-The `VERSION:` line in the [`docs/help.md`](docs/help.md) transcript reads `dev` rather than a release number, because the version is stamped at link time and the transcript comes from a locally built binary. The shared procedure's third step therefore has nothing to edit here, and a release pull request carries `CHANGELOG.md` and `VERSION` alone.
+The `VERSION:` line in the [`docs/help.md`](docs/help.md) transcript reads `dev` rather than a release number, because the transcript comes from a build that stamps nothing, while `make build` and a release both stamp it. The shared procedure's third step therefore has nothing to edit here, and a release pull request need carry no more than `CHANGELOG.md` and `VERSION`.
