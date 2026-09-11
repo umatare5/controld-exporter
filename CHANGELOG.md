@@ -6,11 +6,15 @@ This changelog starts at v1.1.0; earlier releases are described by their [releas
 
 ## [Unreleased]
 
-This release links the shared policy pages and narrows the release archives to the two files a redistributed binary needs. No metric, label, flag or HELP string changes.
+This release links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages. No metric, label, flag or HELP string changes.
 
 `SECURITY.md` and `CONTRIBUTING.md` now open with the baseline every exporter under `umatare5` shares and carry only what is specific to this one, so a convention stated once is no longer restated per repository.
 
 Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of the files they held — `examples/prometheus*.yml` are a Prometheus server configuration and its rule files — and each is a click away on the page the archive was downloaded from.
+
+`README.md` gains a `## Collectors` section, folds `## Environment Variables` into `## Flags` and delegates every mechanism to the page that owns it. The reference pages under `docs/` now carry the request count, the endpoint behaviour and the per-family facts the README only summarised.
+
+Statements the code does not support were corrected, and two of them change what to alert on. A failed organization fetch in business mode does not end the process: the scrape answers `500` with no family, and a failed sub-organization fetch answers `200` carrying the organization families alone. `/network` and `/services/categories` need no token, so `absent()` over their families cannot see a revoked key — alert on a family the token gates instead.
 
 ### Metrics
 
