@@ -112,7 +112,7 @@ it carries one one-minute bucket of the DNS query report rather than a running t
 they need `--controld.business-mode` and an API key belonging to an organization, and neither is published in personal mode at all — a personal-mode dashboard shows no data rather than zeros.
 
 - The four `controld_sub_organization_*` families come from one sub-organization listing the collector reads in memory, so they cost one request however many sub-organizations exist. The per-sub-organization cost is in the device, profile, service and query-report calls, which repeat once each under `X-Force-Org-Id`.
-- Both organization responses are fetched once per scrape and shared with the collectors that need them, and neither is kept past that scrape.
+- Both organization responses are fetched once per scrape and dropped after it, and only a success is shared, so a failing call repeats for each of the five collectors that read it.
 - The main organization's response supplies the region label the `stats` collector puts in front of `analytics.controld.com`. It supplies that label for the sub-organizations too, so one in another region is read from the parent's host.
 
 > [!WARNING]
