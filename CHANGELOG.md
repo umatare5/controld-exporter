@@ -16,6 +16,8 @@ Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of
 
 A failed organization fetch no longer costs the whole scrape. The organization collector built its metrics before it read the fetch error, so a non-2xx answer from `/organizations/organization` dereferenced a nil response and panicked. The recovered panic answered `500` with no family and no log line — the collector now reads the error first and leaves the six behind it to publish.
 
+The empty-payload guards never fired, because each tested a concrete response against a type switch matching only `[]any` and `map[string]any`. A `200` carrying an empty query list therefore reached an unguarded index and panicked the same way. Each guard now reads its own slice.
+
 The contributor pages now carry a claim and a link where they carried a mechanism. `AGENTS.md` keeps its seven sections and rewrites Domain Knowledge around what Control D does, `CONTRIBUTING.md` states which CI jobs a path filter gates, and `SECURITY.md` names the calls each mode makes.
 
 More statements were corrected against the source. A field the API stops sending publishes as `0` rather than being withheld, a token without access to an endpoint answers `403` with `40301`, the listen defaults live in `internal/cli`, and `statsEndpoint` names a region label in front of `analytics.controld.com` rather than a host.

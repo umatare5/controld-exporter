@@ -11,46 +11,30 @@ const (
 
 // isDevicesEmpty checks if the devices array in the response is empty.
 func isDevicesEmpty(devices *controld.DevicesResponse) bool {
-	return isEmpty(devices) || isEmpty(devices.Body.Devices)
+	return devices == nil || len(devices.Body.Devices) == 0
 }
 
 // isPaymentsEmpty checks if the payments array in the response is empty.
 func isPaymentsEmpty(payments *controld.BillingPaymentsResponse) bool {
-	return isEmpty(payments) || isEmpty(payments.Body.Payments)
+	return payments == nil || len(payments.Body.Payments) == 0
 }
 
 // isSubscriptionsEmpty checks if the subscriptions array in the response is empty.
 func isSubscriptionsEmpty(subscriptions *controld.BillingSubscriptionsResponse) bool {
-	return isEmpty(subscriptions) || isEmpty(subscriptions.Body.Subscriptions)
+	return subscriptions == nil || len(subscriptions.Body.Subscriptions) == 0
 }
 
 // isServiceCategoriesEmpty checks if the service categories array in the response is empty.
 func isServiceCategoriesEmpty(categories *controld.ServiceCategoriesResponse) bool {
-	return isEmpty(categories) || isEmpty(categories.Body.Categories)
+	return categories == nil || len(categories.Body.Categories) == 0
 }
 
 // isProfilesEmpty checks if the profiles array in the response is empty.
 func isProfilesEmpty(profiles *controld.ProfilesResponse) bool {
-	return isEmpty(profiles) || isEmpty(profiles.Body.Profiles)
+	return profiles == nil || len(profiles.Body.Profiles) == 0
 }
 
-// isQueryStatsEmpty checks if the devices array in the response is empty.
+// isQueryStatsEmpty checks if the queries array in the response is empty.
 func isQueryStatsEmpty(stats *controld.QueryStatsResponse) bool {
-	return isEmpty(stats) || isEmpty(stats.Body.Queries)
-}
-
-// isEmpty checks if the given data is empty or nil.
-func isEmpty(data any) bool {
-	switch v := data.(type) {
-	case nil:
-		return true
-	case []any:
-		return len(v) == 0
-	case map[string]any:
-		return len(v) == 0
-	case string:
-		return v == ""
-	default:
-		return false
-	}
+	return stats == nil || len(stats.Body.Queries) == 0
 }
