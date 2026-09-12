@@ -21,18 +21,18 @@ func (c *Collector) collectOrganizationMetrics(ch chan<- prometheus.Metric) {
 
 	// organization metrics are only available in business mode.
 	org, err := c.fetchMainOrganization()
-	c.collectMainOrganizationMetrics(ch, org)
 	if err != nil {
 		c.log.error(organizationLogPrefix, errFetchingMainOrgMetrics+"%v", err)
 		return
 	}
+	c.collectMainOrganizationMetrics(ch, org)
 
 	subOrgs, err := c.fetchSubOrganizations()
-	c.collectSubOrganizationMetrics(ch, subOrgs)
 	if err != nil {
 		c.log.error(subOrganizationLogPrefix, errFetchingSubOrgMetrics+"%v", err)
 		return
 	}
+	c.collectSubOrganizationMetrics(ch, subOrgs)
 }
 
 // collectMainOrganizationMetrics collects metrics for main organization.

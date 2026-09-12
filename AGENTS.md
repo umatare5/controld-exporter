@@ -79,7 +79,7 @@ A missing or invalid token answers `400` with error `40001`, and a token without
 
 DNS logging is a per-endpoint setting rather than an account-wide one, and a new endpoint starts with it off, so an account with real traffic can report nothing.
 
-- **Absence has more than one reading** — a failed report call withholds `controld_stats_last_queries_count` and logs at `error`. A business-mode organization failure loses the whole scrape before the stats collector runs. See [Absence](docs/README.md#absence).
+- **Absence has more than one reading** — a failed report call withholds `controld_stats_last_queries_count` and logs at `error`. A business-mode organization failure withholds five collectors' families at once, because four of them read that one response. See [Absence](docs/README.md#absence).
 - **Both enums are undocumented** — `stats` reads `0` as off, `1` as basic and `2` as full, and a verdict code this exporter predates folds into `unknown`. See [Labels](docs/collectors.md#labels).
 - **The analytics host follows data residency** — the organization response names the region label that fronts `analytics.controld.com`, while personal mode hardcodes `america`. That host answers a plain-text `404` rather than the JSON envelope, so the client checks the status before it decodes.
 

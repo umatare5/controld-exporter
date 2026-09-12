@@ -116,4 +116,4 @@ they need `--controld.business-mode` and an API key belonging to an organization
 - The main organization's response supplies the region label the `stats` collector puts in front of `analytics.controld.com`. It supplies that label for the sub-organizations too, so one in another region is read from the parent's host.
 
 > [!WARNING]
-> This collector runs first and hands the response to the metric builders before it reads the fetch error, so a failed `/organizations/organization` call dereferences a nil response and panics. The Prometheus client recovers that panic rather than ending the process, but the scrape then carries no family at all: `/metrics` answers 500 and `up` drops to 0. The six collectors queued behind it never run, so keep personal mode until an organization is configured.
+> This collector runs first and hands its response to four others, so a failed `/organizations/organization` call costs more than the nine families here. The endpoint, profile, service and stats collectors read the same response and skip with it. The scrape still answers 200, `up` stays 1, and only the log names the endpoint and its status.
