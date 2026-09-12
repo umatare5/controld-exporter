@@ -116,7 +116,7 @@ The series a dashboard usually starts from:
 > See [`docs/README.md`](docs/README.md) for the absence, counter and account-scope rules every collector shares.
 
 > [!IMPORTANT]
-> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. Alert on a family the token gates and the account fills, such as `controld_profile_rules_total`, because `absent(controld_network_health_code)` cannot see that case.
+> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) therefore reads a token-gated family beside the token-free one, because absence over either alone misses what the other catches.
 
 ### Exporter Health Metrics
 

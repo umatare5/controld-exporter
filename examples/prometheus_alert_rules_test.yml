@@ -8,17 +8,32 @@ rule_files:
 evaluation_interval: 1m
 
 tests:
-  # No health series ever arrives, so absent() holds from the first evaluation
-  # and for: 10m puts the firing edge at 10m. absent() over a bare name carries
-  # no labels, so neither job nor instance reaches the alert.
+  # A revoked key: the token-free family keeps publishing while the token-gated
+  # one stops, which is the case the first term catches and absent() over the
+  # network family alone cannot see. for: 10m puts the firing edge at 10m, and
+  # absent() over a bare name carries no labels, so neither job nor instance
+  # reaches the alert.
   - interval: 1m
     input_series:
-      - series: 'controld_billing_status{job="controld",instance="localhost:10034",id="pay_01"}'
-        values: "0+0x20"
+      - series: 'controld_network_health_code{job="controld",instance="localhost:10034",city_name="Tokyo",iata_code="tyo",country_name="JP",service_name="dns"}'
+        values: "1+0x20"
     alert_rule_test:
       - eval_time: 9m
         alertname: ControlDMetricsMissing
         exp_alerts: []
+    promql_expr_test:
+      - expr: ALERTS{alertname="ControlDMetricsMissing"}
+        eval_time: 11m
+        exp_samples:
+          - labels: 'ALERTS{alertname="ControlDMetricsMissing", alertstate="firing", severity="critical"}'
+            value: 1
+
+  # /network failing while the token still works is what the second term keeps,
+  # and a rule reading the token-gated family alone is silent here.
+  - interval: 1m
+    input_series:
+      - series: 'controld_profile_rules_total{job="controld",instance="localhost:10034",name="Default",orgId="000000000"}'
+        values: "3+0x20"
     promql_expr_test:
       - expr: ALERTS{alertname="ControlDMetricsMissing"}
         eval_time: 11m

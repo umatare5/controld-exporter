@@ -43,7 +43,7 @@ A Control D call that fails withholds the series behind it — never `0`, never 
 - **Only the log names the cause** — no series records that a collector failed.
 
 > [!IMPORTANT]
-> `/network` and `/services/categories` need no token, so their families keep publishing after a key is revoked and a scrape still answers 200. `absent(controld_network_health_code)`, which `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) reads, therefore cannot see a revoked key. Alert on a family the token gates and the account fills, such as `controld_profile_rules_total`, because an empty account is silent too.
+> `/network` and `/services/categories` need no token, so their families keep publishing after a key is revoked and a scrape still answers 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) reads a token-gated family beside a token-free one for that reason. Absence over either alone misses what the other catches, and an account holding no profile fires it as a revoked key does.
 
 > [!WARNING]
 > A failed `/organizations/organization` call withholds more than the organization families, because the endpoint, profile, service and stats collectors read that same response and skip with it. Business mode then answers 200 carrying the billing and network families alone, and each of the five re-requests the failed endpoint rather than sharing one failure.
