@@ -29,11 +29,14 @@ tests:
             value: 1
 
   # /network failing while the token still works is what the second term keeps,
-  # and a rule reading the token-gated family alone is silent here.
+  # and a rule reading the token-gated family alone is silent here. The service
+  # family is token-free too, so carrying it here pins the term to /network.
   - interval: 1m
     input_series:
       - series: 'controld_profile_rules_total{job="controld",instance="localhost:10034",name="Default",orgId="000000000"}'
         values: "3+0x20"
+      - series: 'controld_service_categories_total{job="controld",instance="localhost:10034",name="ads",orgId="000000000"}'
+        values: "12+0x20"
     promql_expr_test:
       - expr: ALERTS{alertname="ControlDMetricsMissing"}
         eval_time: 11m

@@ -3,8 +3,8 @@
 # Every series here is rebuilt from scratch on each scrape, so a failed Control D
 # call withholds the series rather than publishing a zero. Absence is therefore
 # the primary failure signal, and ControlDMetricsMissing is what reads it.
-# /network and /services/categories need no token, so absence over their families
-# reads an outage rather than a revoked credential.
+# /network answers without a token and no collector gates it on the organization,
+# so absence over its family reads an outage rather than a revoked credential.
 groups:
   - name: controld-exporter
     rules:
@@ -22,7 +22,7 @@ groups:
             revoked key, because /network answers without a token. Absence over
             the token-gated profile family alone cannot see /network failing, so
             this rule reads both. A scrape that read nothing still answers 200
-            and leaves up at 1, so no other rule here can fire while this does.
+            and leaves up at 1, so absence is the only signal either term has.
 
       - alert: BillingStatusFailed
         expr: controld_billing_status != 0
