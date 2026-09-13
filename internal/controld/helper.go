@@ -4,12 +4,16 @@ package controld
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 
 	"github.com/umatare5/controld-exporter/internal/log"
 )
+
+// ErrUnknownAnalyticsHost reports an organization response that carried no stats endpoint.
+var ErrUnknownAnalyticsHost = errors.New("analytics host is unknown: no stats endpoint in organization response")
 
 // isSuccess checks if the "success" field in the response is true.
 func isSuccess(response map[string]any) bool {
@@ -35,6 +39,9 @@ func (t *Client) sendAPIRequest(endpoint string, headers map[string]string, resu
 
 // sendReportAPIRequest constructs the full URI for Analytics API and delegates the request to sendRequest.
 func (t *Client) sendReportAPIRequest(statsEndpoint, endpoint string, headers map[string]string, result any) error {
+	if statsEndpoint == "" {
+		return ErrUnknownAnalyticsHost
+	}
 	uri := "https://" + statsEndpoint + ".analytics.controld.com" + endpoint
 	return t.sendRequest(uri, headers, result)
 }
