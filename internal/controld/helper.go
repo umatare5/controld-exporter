@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/umatare5/controld-exporter/internal/log"
 )
@@ -57,7 +58,6 @@ func (t *Client) sendRequest(uri string, headers map[string]string, result any) 
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Errorf("Error sending request to %s: %s", uri, err)
 		return err
 	}
 	defer func() {
@@ -82,21 +82,34 @@ func (t *Client) createRequest(url string, headers map[string]string) (*http.Req
 	return req, nil
 }
 
+// maxErrorBodyLen bounds the vendor error envelope quoted into a returned error.
+const maxErrorBodyLen = 512
+
+// summarizeErrorBody renders a non-2xx body as a bounded single-line string.
+func summarizeErrorBody(body []byte) string {
+	s := strings.Join(strings.Fields(string(body)), " ")
+	if len(s) > maxErrorBodyLen {
+		return s[:maxErrorBodyLen] + "..."
+	}
+	return s
+}
+
 func (t *Client) handleResponse(resp *http.Response, endpoint string, result any) error {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Errorf("Error reading response body: %s", err)
 		return err
 	}
 	log.Debugf("Raw JSON response: %s", string(body))
 
 	if !isSuccessStatus(resp) {
-		return fmt.Errorf("unexpected status %q from endpoint: %s", resp.Status, endpoint)
+		return fmt.Errorf(
+			"unexpected status %q from endpoint: %s: %s",
+			resp.Status, endpoint, summarizeErrorBody(body),
+		)
 	}
 
 	var rawResponse map[string]any
 	if err := json.Unmarshal(body, &rawResponse); err != nil {
-		log.Errorf("Error parsing JSON: %s", err)
 		return err
 	}
 
