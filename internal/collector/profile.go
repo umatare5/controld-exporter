@@ -98,7 +98,7 @@ func (c *Collector) storeProfileMetrics(
 		ch <- prometheus.MustNewConstMetric(
 			controldProfileIPFiltersTotal,
 			prometheus.GaugeValue,
-			float64(profile.Profile.Cflt.Count),
+			float64(profile.Profile.Ipflt.Count),
 			profile.Name,
 			orgID,
 		)
