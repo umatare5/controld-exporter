@@ -38,6 +38,7 @@ A Control D call that fails withholds the series behind it — never `0`, never 
 - **Failure is scoped to the call** — one non-2xx status, one JSON error or one `"success": false` body withholds only the series that call feeds.
 - **A collector can fail in part** — billing reads payments and subscriptions independently, and a sub-organization whose request fails is skipped while the others still publish.
 - **Empty is not zero** — an account with no payment, device or profile publishes no series at all.
+- **Empty can arrive as a 404** — Control D answers an empty collection with `404` and error code `40401`, which the client reads as empty rather than as a failure.
 - **A vanished field is zero** — a field the API stops sending decodes to `0` and publishes as `0`, because only a transport, status, envelope or type error withholds a family.
 - **Staleness closes the gap** — Prometheus marks a series stale after the scrape that stops carrying it, so a dashboard shows a break rather than a flat line.
 - **Only the log names the cause** — no series records that a collector failed.

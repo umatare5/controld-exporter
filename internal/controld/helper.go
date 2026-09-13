@@ -94,6 +94,29 @@ func summarizeErrorBody(body []byte) string {
 	return s
 }
 
+// codeNoData is the 404 Control D answers when a collection holds nothing.
+const codeNoData = 40401
+
+// ErrNoData reports an envelope that answers "nothing here" rather than a failure.
+var ErrNoData = errors.New("endpoint holds no data")
+
+// errorEnvelope is the body Control D returns beside a non-2xx status. The
+// measured shape also carries error.date and error.message, both unread here.
+type errorEnvelope struct {
+	Error struct {
+		Code int `json:"code"` // First three digits restate the HTTP status
+	} `json:"error"`
+}
+
+// isNoDataBody reports whether a non-2xx body carries the empty-collection code.
+func isNoDataBody(body []byte) bool {
+	var envelope errorEnvelope
+	if err := json.Unmarshal(body, &envelope); err != nil {
+		return false
+	}
+	return envelope.Error.Code == codeNoData
+}
+
 func (t *Client) handleResponse(resp *http.Response, endpoint string, result any) error {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
@@ -102,6 +125,9 @@ func (t *Client) handleResponse(resp *http.Response, endpoint string, result any
 	log.Debugf("Raw JSON response: %s", string(body))
 
 	if !isSuccessStatus(resp) {
+		if isNoDataBody(body) {
+			return fmt.Errorf("%w: %s: %s", ErrNoData, endpoint, summarizeErrorBody(body))
+		}
 		return fmt.Errorf(
 			"unexpected status %q from endpoint: %s: %s",
 			resp.Status, endpoint, summarizeErrorBody(body),
