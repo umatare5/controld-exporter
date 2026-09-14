@@ -11,11 +11,11 @@ permissions:
 
 jobs:
   tagging:
-    uses: umatare5/common/.github/workflows/tagging.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    uses: umatare5/common/.github/workflows/tagging.yml@8044b3c0ce0dce6411ec179c3ec0e675219c117f # v0.21.0
 
   release:
     needs: tagging
-    uses: umatare5/common/.github/workflows/go-release.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    uses: umatare5/common/.github/workflows/go-release.yml@8044b3c0ce0dce6411ec179c3ec0e675219c117f # v0.21.0
     with:
       go_version: "1.27.0"
       goreleaser_version: "v2.18.0"
