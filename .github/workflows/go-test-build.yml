@@ -14,4 +14,4 @@ jobs:
   build:
     uses: umatare5/common/.github/workflows/go-test-build.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
     with:
-      go_version: "1.27.0"
+      go_version: "1.27.1"
