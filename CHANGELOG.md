@@ -6,7 +6,7 @@ This changelog starts at v1.1.0; earlier releases are described by their [releas
 
 ## [Unreleased]
 
-This release links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages. No metric, label, flag or HELP string changes.
+This release keeps a failed or empty Control D response from costing the scrape, and gives the shipped alert rule a family a revoked key can silence. It also links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages. No metric, label, flag or HELP string changes.
 
 `SECURITY.md` and `CONTRIBUTING.md` now open with the baseline every exporter under `umatare5` shares and carry only what is specific to this one, so a convention stated once is no longer restated per repository.
 
@@ -14,7 +14,11 @@ Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of
 
 `README.md` gains a `## Collectors` section, folds `## Environment Variables` into `## Flags` and delegates every mechanism to the page that owns it. The reference pages under `docs/` now carry the request count, the endpoint behaviour and the per-family facts the README only summarised.
 
-Statements the code does not support were corrected, and two of them change what to alert on. A failed organization fetch in business mode does not end the process: the scrape answers `500` with no family, and a failed sub-organization fetch answers `200` carrying the organization families alone. `/network` and `/services/categories` need no token, so `absent()` over their families cannot see a revoked key — alert on a family the token gates instead.
+A failed organization fetch no longer costs the whole scrape. The organization collector built its metrics before it read the fetch error, so a non-2xx answer from `/organizations/organization` dereferenced a nil response and panicked. The recovered panic answered `500` with no family and no log line — the collector now reads the error first and leaves the six behind it to publish.
+
+The empty-payload guards never fired, because each tested a concrete response against a type switch matching only `[]any` and `map[string]any`. A `200` carrying an empty query list therefore reached an unguarded index and panicked the same way. Each guard now reads its own slice.
+
+`ControlDMetricsMissing` read `absent(controld_network_health_code)`, which a revoked key cannot trigger because `/network` answers without a token. It now reads that family beside `controld_profile_rules_total`, so a revoked key and a failed `/network` call each fire it.
 
 The contributor pages now carry a claim and a link where they carried a mechanism. `AGENTS.md` keeps its seven sections and rewrites Domain Knowledge around what Control D does, `CONTRIBUTING.md` states which CI jobs a path filter gates, and `SECURITY.md` names the calls each mode makes.
 

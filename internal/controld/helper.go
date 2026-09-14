@@ -4,12 +4,17 @@ package controld
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/umatare5/controld-exporter/internal/log"
 )
+
+// ErrUnknownAnalyticsHost reports an organization response that carried no stats endpoint.
+var ErrUnknownAnalyticsHost = errors.New("analytics host is unknown: no stats endpoint in organization response")
 
 // isSuccess checks if the "success" field in the response is true.
 func isSuccess(response map[string]any) bool {
@@ -35,6 +40,9 @@ func (t *Client) sendAPIRequest(endpoint string, headers map[string]string, resu
 
 // sendReportAPIRequest constructs the full URI for Analytics API and delegates the request to sendRequest.
 func (t *Client) sendReportAPIRequest(statsEndpoint, endpoint string, headers map[string]string, result any) error {
+	if statsEndpoint == "" {
+		return ErrUnknownAnalyticsHost
+	}
 	uri := "https://" + statsEndpoint + ".analytics.controld.com" + endpoint
 	return t.sendRequest(uri, headers, result)
 }
@@ -50,7 +58,6 @@ func (t *Client) sendRequest(uri string, headers map[string]string, result any) 
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Errorf("Error sending request to %s: %s", uri, err)
 		return err
 	}
 	defer func() {
@@ -75,21 +82,60 @@ func (t *Client) createRequest(url string, headers map[string]string) (*http.Req
 	return req, nil
 }
 
+// maxErrorBodyLen bounds the vendor error envelope quoted into a returned error.
+const maxErrorBodyLen = 512
+
+// summarizeErrorBody renders a non-2xx body as a bounded single-line string.
+func summarizeErrorBody(body []byte) string {
+	s := strings.Join(strings.Fields(string(body)), " ")
+	if len(s) > maxErrorBodyLen {
+		return s[:maxErrorBodyLen] + "..."
+	}
+	return s
+}
+
+// codeNoData is the 404 Control D answers when a collection holds nothing.
+const codeNoData = 40401
+
+// ErrNoData reports an envelope that answers "nothing here" rather than a failure.
+var ErrNoData = errors.New("endpoint holds no data")
+
+// errorEnvelope is the body Control D returns beside a non-2xx status. The
+// measured shape also carries error.date and error.message, both unread here.
+type errorEnvelope struct {
+	Error struct {
+		Code int `json:"code"` // First three digits restate the HTTP status
+	} `json:"error"`
+}
+
+// isNoDataBody reports whether a non-2xx body carries the empty-collection code.
+func isNoDataBody(body []byte) bool {
+	var envelope errorEnvelope
+	if err := json.Unmarshal(body, &envelope); err != nil {
+		return false
+	}
+	return envelope.Error.Code == codeNoData
+}
+
 func (t *Client) handleResponse(resp *http.Response, endpoint string, result any) error {
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		log.Errorf("Error reading response body: %s", err)
 		return err
 	}
 	log.Debugf("Raw JSON response: %s", string(body))
 
 	if !isSuccessStatus(resp) {
-		return fmt.Errorf("unexpected status %q from endpoint: %s", resp.Status, endpoint)
+		if isNoDataBody(body) {
+			return fmt.Errorf("%w: %s: %s", ErrNoData, endpoint, summarizeErrorBody(body))
+		}
+		return fmt.Errorf(
+			"unexpected status %q from endpoint: %s: %s",
+			resp.Status, endpoint, summarizeErrorBody(body),
+		)
 	}
 
 	var rawResponse map[string]any
 	if err := json.Unmarshal(body, &rawResponse); err != nil {
-		log.Errorf("Error parsing JSON: %s", err)
 		return err
 	}
 

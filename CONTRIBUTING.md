@@ -30,7 +30,7 @@ promtool check config --lint all --lint-fatal examples/prometheus.yml
 
 No `--collector.<name>` flag exists here, because every collector runs on each scrape and `--controld.business-mode` changes what four of the seven read rather than whether they run. The organization collector is the one whose output the flag decides, because it emits nothing at all in personal mode.
 
-A collector that cannot reach Control D returns without emitting a sample, so its whole family is absent for that scrape and no path publishes a `0` standing for a failed call. The organization collector does not publish a `0` either. It builds its metrics before it reads the fetch error, so a failed fetch dereferences a nil response and the recovered panic answers the scrape `500` with no family.
+A collector that cannot reach Control D returns without emitting a sample, so its whole family is absent for that scrape and no path publishes a `0` standing for a failed call. The organization collector does not publish a `0` either. It reads the fetch error before it builds anything, so a failed fetch withholds its families and leaves the collectors behind it to publish.
 
 ## Documentation
 

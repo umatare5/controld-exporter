@@ -73,7 +73,7 @@ func (c *Collector) collectBillingSubscriptions(ch chan<- prometheus.Metric) {
 	}
 
 	if isSubscriptionsEmpty(subscriptions) {
-		c.log.warnEmptyData(billingPaymentsLogPrefix, subscriptions)
+		c.log.warnEmptyData(billingSubscriptionsLogPrefix, subscriptions)
 		return
 	}
 
