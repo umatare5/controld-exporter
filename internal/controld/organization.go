@@ -27,7 +27,7 @@ type OrganizationResponse struct {
 			Type                 string   `json:"type"`                   // Type of the organization
 			BillingMethod        int      `json:"billing_method"`         // Billing method
 			Status               int      `json:"status"`                 // Status of the organization
-			StatsEndpoint        string   `json:"statsEndpoint"`          // Endpoint for statistics
+			StatsEndpoint        string   `json:"stats_endpoint"`         // Endpoint for statistics
 			ContactEmail         string   `json:"contact_email"`          // Contact email address
 			OktaDomain           string   `json:"okta_domain"`            // Okta domain
 			TrialEnd             string   `json:"trial_end"`              // Trial end date
@@ -71,12 +71,11 @@ type SubOrganizationsResponse struct {
 		SubOrganizations []struct {
 			ParentProfile        string `json:"parent_profile"`         // Parent profile ID
 			ContactName          string `json:"contact_name"`           // Name of the contact person
-			StatsEndpoint        string `json:"statsEndpoint"`          // Endpoint for statistics
+			StatsEndpoint        string `json:"stats_endpoint"`         // Endpoint for statistics
 			SiemEnabled          int    `json:"siem_enabled"`           // Indicates if SIEM is enabled
 			AllowOverrides       string `json:"allow_overrides"`        // Indicates if overrides are allowed
 			MaxLegacyResolvers   int    `json:"max_legacy_resolvers"`   // Maximum number of legacy resolvers
 			MaxProfiles          int    `json:"max_profiles"`           // Maximum number of profiles
-			ParentOrg            string `json:"parent_org"`             // Parent organization ID
 			TwofaReq             int    `json:"twofa_req"`              // Indicates if 2FA is required
 			ContactEmail         string `json:"contact_email"`          // Contact email address
 			Status               int    `json:"status"`                 // Status of the sub-organization
@@ -86,7 +85,11 @@ type SubOrganizationsResponse struct {
 			PK                   string `json:"PK"`                     // Primary key of the sub-organization
 			StatusPrinted        string `json:"status_printed"`         // Human-readable status
 			BillingMethodPrinted string `json:"billing_method_printed"` // Human-readable billing method
-			SubOrganizations     struct {
+			ParentOrg            struct {
+				Name string `json:"name"` // Name of the parent organization
+				PK   string `json:"PK"`   // Primary key of the parent organization
+			} `json:"parent_org"`
+			SubOrganizations struct {
 				Count int `json:"count"` // Number of sub-organizations
 				Max   int `json:"max"`   // Maximum number of sub-organizations
 			} `json:"sub_organizations"`

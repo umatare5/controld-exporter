@@ -1,6 +1,8 @@
 // Package controld provides a client for interacting with the ControlD API.
 package controld
 
+import "errors"
+
 const (
 	BillingPaymentsEndpoint      = "/billing/payments"      // Endpoint for retrieving billing payments
 	BillingSubscriptionsEndpoint = "/billing/subscriptions" // Endpoint for retrieving billing subscriptions
@@ -79,6 +81,9 @@ type BillingSubscriptionsResponse struct {
 func (t *Client) GetBillingPayments() (*BillingPaymentsResponse, error) {
 	var data BillingPaymentsResponse
 	err := t.sendAPIRequest(BillingPaymentsEndpoint, nil, &data)
+	if errors.Is(err, ErrNoData) {
+		return &data, nil
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -94,6 +99,9 @@ func (t *Client) GetBillingPayments() (*BillingPaymentsResponse, error) {
 func (t *Client) GetBillingSubscriptions() (*BillingSubscriptionsResponse, error) {
 	var data BillingSubscriptionsResponse
 	err := t.sendAPIRequest(BillingSubscriptionsEndpoint, nil, &data)
+	if errors.Is(err, ErrNoData) {
+		return &data, nil
+	}
 	if err != nil {
 		return nil, err
 	}

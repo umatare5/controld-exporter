@@ -1,6 +1,8 @@
 // Package controld provides a client for interacting with the ControlD API.
 package controld
 
+import "encoding/json"
+
 const (
 	ProfilesEndpoint = "/profiles" // Endpoint for retrieving profiles
 )
@@ -35,8 +37,8 @@ type ProfilesResponse struct {
 				Opt struct {
 					Count int `json:"count"` // Count of options
 					Data  []struct {
-						PK    string  `json:"PK"`    // Primary key of the option
-						Value float64 `json:"value"` // Value of the option
+						PK    string          `json:"PK"`    // Primary key of the option
+						Value json.RawMessage `json:"value"` // Number or string, per option
 					} `json:"data"`
 				} `json:"opt"`
 			} `json:"profile"`

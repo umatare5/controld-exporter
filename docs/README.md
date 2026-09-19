@@ -38,17 +38,16 @@ A Control D call that fails withholds the series behind it — never `0`, never 
 - **Failure is scoped to the call** — one non-2xx status, one JSON error or one `"success": false` body withholds only the series that call feeds.
 - **A collector can fail in part** — billing reads payments and subscriptions independently, and a sub-organization whose request fails is skipped while the others still publish.
 - **Empty is not zero** — an account with no payment, device or profile publishes no series at all.
+- **Empty can arrive as a 404** — Control D answers an empty collection with `404` and error code `40401`, which the client reads as empty rather than as a failure.
 - **A vanished field is zero** — a field the API stops sending decodes to `0` and publishes as `0`, because only a transport, status, envelope or type error withholds a family.
 - **Staleness closes the gap** — Prometheus marks a series stale after the scrape that stops carrying it, so a dashboard shows a break rather than a flat line.
 - **Only the log names the cause** — no series records that a collector failed.
 
 > [!IMPORTANT]
-> `/network` and `/services/categories` need no token, so their families keep publishing after a key is revoked and a scrape still answers 200. `absent(controld_network_health_code)`, which `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) reads, therefore cannot see a revoked key. Alert on a family the token gates and the account fills, such as `controld_profile_rules_total`, because an empty account is silent too.
+> `/network` and `/services/categories` need no token, so their families keep publishing after a key is revoked and a scrape still answers 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) reads a token-gated family beside a token-free one for that reason. Absence over either alone misses what the other catches, and an account holding no profile fires it as a revoked key does.
 
 > [!WARNING]
-> Business mode is the exception to absence. The organization collector runs first and builds its metrics before it reads the fetch error, so a failed `/organizations/organization` call dereferences a nil response and panics. The Prometheus client recovers the panic, which leaves the scrape with no family at all: `/metrics` answers 500, `up` drops to 0, and the six collectors behind it never run.
->
-> A failed `/organizations/sub_organizations` call panics the same way, but only after the five `controld_organization_*` metrics are on the channel, so that scrape answers 200 carrying those alone.
+> A failed `/organizations/organization` call withholds more than the organization families, because the endpoint, profile, service and stats collectors read that same response and skip with it. Business mode then answers 200 carrying the billing and network families alone, and each of the five re-requests the failed endpoint rather than sharing one failure.
 
 ### Counter Semantics
 
@@ -75,8 +74,8 @@ Business mode reads a sub-organization by repeating the same request under an `X
 The exporter publishes no series about itself: no scrape duration, no error counter, no gauge.
 
 - **No runtime metrics either** — the Go and process collectors are registered on a registry no handler serves, so `/metrics` carries `controld_` series alone.
-- **Failure is read from absence** — a personal-mode scrape whose collectors all failed still answers 200 with an empty body, so `up` stays 1 and only a token-gated family shows it.
-- **Business mode answers 500 instead** — a failed organization fetch loses the whole exposition.
+- **Failure is read from absence** — a scrape whose collectors all failed still answers 200 with an empty body, so `up` stays 1 and only an absent family shows it.
+- **Both modes read alike** — a failed organization fetch withholds the families it feeds rather than the exposition, because the collector returns before it builds a sample.
 - **The log carries the diagnosis** — the failing endpoint and its status are logged at `error`, and `--log.level debug` adds the request URI and the response body as received.
 
 ### Dashboards

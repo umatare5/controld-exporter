@@ -81,7 +81,7 @@ Every collector runs on each scrape, and no flag turns one off.
 - `--log.level debug` adds the request URI and the response body of every call.
 
 > [!IMPORTANT]
-> The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one every scrape answers `500` and publishes nothing at all. See [Account Scope](docs/README.md#account-scope).
+> The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one the scrape answers 200 carrying the billing and network families alone. See [Account Scope](docs/README.md#account-scope).
 
 ## Endpoints
 
@@ -116,7 +116,7 @@ The series a dashboard usually starts from:
 > See [`docs/README.md`](docs/README.md) for the absence, counter and account-scope rules every collector shares.
 
 > [!IMPORTANT]
-> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. Alert on a family the token gates and the account fills, such as `controld_profile_rules_total`, because `absent(controld_network_health_code)` cannot see that case.
+> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) therefore reads a token-gated family beside the token-free one, because absence over either alone misses what the other catches.
 
 ### Exporter Health Metrics
 
@@ -127,7 +127,7 @@ The exporter publishes no series about itself, so a failed scrape shows as missi
 - **Absence is the signal** — a failing collector withholds its family instead of publishing `0`.
 
 > [!NOTE]
-> See [Exporter Health](docs/README.md#exporter-health) for how each mode fails, and [Absence](docs/README.md#absence) for the rules each collector follows.
+> See [Exporter Health](docs/README.md#exporter-health) for what a failed scrape looks like, and [Absence](docs/README.md#absence) for the rules each collector follows.
 
 ## Examples
 
