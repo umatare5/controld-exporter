@@ -72,16 +72,15 @@ The API is unversioned and Control D ships breaking changes without notice, so a
 A missing or invalid token answers `400` with error `40001`, and a token without access to an endpoint answers `403` with `40301`. The first three digits restate the HTTP status, so the code carries a reason the status does not.
 
 - **Two endpoints need no token** — `/network` and `/services/categories` declare `security: []` and answer a revoked key, which is why absence over their families cannot detect one. See [Absence](docs/README.md#absence).
-- **A sub-organization is read by impersonation** — the parent token repeats the device, profile, category and report calls under `X-Force-Org-Id`. Cost grows with the account, not the collector list. See [Account Scope](docs/README.md#account-scope).
+- **A sub-organization is read by impersonation** — the parent token repeats the device, profile and category calls under `X-Force-Org-Id`. Cost grows with the account, not the collector list. See [Account Scope](docs/README.md#account-scope).
 - **The scrape interval is the only throttle** — no response carries `X-RateLimit-*` or `Retry-After`, and nothing prevents a second scrape from overlapping the first. See [Scrape Path](docs/README.md#scrape-path).
 
 ### Analytics
 
-DNS logging is a per-endpoint setting rather than an account-wide one, and a new endpoint starts with it off, so an account with real traffic can report nothing.
+Query reporting lives on a separate `analytics.controld.com` host that rejects the API key, so this exporter publishes no query series at all.
 
-- **Absence has more than one reading** — a failed report call withholds `controld_stats_last_queries_count` and logs at `error`. A business-mode organization failure withholds five collectors' families at once, because four of them read that one response. See [Absence](docs/README.md#absence).
-- **Both enums are undocumented** — `stats` reads `0` as off, `1` as basic and `2` as full, and a verdict code this exporter predates folds into `unknown`. See [Labels](docs/collectors.md#labels).
-- **The analytics host follows data residency** — the organization response names the region label that fronts `analytics.controld.com`, while personal mode hardcodes `america`. That host answers a plain-text `404` rather than the JSON envelope, so the client checks the status before it decodes.
+- **The report route is session-gated** — `/v2/statistic/timeseries/action` answers `401` to a key the main API accepts, and the route it replaced answers a plain-text `404`. No credential the exporter can hold reaches it.
+- **The device enum is undocumented** — `stats` reads `0` as off, `1` as basic and `2` as full, and a new endpoint starts at off, so an account with real traffic can still report nothing.
 
 ### Anycast
 

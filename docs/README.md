@@ -14,8 +14,8 @@ Reference pages for controld-exporter. The [README](../README.md) covers getting
 Every scrape reads Control D rather than a cached snapshot, so its latency is the API's.
 
 - **Nothing survives a scrape** — the handler builds a registry and a collector per request.
-- **Sequential** — the seven collectors share one goroutine, so a slow call delays the rest.
-- **The cost is the account's** — personal mode makes 7 requests, business mode 9 plus 4 per sub-org.
+- **Sequential** — the six collectors share one goroutine, so a slow call delays the rest.
+- **The cost is the account's** — personal mode makes 6 requests, business mode 8 plus 3 per sub-org.
 - **Unbounded per request** — the API client carries no timeout and no retry.
 - **Overlap is not prevented** — a second scrape opens its own requests against the same key.
 - **The interval is the only throttle** — no response carries `X-RateLimit-*` or `Retry-After`.
@@ -47,16 +47,14 @@ A Control D call that fails withholds the series behind it — never `0`, never 
 > `/network` and `/services/categories` need no token, so their families keep publishing after a key is revoked and a scrape still answers 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) reads a token-gated family beside a token-free one for that reason. Absence over either alone misses what the other catches, and an account holding no profile fires it as a revoked key does.
 
 > [!WARNING]
-> A failed `/organizations/organization` call withholds more than the organization families, because the endpoint, profile, service and stats collectors read that same response and skip with it. Business mode then answers 200 carrying the billing and network families alone, and each of the five re-requests the failed endpoint rather than sharing one failure.
+> A failed `/organizations/organization` call withholds more than the organization families, because the endpoint, profile and service collectors read that same response and skip with it. Business mode then answers 200 carrying the billing and network families alone, and each of the four re-requests the failed endpoint rather than sharing one failure.
 
-### Counter Semantics
+### Metric Types
 
-One series is declared a counter, and it does not behave as one: `controld_stats_last_queries_count` carries a one-minute bucket of the query report, so it rises and falls with traffic.
+Every series is a gauge, because each one restates a configuration count or a status code in full rather than accumulating.
 
-- **`rate()` reads it as a reset** — a bucket smaller than the last looks like a counter restart.
-- **Ratios are safe** — one verdict over the sum of all of them needs no range.
-- **Every other series is a gauge** — a configuration count or a status code, restated in full.
-- **The `_total` suffix is not a counter** — nineteen gauge families carry it.
+- **Nothing here is a counter** — no series is registered as one, so `rate()` and `increase()` have nothing to read.
+- **The `_total` suffix is not a counter** — nineteen gauge families carry it, which OpenMetrics reserves for counters.
 
 ### Account Scope
 
@@ -80,7 +78,6 @@ The exporter publishes no series about itself: no scrape duration, no error coun
 
 ### Dashboards
 
-[`examples/control-d-exporter-dashboard.json`](../examples/control-d-exporter-dashboard.json) is a Grafana schema covering both modes. Its `$orgID`, `$profileName` and `$queryType` variables are populated from the label values the exporter publishes, so a personal-mode target offers `000000000` alone.
+[`examples/control-d-exporter-dashboard.json`](../examples/control-d-exporter-dashboard.json) is a Grafana schema covering both modes. Its `$orgID` and `$profileName` variables are populated from the label values the exporter publishes, so a personal-mode target offers `000000000` alone.
 
 - **Currencies are hard-coded** — the billing panels name `USD` and `JPY`, so an account settling in another currency needs the expression edited.
-- **The blocking-rate panels use `increase()`** — which the counter semantics above make unreliable, and the ratio form in the alert rules is what to replace it with.

@@ -15,7 +15,7 @@ Reproduction needs the flags in force, whether `--controld.business-mode` was se
 
 ## Exposure
 
-This exporter holds one Control D API token, reads the whole account under it and publishes that account's own names, so `/metrics` is largely a copy of the configuration. The exception is `controld_stats_last_queries_count`, which counts the last minute's DNS queries by verdict.
+This exporter holds one Control D API token, reads the whole account under it and publishes that account's own names, so `/metrics` is largely a copy of the configuration.
 
 - **Token** — `CTRLD_API_KEY` passes it out of the environment.
 - **Command line** — `--controld.api-key` puts it there instead.
@@ -39,14 +39,9 @@ Nothing leaves the host but the calls one scrape makes, and every one of them ca
 
 ### API
 
-- **Host** — every call but the query report goes to `https://api.controld.com`.
+- **Host** — every call goes to `https://api.controld.com`.
 - **Sub-organizations** — business mode repeats the device, profile and category calls for each.
 - **Scale** — a scrape's request count therefore grows with the account.
-
-### Analytics
-
-- **Host** — the query report goes to a region label in front of `analytics.controld.com`.
-- **Business mode** — the organization response supplies that label, and every sub-org reuses it.
 
 ### Transport
 
