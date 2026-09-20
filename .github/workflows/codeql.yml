@@ -15,4 +15,4 @@ permissions:
 
 jobs:
   codeql:
-    uses: umatare5/common/.github/workflows/codeql.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    uses: umatare5/common/.github/workflows/codeql.yml@9056df6d56f55ebb1866ecb9cd24b6153e5a19f8 # v0.21.1
