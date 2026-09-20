@@ -118,13 +118,6 @@ var (
 		nil,
 	)
 
-	controldStatsLastQueriesCount = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "stats", "last_queries_count"),
-		"Count of DNS queries by type (redirect, success, blocked).",
-		[]string{"type", labelOrgID},
-		nil,
-	)
-
 	controldOrganizationMembersTotal = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "organization", "members_total"),
 		"Number of members in an organization.",
@@ -224,7 +217,6 @@ func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- controldProfileRulesTotal
 	ch <- controldProfileServicesTotal
 	ch <- controldServiceCategoriesTotal
-	ch <- controldStatsLastQueriesCount
 	ch <- controldOrganizationMembersTotal
 	ch <- controldOrganizationProfilesTotal
 	ch <- controldOrganizationRoutersTotal
@@ -244,7 +236,6 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 	c.collectNetworkMetrics(ch)
 	c.collectProfileMetrics(ch)
 	c.collectServiceMetrics(ch)
-	c.collectStatsMetrics(ch)
 }
 
 // isRunningInPersonalMode checks if the collector is running in personal mode.
