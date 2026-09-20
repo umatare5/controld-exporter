@@ -814,467 +814,6 @@
         "x": 0,
         "y": 20
       },
-      "id": 42,
-      "panels": [],
-      "title": "Statistics",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "grafanacloud-prom"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "index": 0,
-                  "text": "0"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "blocked"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 8,
-        "x": 0,
-        "y": 21
-      },
-      "id": 40,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "percentChangeColorMode": "standard",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "value",
-        "wideLayout": true
-      },
-      "pluginVersion": "12.0.0-86249",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "grafanacloud-prom"
-          },
-          "editorMode": "code",
-          "expr": "100 * \n  sum(increase(controld_stats_last_queries_count{type=\"blocked\"}[5m]))\n  / sum(increase(controld_stats_last_queries_count[5m]))",
-          "legendFormat": "value",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "Blocking rate over the past 5 mins",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "grafanacloud-prom"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "index": 0,
-                  "text": "0"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "Reqs"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "blocked"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "redirected"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "bypassed"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "unknown"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "purple",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "000000000: blocked"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "red",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "000000000: bypassed"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "green",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "000000000: redirected"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "yellow",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "000000000: unknown"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "purple",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 11,
-        "w": 16,
-        "x": 8,
-        "y": 21
-      },
-      "id": 6,
-      "options": {
-        "legend": {
-          "calcs": ["lastNotNull", "max"],
-          "displayMode": "table",
-          "placement": "right",
-          "showLegend": true
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.0-86249",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "grafanacloud-prom"
-          },
-          "editorMode": "code",
-          "expr": "controld_stats_last_queries_count{orgId=~\"$orgID\", type=~\"$queryType\"}",
-          "legendFormat": "{{orgId}}: {{type}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "DNS Query Count by Type",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "grafanacloud-prom"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 65,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 0,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "dashed"
-            }
-          },
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "index": 0,
-                  "text": "0"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "max": 100,
-          "min": 0,
-          "thresholds": {
-            "mode": "percentage",
-            "steps": [
-              {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 50
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "value"
-            },
-            "properties": [
-              {
-                "id": "color",
-                "value": {
-                  "fixedColor": "purple",
-                  "mode": "fixed"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 8,
-        "x": 0,
-        "y": 24
-      },
-      "id": 41,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "tooltip": {
-          "hideZeros": false,
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "12.0.0-86249",
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "grafanacloud-prom"
-          },
-          "editorMode": "code",
-          "expr": "100 * \n  sum(increase(controld_stats_last_queries_count{type=\"blocked\"}[5m]))\n  / sum(increase(controld_stats_last_queries_count[5m]))",
-          "legendFormat": "value",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "",
-      "type": "timeseries"
-    },
-    {
-      "collapsed": false,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 32
-      },
       "id": 20,
       "panels": [],
       "title": "Configuration",
@@ -1317,7 +856,7 @@
         "h": 9,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 21
       },
       "id": 24,
       "options": {
@@ -1495,7 +1034,7 @@
         "h": 12,
         "w": 13,
         "x": 0,
-        "y": 42
+        "y": 30
       },
       "id": 28,
       "options": {
@@ -1674,7 +1213,7 @@
         "h": 12,
         "w": 11,
         "x": 13,
-        "y": 42
+        "y": 30
       },
       "id": 21,
       "options": {
@@ -1713,7 +1252,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 54
+        "y": 42
       },
       "id": 12,
       "panels": [],
@@ -1757,7 +1296,7 @@
         "h": 4,
         "w": 5,
         "x": 0,
-        "y": 55
+        "y": 43
       },
       "id": 32,
       "options": {
@@ -1831,7 +1370,7 @@
         "h": 4,
         "w": 5,
         "x": 5,
-        "y": 55
+        "y": 43
       },
       "id": 29,
       "options": {
@@ -1905,7 +1444,7 @@
         "h": 4,
         "w": 5,
         "x": 10,
-        "y": 55
+        "y": 43
       },
       "id": 30,
       "options": {
@@ -1979,7 +1518,7 @@
         "h": 4,
         "w": 5,
         "x": 15,
-        "y": 55
+        "y": 43
       },
       "id": 33,
       "options": {
@@ -2053,7 +1592,7 @@
         "h": 4,
         "w": 4,
         "x": 20,
-        "y": 55
+        "y": 43
       },
       "id": 35,
       "options": {
@@ -2096,7 +1635,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 59
+        "y": 47
       },
       "id": 34,
       "panels": [],
@@ -2140,7 +1679,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 60
+        "y": 48
       },
       "id": 36,
       "options": {
@@ -2214,7 +1753,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 60
+        "y": 48
       },
       "id": 37,
       "options": {
@@ -2288,7 +1827,7 @@
         "h": 4,
         "w": 12,
         "x": 0,
-        "y": 64
+        "y": 52
       },
       "id": 38,
       "options": {
@@ -2362,7 +1901,7 @@
         "h": 4,
         "w": 12,
         "x": 12,
-        "y": 64
+        "y": 52
       },
       "id": 39,
       "options": {
@@ -2442,27 +1981,6 @@
         "query": {
           "qryType": 1,
           "query": "label_values(controld_profile_preset_filters_total,name)",
-          "refId": "PrometheusVariableQueryEditor-VariableQuery"
-        },
-        "refresh": 1,
-        "regex": "",
-        "type": "query"
-      },
-      {
-        "allowCustomValue": false,
-        "current": {
-          "text": "All",
-          "value": ["$__all"]
-        },
-        "definition": "label_values(controld_stats_last_queries_count,type)",
-        "includeAll": true,
-        "label": "Query Type",
-        "multi": true,
-        "name": "queryType",
-        "options": [],
-        "query": {
-          "qryType": 1,
-          "query": "label_values(controld_stats_last_queries_count,type)",
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
