@@ -64,7 +64,6 @@ Every collector runs on each scrape, and no flag turns one off.
 | `network`      | Service status per point of presence                |
 | `profile`      | Filter, rule and option counts per profile          |
 | `service`      | Services in each category                           |
-| `stats`        | DNS queries per verdict                             |
 | `organization` | Members, users, routers and profiles, business mode |
 
 > [!NOTE]
@@ -96,24 +95,23 @@ Nothing is cached between scrapes, so a scrape's cost grows with the account rat
 
 Every series is namespaced `controld_`, and the catalogue lives in `docs/`:
 
-| Page                                 | Covers                                         |
-| :----------------------------------- | :--------------------------------------------- |
-| **[Collectors](docs/collectors.md)** | The seven collectors, their metrics and labels |
-| **[Help](docs/help.md)**             | Flags and defaults, as `--help` prints         |
+| Page                                 | Covers                                       |
+| :----------------------------------- | :------------------------------------------- |
+| **[Collectors](docs/collectors.md)** | The six collectors, their metrics and labels |
+| **[Help](docs/help.md)**             | Flags and defaults, as `--help` prints       |
 
 The series a dashboard usually starts from:
 
-| Collector      | Metric                              | Type    | Description                        |
-| :------------- | :---------------------------------- | :------ | :--------------------------------- |
-| `network`      | `controld_network_health_code`      | Gauge   | Status of one service at one node  |
-| `billing`      | `controld_billing_status`           | Gauge   | Transaction status of one payment  |
-| `endpoint`     | `controld_endpoint_clients_total`   | Gauge   | Clients counted against one device |
-| `profile`      | `controld_profile_rules_total`      | Gauge   | Rules on one profile               |
-| `stats`        | `controld_stats_last_queries_count` | Counter | DNS queries of one verdict         |
-| `organization` | `controld_organization_users_total` | Gauge   | Users of the organization          |
+| Collector      | Metric                              | Type  | Description                        |
+| :------------- | :---------------------------------- | :---- | :--------------------------------- |
+| `network`      | `controld_network_health_code`      | Gauge | Status of one service at one node  |
+| `billing`      | `controld_billing_status`           | Gauge | Transaction status of one payment  |
+| `endpoint`     | `controld_endpoint_clients_total`   | Gauge | Clients counted against one device |
+| `profile`      | `controld_profile_rules_total`      | Gauge | Rules on one profile               |
+| `organization` | `controld_organization_users_total` | Gauge | Users of the organization          |
 
 > [!NOTE]
-> See [`docs/README.md`](docs/README.md) for the absence, counter and account-scope rules every collector shares.
+> See [`docs/README.md`](docs/README.md) for the absence and account-scope rules every collector shares.
 
 > [!IMPORTANT]
 > `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) therefore reads a token-gated family beside the token-free one, because absence over either alone misses what the other catches.
@@ -148,7 +146,7 @@ Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporte
 ![Control D Exporter Dashboard](examples/control-d-exporter-dashboard.png)
 
 > [!NOTE]
-> The billing panels name `USD` and `JPY`, and blocking-rate panels use `increase()`. See [Dashboards](docs/README.md#dashboards).
+> The billing panels name `USD` and `JPY`, so an account settling in another currency needs them edited. See [Dashboards](docs/README.md#dashboards).
 
 ## Contributing
 

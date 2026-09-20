@@ -2,51 +2,49 @@
 
 Every collector runs on each scrape and no flag turns one off. `--controld.business-mode` changes what most of them read rather than whether they run: personal mode reads the account the key belongs to, business mode the organization beneath it.
 
-A collector that cannot reach Control D withholds its series for that scrape — the [absence rules](README.md#absence) carry what that looks like in a query, and the one collector that breaks them.
+A collector that cannot reach Control D withholds its series for that scrape — the [absence rules](README.md#absence) carry what that looks like in a query, and how wide one failed call reaches.
 
 ## Metrics
 
-| Collector      | Metric                                             | Type    | Description                             |
-| :------------- | :------------------------------------------------- | :------ | :-------------------------------------- |
-| `billing`      | `controld_billing_status`                          | Gauge   | Transaction status of one payment       |
-| `billing`      | `controld_billing_refunded`                        | Gauge   | Refund status of one payment            |
-| `billing`      | `controld_billing_subscription_amount_total`       | Gauge   | Amount of one payment, per currency     |
-| `billing`      | `controld_billing_subscription_nextbill_timestamp` | Gauge   | Next billing instant, in Unix seconds   |
-| `endpoint`     | `controld_endpoint_clients_total`                  | Gauge   | Clients counted against one device      |
-| `network`      | `controld_network_health_code`                     | Gauge   | Service status of one point of presence |
-| `profile`      | `controld_profile_preset_filters_total`            | Gauge   | Preset filters on one profile           |
-| `profile`      | `controld_profile_content_filters_total`           | Gauge   | Content filters on one profile          |
-| `profile`      | `controld_profile_ip_filters_total`                | Gauge   | Content filters again, see below        |
-| `profile`      | `controld_profile_rules_total`                     | Gauge   | Rules on one profile                    |
-| `profile`      | `controld_profile_services_total`                  | Gauge   | Service filters on one profile          |
-| `profile`      | `controld_profile_groups_total`                    | Gauge   | Group filters on one profile            |
-| `profile`      | `controld_profile_enabled_option_total`            | Gauge   | Enabled options on one profile          |
-| `service`      | `controld_service_categories_total`                | Gauge   | Services in one category                |
-| `stats`        | `controld_stats_last_queries_count`                | Counter | DNS queries of one verdict              |
-| `organization` | `controld_organization_members_total`              | Gauge   | Members of the organization             |
-| `organization` | `controld_organization_profiles_total`             | Gauge   | Profiles of the organization            |
-| `organization` | `controld_organization_users_total`                | Gauge   | Users of the organization               |
-| `organization` | `controld_organization_routers_total`              | Gauge   | Routers of the organization             |
-| `organization` | `controld_organization_sub_orgs_total`             | Gauge   | Sub-organizations beneath it            |
-| `organization` | `controld_sub_organization_members_total`          | Gauge   | Members of one sub-organization         |
-| `organization` | `controld_sub_organization_profiles_total`         | Gauge   | Profiles of one sub-organization        |
-| `organization` | `controld_sub_organization_users_total`            | Gauge   | Users of one sub-organization           |
-| `organization` | `controld_sub_organization_routers_total`          | Gauge   | Routers of one sub-organization         |
+| Collector      | Metric                                             | Type  | Description                             |
+| :------------- | :------------------------------------------------- | :---- | :-------------------------------------- |
+| `billing`      | `controld_billing_status`                          | Gauge | Transaction status of one payment       |
+| `billing`      | `controld_billing_refunded`                        | Gauge | Refund status of one payment            |
+| `billing`      | `controld_billing_subscription_amount_total`       | Gauge | Amount of one payment, per currency     |
+| `billing`      | `controld_billing_subscription_nextbill_timestamp` | Gauge | Next billing instant, in Unix seconds   |
+| `endpoint`     | `controld_endpoint_clients_total`                  | Gauge | Clients counted against one device      |
+| `network`      | `controld_network_health_code`                     | Gauge | Service status of one point of presence |
+| `profile`      | `controld_profile_preset_filters_total`            | Gauge | Preset filters on one profile           |
+| `profile`      | `controld_profile_content_filters_total`           | Gauge | Content filters on one profile          |
+| `profile`      | `controld_profile_ip_filters_total`                | Gauge | IP filters on one profile               |
+| `profile`      | `controld_profile_rules_total`                     | Gauge | Rules on one profile                    |
+| `profile`      | `controld_profile_services_total`                  | Gauge | Service filters on one profile          |
+| `profile`      | `controld_profile_groups_total`                    | Gauge | Group filters on one profile            |
+| `profile`      | `controld_profile_enabled_option_total`            | Gauge | Enabled options on one profile          |
+| `service`      | `controld_service_categories_total`                | Gauge | Services in one category                |
+| `organization` | `controld_organization_members_total`              | Gauge | Members of the organization             |
+| `organization` | `controld_organization_profiles_total`             | Gauge | Profiles of the organization            |
+| `organization` | `controld_organization_users_total`                | Gauge | Users of the organization               |
+| `organization` | `controld_organization_routers_total`              | Gauge | Routers of the organization             |
+| `organization` | `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it            |
+| `organization` | `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization         |
+| `organization` | `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization        |
+| `organization` | `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization           |
+| `organization` | `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization         |
 
 ## Labels
 
-No label is shared across every family. The billing series key on the payment and the network series on the point of presence, while the rest key on a Control D object or a query verdict, plus the account scope it was read under.
+No label is shared across every family. The billing series key on the payment and the network series on the point of presence, while the rest key on a Control D object, plus the account scope it was read under.
 
-| Label                      | Description                                                  |
-| :------------------------- | :----------------------------------------------------------- |
-| `id`                       | The payment's or subscription's Control D primary key        |
-| `currency`                 | The ISO code the amount beside it is denominated in          |
-| `name`                     | The object's own name, or the category's key on `service`    |
-| `orgId`                    | The account scope the series was read under                  |
-| `city_name`/`country_name` | Where Control D places the point of presence                 |
-| `iata_code`                | The airport code Control D identifies that node by           |
-| `service_name`             | `api`, `dns` or `proxy`, one series each per node            |
-| `type`                     | The verdict a one-minute bucket of queries was counted under |
+| Label                      | Description                                               |
+| :------------------------- | :-------------------------------------------------------- |
+| `id`                       | The payment's or subscription's Control D primary key     |
+| `currency`                 | The ISO code the amount beside it is denominated in       |
+| `name`                     | The object's own name, or the category's key on `service` |
+| `orgId`                    | The account scope the series was read under               |
+| `city_name`/`country_name` | Where Control D places the point of presence              |
+| `iata_code`                | The airport code Control D identifies that node by        |
+| `service_name`             | `api`, `dns` or `proxy`, one series each per node         |
 
 **`name`**
 
@@ -57,10 +55,6 @@ Control D does not require a device or profile name to be unique, and the export
 **`orgId`**
 
 Personal mode fills it with `000000000`, a value no Control D organization holds, so a dashboard written against it survives being pointed at a business account. Business mode fills it with the organization's own primary key on the series read for the account, and with a sub-organization's key on the series read for that sub-organization. It never carries the API key, which travels in the `Authorization` header alone.
-
-**`type`**
-
-The report returns a verdict code rather than a name, and the exporter maps `0` to `blocked`, `1` to `bypassed` and `3` to `redirected`. Every other code folds into `unknown`, so a verdict Control D adds after this release lands there rather than opening a series nobody is alerting on. Two unseen codes in one bucket collide on that one label value, and the registry keeps whichever arrived first.
 
 ## Specifications
 
@@ -95,25 +89,12 @@ the value is the `api`, `dns` and `pxy` integer each node publishes, passed thro
 
 they count what each profile has configured rather than what it matched, so they move when an operator edits a profile and stay flat under any amount of traffic.
 
-> [!IMPORTANT]
-> `controld_profile_ip_filters_total` publishes the content-filter count rather than the IP-filter count, so it duplicates `controld_profile_content_filters_total` on every profile. Read the IP-filter count from the Control D dashboard until this is corrected.
-
-**`controld_stats_last_queries_count`**
-
-it carries one one-minute bucket of the DNS query report rather than a running total, so its value falls whenever traffic falls and `rate()` over it reads as a counter reset. Take ratios from the raw values instead.
-
-- The report is fetched with a start timestamp one minute behind the scrape, so a scrape interval other than 60s either double-counts a bucket or skips one.
-- It is declared to Prometheus as a counter, which is what makes the `_count` suffix and the type disagree; the alert rules in [`examples/prometheus_alert_rules.yml`](../examples/prometheus_alert_rules.yml) are written around that.
-- Its HELP text names `redirect`, `success` and `blocked`, of which only `blocked` is emitted.
-- Control D withdrew the analytics endpoint this series reads, so it has published nothing since then and the failure appears in the log as a non-2xx status rather than as a zero.
-
 **the nine `controld_organization_*` and `controld_sub_organization_*` series**
 
 they need `--controld.business-mode` and an API key belonging to an organization, and neither is published in personal mode at all — a personal-mode dashboard shows no data rather than zeros.
 
 - The four `controld_sub_organization_*` families come from one sub-organization listing the collector reads in memory, so they cost one request however many sub-organizations exist. The per-sub-organization cost is in the device, profile, service and query-report calls, which repeat once each under `X-Force-Org-Id`.
 - Both organization responses are fetched once per scrape and dropped after it, and only a success is shared, so a failing call repeats for each of the five collectors that read it.
-- The main organization's response supplies the region label the `stats` collector puts in front of `analytics.controld.com`. It supplies that label for the sub-organizations too, so one in another region is read from the parent's host.
 
 > [!WARNING]
-> This collector runs first and hands its response to four others, so a failed `/organizations/organization` call costs more than the nine families here. The endpoint, profile, service and stats collectors read the same response and skip with it. The scrape still answers 200, `up` stays 1, and only the log names the endpoint and its status.
+> This collector runs first and hands its response to three others, so a failed `/organizations/organization` call costs more than the nine families here. The endpoint, profile and service collectors read the same response and skip with it. The scrape still answers 200, `up` stays 1, and only the log names the endpoint and its status.

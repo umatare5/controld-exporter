@@ -33,8 +33,3 @@ func isServiceCategoriesEmpty(categories *controld.ServiceCategoriesResponse) bo
 func isProfilesEmpty(profiles *controld.ProfilesResponse) bool {
 	return profiles == nil || len(profiles.Body.Profiles) == 0
 }
-
-// isQueryStatsEmpty checks if the queries array in the response is empty.
-func isQueryStatsEmpty(stats *controld.QueryStatsResponse) bool {
-	return stats == nil || len(stats.Body.Queries) == 0
-}

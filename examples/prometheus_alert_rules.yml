@@ -75,29 +75,3 @@ groups:
             answering while the account itself stays healthy. Narrow
             country_name and service_name to the nodes the endpoints resolve
             against.
-
-      - alert: QueryBlockingRateHigh
-        expr: >-
-          100 * sum by (orgId) (controld_stats_last_queries_count{type="blocked"})
-          / sum by (orgId) (controld_stats_last_queries_count) > 50
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Control D is blocking over half the queries in org {{ $labels.orgId }}"
-          description: >-
-            Each series carries the most recent one-minute bucket rather than a
-            running total, so the ratio is taken from the raw values and rate()
-            over them is meaningless. A filter list update is the usual cause.
-
-      - alert: UnknownQueryVerdictSeen
-        expr: controld_stats_last_queries_count{type="unknown"} > 0
-        for: 15m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Control D returned a verdict controld-exporter cannot name"
-          description: >-
-            The exporter maps verdict 0, 1 and 3 to blocked, bypassed and
-            redirected, and folds every other code into unknown, so this fires
-            when Control D adds a verdict the exporter predates.

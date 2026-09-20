@@ -6,7 +6,17 @@ This changelog starts at v1.1.0; earlier releases are described by their [releas
 
 ## [Unreleased]
 
-This release keeps a failed or empty Control D response from costing the scrape, and gives the shipped alert rule a family a revoked key can silence. It also links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages. No metric, label, flag or HELP string changes.
+This release removes the `stats` collector, keeps a failed or empty Control D response from costing the scrape, and gives the shipped alert rule a family a revoked key can silence. It also links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages.
+
+> [!IMPORTANT]
+>
+> ### BREAKING CHANGE
+>
+> - `controld_stats_last_queries_count` and its `type` label are removed, along with the `stats` collector that published them. Delete any panel, recording rule or alert reading that family.
+> - `QueryBlockingRateHigh` and `UnknownQueryVerdictSeen` are removed from `examples/prometheus_alert_rules.yml`, and the dashboard's Statistics row and `$queryType` variable go with them.
+> - The series has published nothing since Control D withdrew the route it read, so a target scraped through that outage loses no data it was still receiving.
+
+Control D replaced the query report with `/v2/statistic/timeseries/action` on `analytics.controld.com`, and that route answers `401` to an API key the main API accepts — measured against a key returning `200` on `/profiles`, under four auth carriers. The GUI reaches it with a browser session token, a user credential with a one-month lifetime rather than anything an exporter can hold. The route it replaced answers a plain-text `404` on every path including `/`, with and without credentials.
 
 `SECURITY.md` and `CONTRIBUTING.md` now open with the baseline every exporter under `umatare5` shares and carry only what is specific to this one, so a convention stated once is no longer restated per repository.
 
@@ -14,19 +24,19 @@ Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of
 
 `README.md` gains a `## Collectors` section, folds `## Environment Variables` into `## Flags` and delegates every mechanism to the page that owns it. The reference pages under `docs/` now carry the request count, the endpoint behaviour and the per-family facts the README only summarised.
 
-A failed organization fetch no longer costs the whole scrape. The organization collector built its metrics before it read the fetch error, so a non-2xx answer from `/organizations/organization` dereferenced a nil response and panicked. The recovered panic answered `500` with no family and no log line — the collector now reads the error first and leaves the six behind it to publish.
+A failed organization fetch no longer costs the whole scrape. The organization collector built its metrics before it read the fetch error, so a non-2xx answer from `/organizations/organization` dereferenced a nil response and panicked. The recovered panic answered `500` with no family and no log line — the collector now reads the error first and leaves the five behind it to publish.
 
-The empty-payload guards never fired, because each tested a concrete response against a type switch matching only `[]any` and `map[string]any`. A `200` carrying an empty query list therefore reached an unguarded index and panicked the same way. Each guard now reads its own slice.
+The empty-payload guards never fired, because each tested a concrete response against a type switch matching only `[]any` and `map[string]any`. A `200` carrying an empty collection therefore reached code that assumed at least one element. Each guard now reads its own slice.
 
 `ControlDMetricsMissing` read `absent(controld_network_health_code)`, which a revoked key cannot trigger because `/network` answers without a token. It now reads that family beside `controld_profile_rules_total`, so a revoked key and a failed `/network` call each fire it.
 
 The contributor pages now carry a claim and a link where they carried a mechanism. `AGENTS.md` keeps its seven sections and rewrites Domain Knowledge around what Control D does, `CONTRIBUTING.md` states which CI jobs a path filter gates, and `SECURITY.md` names the calls each mode makes.
 
-More statements were corrected against the source. A field the API stops sending publishes as `0` rather than being withheld, a token without access to an endpoint answers `403` with `40301`, the listen defaults live in `internal/cli`, and `statsEndpoint` names a region label in front of `analytics.controld.com` rather than a host.
+More statements were corrected against the source. A field the API stops sending publishes as `0` rather than being withheld, a token without access to an endpoint answers `403` with `40301`, the listen defaults live in `internal/cli`, and the organization response spells that field `stats_endpoint`.
 
 ### Metrics
 
-None.
+- Removed `controld_stats_last_queries_count`, the only series carrying the `type` label.
 
 ### Flags
 
