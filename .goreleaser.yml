@@ -88,7 +88,7 @@ release:
     This release contains the Prometheus Exporter for Control D.
 
     > [!IMPORTANT]
-    > Read the [CHANGELOG](https://github.com/umatare5/controld-exporter/blob/{{ .Tag }}/CHANGELOG.md) before upgrading.
+    > A minor release may remove a metric, drop a label, or change what one reports. Read the [CHANGELOG](https://github.com/umatare5/controld-exporter/blob/{{ .Tag }}/CHANGELOG.md) before upgrading.
 
     ### 🐳 Container Images
 
