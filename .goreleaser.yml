@@ -39,9 +39,7 @@ builds:
 archives:
   - name_template: "{{ .ProjectName }}-v{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
     # Only what a downloaded binary needs beside it: the licence notices its
-    # statically linked dependencies require on redistribution. The exporter
-    # parses no file of its own, so everything else is a click away on the
-    # page the archive was downloaded from.
+    # statically linked dependencies require on redistribution.
     files:
       - "LICENSE"
       - "NOTICE"
@@ -94,13 +92,10 @@ release:
     ### 🐳 Container Images
 
     ```bash
-    # Latest version
-    docker run --rm ghcr.io/umatare5/controld-exporter:latest --help
-
-    # Specific version
+    # Show the help
     docker run --rm ghcr.io/umatare5/controld-exporter:{{ .Tag }} --help
 
-    # With environment variables
+    # Run With environment variables
     docker run --rm -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:{{ .Tag }}
     ```
 
