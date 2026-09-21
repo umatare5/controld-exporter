@@ -26,7 +26,7 @@ This exporter allows a Prometheus instance to monitor service health, profiles, 
 - 💚 **Service Health**: Watch health checks for DNS, API, and proxy services.
 - 💰️ **Billing Visibility**: Watch billing status, refund status and the next billing instant.
 - ⚙️ **Configuration Audit**: Track changes in predefined and custom settings with trend visualization.
-- 🏢 **Organization Support**: Fetch members, profiles, routers and users for the organization.
+- 🏢 **Organization Support**: Fetch members, profiles, routers and users for the organization and sub-orgs.
 
 > [!NOTE]
 >
