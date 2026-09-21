@@ -130,17 +130,17 @@ The following table lists the metrics this exporter publishes. See **Appendix** 
 | `controld_profile_groups_total`                    | Gauge | Group filters on one profile            |
 | `controld_profile_enabled_option_total`            | Gauge | Enabled options on one profile          |
 | `controld_service_categories_total`                | Gauge | Services in one category                |
-| `controld_organization_members_total`              | Gauge | Members of the organization             |
-| `controld_organization_profiles_total`             | Gauge | Profiles of the organization            |
-| `controld_organization_users_total`                | Gauge | Users of the organization               |
-| `controld_organization_routers_total`              | Gauge | Routers of the organization             |
-| `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it            |
-| `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization         |
-| `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization        |
-| `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization           |
-| `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization         |
+| `controld_organization_members_total`              | Gauge | Members of the organization (\*1)       |
+| `controld_organization_profiles_total`             | Gauge | Profiles of the organization (\*1)      |
+| `controld_organization_users_total`                | Gauge | Users of the organization (\*1)         |
+| `controld_organization_routers_total`              | Gauge | Routers of the organization (\*1)       |
+| `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it (\*1)      |
+| `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization (\*1)   |
+| `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization (\*1)  |
+| `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization (\*1)     |
+| `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization (\*1)   |
 
-The `controld_organization_*` and `controld_sub_organization_*` families need `--controld.business-mode`.
+\*1 The `controld_organization_*` and `controld_sub_organization_*` need `--controld.business-mode`.
 
 <details><summary><b>Appendix - Collector Metrics Details</b></summary><p>
 
