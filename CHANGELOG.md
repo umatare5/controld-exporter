@@ -2,8 +2,9 @@
 
 Notable changes to the metric surface, one section per release, listing the pull requests that release carries.
 
-## [Unreleased]
+## [v1.3.0]
 
+- [#92](https://github.com/umatare5/controld-exporter/pull/92) – Rebuild the reference set around one architecture page
 - [#91](https://github.com/umatare5/controld-exporter/pull/91) – Bump umatare5/common to v0.21.1 to fix the CodeQL workflow
 - [#90](https://github.com/umatare5/controld-exporter/pull/90) – Remove the stats collector and the query series it published
 - [#88](https://github.com/umatare5/controld-exporter/pull/88) – chore(deps): update all patch dependencies
@@ -25,6 +26,7 @@ Notable changes to the metric surface, one section per release, listing the pull
 >
 > - `controld_stats_last_queries_count` and its `type` label are removed, with the `stats` collector behind them.
 > - `controld_profile_ip_filters_total` now reports the IP filter count instead of duplicating the content filter count.
+> - The standalone major image tag is published again, reversing the note v1.2.0 carried.
 
 ## [v1.2.1]
 
@@ -49,7 +51,7 @@ Notable changes to the metric surface, one section per release, listing the pull
 
 This release takes dependency updates only. No metric, label, flag or HELP string changes.
 
-[Unreleased]: https://github.com/umatare5/controld-exporter/compare/v1.2.1...main
+[v1.3.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.0
 [v1.2.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.1
 [v1.2.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.0
 [v1.1.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.1.0
