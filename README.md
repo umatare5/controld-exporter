@@ -21,7 +21,7 @@
 
 ## Overview
 
-This exporter allows a Prometheus instance to monitor service health, profiles, billing, and organizations on [Control D](https://controld.com/).
+This exporter allows a Prometheus instance to monitor service health, profiles, billing on [Control D](https://controld.com/).
 
 - 💚 **Service Health**: Watch health checks for DNS, API, and proxy services.
 - 💰️ **Billing Visibility**: Watch billing status, refund status and the next billing instant.
