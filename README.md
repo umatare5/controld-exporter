@@ -114,33 +114,33 @@ This exporter exposes metrics for the Control D API state.
 
 The following table lists the metrics this exporter publishes. See **Appendix** below the table for more details.
 
-| Metric                                             | Type  | Description                             |
-| :------------------------------------------------- | :---- | :-------------------------------------- |
-| `controld_billing_status`                          | Gauge | Transaction status of one payment       |
-| `controld_billing_refunded`                        | Gauge | Refund status of one payment            |
-| `controld_billing_subscription_amount_total`       | Gauge | Amount of one payment, per currency     |
-| `controld_billing_subscription_nextbill_timestamp` | Gauge | Next billing instant, in Unix seconds   |
-| `controld_endpoint_clients_total`                  | Gauge | Clients counted against one device      |
-| `controld_network_health_code`                     | Gauge | Service status of one point of presence |
-| `controld_profile_preset_filters_total`            | Gauge | Preset filters on one profile           |
-| `controld_profile_content_filters_total`           | Gauge | Content filters on one profile          |
-| `controld_profile_ip_filters_total`                | Gauge | IP filters on one profile               |
-| `controld_profile_rules_total`                     | Gauge | Rules on one profile                    |
-| `controld_profile_services_total`                  | Gauge | Service filters on one profile          |
-| `controld_profile_groups_total`                    | Gauge | Group filters on one profile            |
-| `controld_profile_enabled_option_total`            | Gauge | Enabled options on one profile          |
-| `controld_service_categories_total`                | Gauge | Services in one category                |
-| `controld_organization_members_total`              | Gauge | Members of the organization (\*1)       |
-| `controld_organization_profiles_total`             | Gauge | Profiles of the organization (\*1)      |
-| `controld_organization_users_total`                | Gauge | Users of the organization (\*1)         |
-| `controld_organization_routers_total`              | Gauge | Routers of the organization (\*1)       |
-| `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it (\*1)      |
-| `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization (\*1)   |
-| `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization (\*1)  |
-| `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization (\*1)     |
-| `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization (\*1)   |
+| Metric                                             | Type  | Description                               |
+| :------------------------------------------------- | :---- | :---------------------------------------- |
+| `controld_billing_status`                          | Gauge | Transaction status of one payment         |
+| `controld_billing_refunded`                        | Gauge | Refund status of one payment              |
+| `controld_billing_subscription_amount_total`       | Gauge | Amount of one payment, per currency       |
+| `controld_billing_subscription_nextbill_timestamp` | Gauge | Next billing instant, in Unix seconds     |
+| `controld_endpoint_clients_total`                  | Gauge | Clients counted against one device        |
+| `controld_network_health_code`                     | Gauge | Service status of one point of presence   |
+| `controld_profile_preset_filters_total`            | Gauge | Preset filters on one profile             |
+| `controld_profile_content_filters_total`           | Gauge | Content filters on one profile            |
+| `controld_profile_ip_filters_total`                | Gauge | IP filters on one profile                 |
+| `controld_profile_rules_total`                     | Gauge | Rules on one profile                      |
+| `controld_profile_services_total`                  | Gauge | Service filters on one profile            |
+| `controld_profile_groups_total`                    | Gauge | Group filters on one profile              |
+| `controld_profile_enabled_option_total`            | Gauge | Enabled options on one profile            |
+| `controld_service_categories_total`                | Gauge | Services in one category                  |
+| `controld_organization_members_total`              | Gauge | Members of the organization **(\*1)**     |
+| `controld_organization_profiles_total`             | Gauge | Profiles of the organization **(\*1)**    |
+| `controld_organization_users_total`                | Gauge | Users of the organization **(\*1)**       |
+| `controld_organization_routers_total`              | Gauge | Routers of the organization **(\*1)**     |
+| `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it **(\*1)**    |
+| `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization **(\*1)** |
+| `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization (\*1)    |
+| `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization (\*1)       |
+| `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization (\*1)     |
 
-\*1 The `controld_organization_*` and `controld_sub_organization_*` need `--controld.business-mode`.
+**\*1** The `controld_organization_*` and `controld_sub_organization_*` need `--controld.business-mode`.
 
 <details><summary><b>Appendix - Collector Metrics Details</b></summary><p>
 
