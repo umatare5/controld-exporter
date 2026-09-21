@@ -112,7 +112,7 @@ This exporter exposes metrics for the Control D API state.
 
 ### Collector Metrics
 
-The following table lists the metrics this exporter publishes. The `controld_organization_*` and `controld_sub_organization_*` families need `--controld.business-mode`. See **Appendix** below the table for more details.
+The following table lists the metrics this exporter publishes. See **Appendix** below the table for more details.
 
 | Metric                                             | Type  | Description                             |
 | :------------------------------------------------- | :---- | :-------------------------------------- |
@@ -139,6 +139,8 @@ The following table lists the metrics this exporter publishes. The `controld_org
 | `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization        |
 | `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization           |
 | `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization         |
+
+> The `controld_organization_*` and `controld_sub_organization_*` families need `--controld.business-mode`.
 
 <details><summary><b>Appendix - Collector Metrics Details</b></summary><p>
 
