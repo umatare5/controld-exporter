@@ -6,9 +6,9 @@
     "MD004": { "style": "dash" },
     "MD013": false,
     "MD024": { "siblings_only": true },
-    // Two adjacent GitHub alerts cannot be written without a blank line between them
     "MD028": false,
     "MD029": { "style": "ordered" },
+    "MD036": false,
     "MD046": { "style": "fenced" },
     "MD048": { "style": "backtick" },
     "MD050": { "style": "asterisk" },
@@ -40,8 +40,7 @@
       "filter": ["CHANGELOG.md"],
       "combine": "merge",
       "config": {
-        // Release headings accrue and this repository opens each one directly as
-        // `## [vX.Y.Z]`, so only the title is pinned
+        // Release headings accrue, so only the standing section is pinned
         "MD043": {
           "match_case": true,
           "headings": [
@@ -60,10 +59,7 @@
           "headings": [
             "# Contributing",
             "## Development", "*",
-            "## Testing", "*",
-            "## Code Style", "*",
-            "## Documentation", "*",
-            "## Release"
+            "## Testing", "*"
           ]
         }
       }
@@ -74,7 +70,7 @@
       "config": {
         // The logo, badges and title block are HTML; the heading they carry is an <h1>
         "MD033": {
-          "allowed_elements": ["a", "br", "div", "h1", "img", "p", "picture", "source"]
+          "allowed_elements": ["a", "b", "br", "div", "h1", "img", "p", "picture", "source", "details", "summary"]
         },
         "MD041": { "allow_preamble": true },
         "MD043": {
@@ -82,11 +78,11 @@
           "headings": [
             "## Overview", "*",
             "## Quick Start", "*",
-            "## Collectors", "*",
             "## Flags", "*",
             "## Endpoints", "*",
             "## Metrics", "*",
             "## Examples", "*",
+            "## Documentation", "*",
             "## Contributing", "*",
             "## License"
           ]
@@ -103,6 +99,8 @@
             "# Security Policy",
             "## What to Include", "*",
             "## Exposure", "*",
+            "## Endpoints", "*",
+            "## Ingress Paths", "*",
             "## Egress Paths", "*",
             "## Out of Scope"
           ]
@@ -117,35 +115,25 @@
           "match_case": true,
           "headings": [
             "# Documentation",
-            "## Technical Information", "*"
+            "## For Developers Docs", "*"
           ]
         }
       }
     },
     {
-      "filter": ["docs/collectors.md"],
+      "filter": ["docs/architecture.md"],
       "combine": "merge",
       "config": {
         "MD043": {
           "match_case": true,
           "headings": [
-            "# Collectors",
-            "## Metrics", "*",
-            "## Labels", "*",
-            "## Specifications"
-          ]
-        }
-      }
-    },
-    {
-      "filter": ["docs/help.md"],
-      "combine": "merge",
-      "config": {
-        "MD043": {
-          "match_case": true,
-          "headings": [
-            "# Help",
-            "## Notes"
+            "# Architecture",
+            "## Scrape Path", "*",
+            "## Endpoints", "*",
+            "## Absence", "*",
+            "## Metric Types", "*",
+            "## Account Scope", "*",
+            "## Dashboards"
           ]
         }
       }

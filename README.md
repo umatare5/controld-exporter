@@ -1,6 +1,10 @@
 <div align="center">
 
-  <img alt="controld-exporter" src="docs/assets/logo.png" width="115px" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo.png" width="115px" />
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo.png" width="115px" />
+    <img alt="controld-exporter" src="docs/assets/logo.png" width="115px" />
+  </picture>
 
   <h1>controld-exporter</h1>
 
@@ -9,8 +13,7 @@
   <p>
     <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/umatare5/controld-exporter?label=Latest%20version" />
     <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml"><img alt="Test and Build" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml/badge.svg?branch=main" /></a>
-    <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml"><img alt="govulncheck" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml/badge.svg?branch=main" /></a><br>
-    <a href="https://pkg.go.dev/github.com/umatare5/controld-exporter@main"><img alt="Go Reference" src="https://pkg.go.dev/badge/umatare5/controld-exporter.svg" /></a>
+    <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml"><img alt="govulncheck" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml/badge.svg?branch=main" /></a>
     <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
   </p>
 
@@ -18,139 +21,200 @@
 
 ## Overview
 
-This exporter reads the [Control D](https://controld.com/) API and publishes the account state as Prometheus metrics.
+This exporter allows a Prometheus instance to monitor service health, profiles, billing on [Control D](https://controld.com/).
 
-- 💚 **Service Health**: Control D's own DNS, API and proxy status, per point of presence
-- ⚙️ **Configuration Drift**: Filter, rule and option counts per profile, so an edit shows as a step
-- 💳 **Billing Visibility**: Payment status, refund status and the next billing instant
-- 🏢 **Organization Scope**: Members, users, routers and profiles, per organization and sub-org
+- 💚 **Service Health**: Watch health checks for DNS, API, and proxy services.
+- 💰️ **Billing Visibility**: Watch billing status, refund status and the next billing instant.
+- ⚙️ **Configuration Audit**: Track changes in predefined and custom settings with trend visualization.
+- 🏢 **Organization Support**: Fetch members, profiles, routers and users for the organization and sub-orgs.
 
-> [!IMPORTANT]
-> The exporter needs a Control D API token, which is issued from the account dashboard. See the [Control D Getting Started guide](https://docs.controld.com/reference/get-started) for how to register and create one.
+> [!NOTE]
+>
+> Control D is a subscription service, so this exporter needs a token from a paid account once the free trial ends. For the plans and their limits, refer to [Control D - Personal Plans](https://controld.com/plans) and [Control D - Business Pricing](https://controld.com/pricing).
+
+## Installation
+
+This exporter supports both container images and OS-specific binaries installations.
+
+**A. Using Container**
+
+```bash
+docker pull ghcr.io/umatare5/controld-exporter
+```
+
+**B. Using OS-Specific binaries**
+
+Download from [Releases](https://github.com/umatare5/controld-exporter/releases). `linux_(amd64|arm64)`, `darwin_(amd64|arm64)` and `windows_amd64` are supported.
 
 ## Quick Start
 
-### 1. Set the API token
+This exporter needs an API key. See **[Control D Getting Started Guide](https://docs.controld.com/reference/get-started)** to get an API key first.
+
+**1. Set the API key**
 
 ```bash
 export CTRLD_API_KEY="your-control-d-api-token"
 ```
 
-### 2. Run the exporter with Docker
+**2. Run the exporter with Docker**
 
 ```bash
-docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter
+docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:v1.2.1
 ```
 
-### 3. Scrape it
+**3. Scrape it**
 
 ```bash
-curl -s http://localhost:10034/metrics | head
+curl -s http://localhost:10034/metrics
 ```
 
 > [!TIP]
-> If you prefer using binaries, download them from the [release page](https://github.com/umatare5/controld-exporter/releases).
 >
-> **Supported Platforms:** `linux_amd64`, `linux_arm64`, `darwin_amd64`, `darwin_arm64` and `windows_amd64`
-
-## Collectors
-
-Every collector runs on each scrape, and no flag turns one off.
-
-| Collector      | Publishes                                           |
-| :------------- | :-------------------------------------------------- |
-| `billing`      | Amounts, status, refunds and the next billing date  |
-| `endpoint`     | Clients counted against each device                 |
-| `network`      | Service status per point of presence                |
-| `profile`      | Filter, rule and option counts per profile          |
-| `service`      | Services in each category                           |
-| `organization` | Members, users, routers and profiles, business mode |
-
-> [!NOTE]
-> `--controld.business-mode` changes what a collector reads, not whether it runs. See [Collectors](docs/collectors.md).
+> See [Metrics](#metrics) for available metrics, and [Prometheus Configuration](#prometheus-configuration) for the job and the alerting rules.
 
 ## Flags
 
-`controld-exporter --help` prints every flag, and [`docs/help.md`](docs/help.md) carries the same list with notes.
+The exporter supports the following command-line flags:
 
-- `--controld.api-key` is the only required flag, and `CTRLD_API_KEY` fills it instead.
-- The variable keeps the token off the process table. See [Help](docs/help.md#notes).
-- `--controld.business-mode` widens the account scope of every series that carries `orgId`.
-- `--web.*` set the bind address, the port and the telemetry path.
-- `--log.level debug` adds the request URI and the response body of every call.
+```text
+NAME:
+   controld-exporter - A Prometheus exporter for metrics from the Control D
 
-> [!IMPORTANT]
-> The exporter starts in personal mode, where `orgId` reads `000000000` on every series that carries it and the `controld_organization_*` families are absent. `--controld.business-mode` needs a token with organization scope; without one the scrape answers 200 carrying the billing and network families alone. See [Account Scope](docs/README.md#account-scope).
+USAGE:
+   controld-exporter [options...]
+
+VERSION:
+   1.2.1
+
+GLOBAL OPTIONS:
+   --web.listen-address string             Address to bind the HTTP server to. (default: "0.0.0.0")
+   --web.listen-port int                   Port number to bind the HTTP server to. (default: 10034)
+   --web.telemetry-path string, -p string  Path for the metrics endpoint. (default: "/metrics")
+   --controld.api-key string, -k string    API key for authenticating with the Control D API. [$CTRLD_API_KEY]
+   --controld.business-mode                Enable the metrics collection available in the business subscription.
+   --log.level string                      Set the logging level. One of: [debug, info, warn, error] (default: "info")
+   --help, -h                              show help
+   --version, -v                           print the version
+```
 
 ## Endpoints
 
-The exporter registers two paths:
+The exporter serves two endpoints. See [Endpoints](docs/architecture.md#endpoints) for the details.
 
-- `/` — landing page, which prints the telemetry path when reached at <http://localhost:10034/>
-- `/metrics` — metrics endpoint, configurable via `--web.telemetry-path`
-
-Nothing is cached between scrapes, so a scrape's cost grows with the account rather than with the exporter. See [`docs/README.md`](docs/README.md) for the request count, the timeouts around it, and the paths that fall through to the landing page.
+| Path       | Detail                                             |
+| :--------- | :------------------------------------------------- |
+| `/`        | Landing page, reached at <http://localhost:10034/> |
+| `/metrics` | Metrics endpoint, moved by `--web.telemetry-path`  |
 
 ## Metrics
 
-Every series is namespaced `controld_`, and the catalogue lives in `docs/`:
+This exporter exposes metrics for the Control D API state.
 
-| Page                                 | Covers                                       |
-| :----------------------------------- | :------------------------------------------- |
-| **[Collectors](docs/collectors.md)** | The six collectors, their metrics and labels |
-| **[Help](docs/help.md)**             | Flags and defaults, as `--help` prints       |
+### Collector Metrics
 
-The series a dashboard usually starts from:
+The following table lists the metrics this exporter publishes. See **Appendix** below the table for more details.
 
-| Collector      | Metric                              | Type  | Description                        |
-| :------------- | :---------------------------------- | :---- | :--------------------------------- |
-| `network`      | `controld_network_health_code`      | Gauge | Status of one service at one node  |
-| `billing`      | `controld_billing_status`           | Gauge | Transaction status of one payment  |
-| `endpoint`     | `controld_endpoint_clients_total`   | Gauge | Clients counted against one device |
-| `profile`      | `controld_profile_rules_total`      | Gauge | Rules on one profile               |
-| `organization` | `controld_organization_users_total` | Gauge | Users of the organization          |
+| Metric                                             | Type  | Description                                |
+| :------------------------------------------------- | :---- | :----------------------------------------- |
+| `controld_billing_status`                          | Gauge | Transaction status of one payment          |
+| `controld_billing_refunded`                        | Gauge | Refund status of one payment               |
+| `controld_billing_subscription_amount_total`       | Gauge | Amount of one payment, per currency        |
+| `controld_billing_subscription_nextbill_timestamp` | Gauge | Next billing instant, in Unix seconds      |
+| `controld_endpoint_clients_total`                  | Gauge | Clients counted against one device         |
+| `controld_network_health_code`                     | Gauge | Service status of one point of presence    |
+| `controld_profile_preset_filters_total`            | Gauge | Preset filters on one profile              |
+| `controld_profile_content_filters_total`           | Gauge | Content filters on one profile             |
+| `controld_profile_ip_filters_total`                | Gauge | IP filters on one profile                  |
+| `controld_profile_rules_total`                     | Gauge | Rules on one profile                       |
+| `controld_profile_services_total`                  | Gauge | Service filters on one profile             |
+| `controld_profile_groups_total`                    | Gauge | Group filters on one profile               |
+| `controld_profile_enabled_option_total`            | Gauge | Enabled options on one profile             |
+| `controld_service_categories_total`                | Gauge | Services in one category                   |
+| `controld_organization_members_total`              | Gauge | Members of the organization **(\*1)**      |
+| `controld_organization_profiles_total`             | Gauge | Profiles of the organization **(\*1)**     |
+| `controld_organization_users_total`                | Gauge | Users of the organization **(\*1)**        |
+| `controld_organization_routers_total`              | Gauge | Routers of the organization **(\*1)**      |
+| `controld_organization_sub_orgs_total`             | Gauge | Sub-organizations beneath it **(\*1)**     |
+| `controld_sub_organization_members_total`          | Gauge | Members of one sub-organization **(\*1)**  |
+| `controld_sub_organization_profiles_total`         | Gauge | Profiles of one sub-organization **(\*1)** |
+| `controld_sub_organization_users_total`            | Gauge | Users of one sub-organization **(\*1)**    |
+| `controld_sub_organization_routers_total`          | Gauge | Routers of one sub-organization **(\*1)**  |
 
-> [!NOTE]
-> See [`docs/README.md`](docs/README.md) for the absence and account-scope rules every collector shares.
+**\*1** The `controld_organization_*` and `controld_sub_organization_*` need `--controld.business-mode`.
 
-> [!IMPORTANT]
-> `/network` and `/services/categories` need no token, so a revoked key leaves their families publishing and the scrape answering 200. `ControlDMetricsMissing` in [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) therefore reads a token-gated family beside the token-free one, because absence over either alone misses what the other catches.
+<details><summary><b>Appendix - Collector Metrics Details</b></summary><p>
+
+#### About the Metrics
+
+**the four `controld_billing_*` series**: they read the account's own payment history, which the organization endpoints do not scope. Business mode therefore publishes them under the payment's `id` alone, with no `orgId` to separate them by.
+
+**`controld_endpoint_clients_total`**: it counts the clients Control D attributes to one device, keyed by the device's name. A device renamed in the dashboard ends one series and opens another with the count carried over.
+
+**`controld_network_health_code`**: the value is the `api`, `dns` and `pxy` integer each node publishes, passed through without interpretation. A code this exporter has never seen reaches Prometheus as readily as a familiar one.
+
+**the seven `controld_profile_*` series**: they count what each profile has configured rather than what it matched, so they move when an operator edits a profile and stay flat under any amount of traffic.
+
+**the nine `controld_organization_*` and `controld_sub_organization_*` series**: they need `--controld.business-mode` and an API key belonging to an organization. Neither is published in personal mode, so a personal-mode dashboard shows no data rather than zeros.
+
+#### About the Labels
+
+| Label                      | Description                                               |
+| :------------------------- | :-------------------------------------------------------- |
+| `id`                       | The payment's or subscription's Control D primary key     |
+| `currency`                 | The ISO code the amount beside it is denominated in       |
+| `name`                     | The object's own name, or the category's key on `service` |
+| `orgId`                    | The account scope the series was read under               |
+| `city_name`/`country_name` | Where Control D places the point of presence              |
+| `iata_code`                | The airport code Control D identifies that node by        |
+| `service_name`             | `api`, `dns` or `proxy`, one series each per node         |
+
+**`name`**: The field is fixed per family rather than chosen per series. The device, profile and organization families carry the name an operator gave the object, so renaming one in the Control D dashboard ends the old series and opens a new one. `controld_service_categories_total` carries the category's primary key instead, although the endpoint supplies a name beside it.
+
+**`orgId`**: Personal mode fills it with `000000000`, a value no Control D organization holds, so a dashboard written against it survives being pointed at a business account. Business mode fills it with the organization's own primary key on the series read for the account, and with a sub-organization's key on the series read for that sub-organization. It never carries the API key, which travels in the `Authorization` header alone.
+
+</p></details>
 
 ### Exporter Health Metrics
 
 The exporter publishes no series about itself, so a failed scrape shows as missing series.
 
-- **No exporter series** — no scrape duration, no error counter, no `up`-style gauge.
-- **No runtime series** — the Go and process collectors sit on a registry no handler serves.
-- **Absence is the signal** — a failing collector withholds its family instead of publishing `0`.
-
-> [!NOTE]
-> See [Exporter Health](docs/README.md#exporter-health) for what a failed scrape looks like, and [Absence](docs/README.md#absence) for the rules each collector follows.
-
 ## Examples
+
+### Exporter Configuration
+
+By default, the exporter runs in personal mode:
+
+```bash
+$ CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter
+time="2026-01-01T00:00:00+09:00" level=info msg="Starting the personal mode exporter on port 10034."
+```
+
+To run it for the organizations, activate the business mode with `--controld.business-mode`.
 
 ### Prometheus Configuration
 
-#### Job Configuration Example
+There are several Prometheus configuration examples provided below:
 
-Add the job from [`examples/prometheus.yml`](examples/prometheus.yml) to your Prometheus configuration.
+- **Example Job:** Add from [`examples/prometheus.yml`](./examples/prometheus.yml) to your Prometheus.
+- **Example Alerting Rules:** Add from [`examples/prometheus_alert_rules.yml`](./examples/prometheus_alert_rules.yml) to your Prometheus.
 
-#### Alerting Rules Configuration Example
+### Grafana Configuration
 
-Add the rules from [`examples/prometheus_alert_rules.yml`](examples/prometheus_alert_rules.yml) to your configuration.
+Import [`examples/control-d-exporter-dashboard.json`](./examples/control-d-exporter-dashboard.json) and visualize the metrics.
 
-### Grafana Dashboard
+<picture>
+  <img alt="Control D Exporter Dashboard" src="examples/control-d-exporter-dashboard.png">
+</picture>
 
-Import [`examples/control-d-exporter-dashboard.json`](examples/control-d-exporter-dashboard.json) to add the dashboard.
+## Documentation
 
-![Control D Exporter Dashboard](examples/control-d-exporter-dashboard.png)
+The reference pages under [`docs/`](docs/) carry the behaviour behind the metrics above.
 
-> [!NOTE]
-> The billing panels name `USD` and `JPY`, so an account settling in another currency needs them edited. See [Dashboards](docs/README.md#dashboards).
+- **[Architecture](docs/architecture.md)** – the scrape path, the absence rules and others.
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, what CI runs on a pull request, the tests, the code style, the documentation conventions and the release process.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, test conventions and others.
 
 ## License
 
