@@ -1,81 +1,49 @@
 # Changelog
 
-Notable changes to the metric surface, one section per release — a short preamble, the breaking change where the release has one, then the metric changes and the flag changes.
-
-This changelog starts at v1.1.0; earlier releases are described by their [release notes](https://github.com/umatare5/controld-exporter/releases) alone.
+Notable changes to the metric surface, one section per release, listing the pull requests that release carries.
 
 ## [Unreleased]
 
-This release removes the `stats` collector, keeps a failed or empty Control D response from costing the scrape, and gives the shipped alert rule a family a revoked key can silence. It also links the shared policy pages, narrows the release archives to the two files a redistributed binary needs, and rebuilds the reference pages.
+- [#91](https://github.com/umatare5/controld-exporter/pull/91) – Bump umatare5/common to v0.21.1 to fix the CodeQL workflow
+- [#90](https://github.com/umatare5/controld-exporter/pull/90) – Remove the stats collector and the query series it published
+- [#88](https://github.com/umatare5/controld-exporter/pull/88) – chore(deps): update all patch dependencies
+- [#87](https://github.com/umatare5/controld-exporter/pull/87) – Survive what Control D actually returns, and alert when it stops
+- [#86](https://github.com/umatare5/controld-exporter/pull/86) – Rewrite the contributor pages as claims that link their owner
+- [#85](https://github.com/umatare5/controld-exporter/pull/85) – Split the operator pages by owner and correct them against the code
+- [#84](https://github.com/umatare5/controld-exporter/pull/84) – Link the shared baseline and narrow the release archive
+- [#83](https://github.com/umatare5/controld-exporter/pull/83) – Stop reading configuration from CONFIGOR\_\* variables
+- [#82](https://github.com/umatare5/controld-exporter/pull/82) – Report failed scheduled runs and build a weekly release snapshot
+- [#81](https://github.com/umatare5/controld-exporter/pull/81) – Run the build and tests weekly
+- [#79](https://github.com/umatare5/controld-exporter/pull/79) – Extend the shared Renovate profile and pin the Alpine tag
+- [#78](https://github.com/umatare5/controld-exporter/pull/78) – docs: add a reference set and validate the example rules in CI
+- [#77](https://github.com/umatare5/controld-exporter/pull/77) – Update dependency golangci/golangci-lint to v2.13.2
+- [#76](https://github.com/umatare5/controld-exporter/pull/76) – Update module github.com/sirupsen/logrus to v1.10.2
 
 > [!IMPORTANT]
 >
-> ### BREAKING CHANGE
+> **BREAKING CHANGE**
 >
-> - `controld_stats_last_queries_count` and its `type` label are removed, along with the `stats` collector that published them. Delete any panel, recording rule or alert reading that family.
-> - `QueryBlockingRateHigh` and `UnknownQueryVerdictSeen` are removed from `examples/prometheus_alert_rules.yml`, and the dashboard's Statistics row and `$queryType` variable go with them.
-> - The series has published nothing since Control D withdrew the route it read, so a target scraped through that outage loses no data it was still receiving.
-
-Control D replaced the query report with `/v2/statistic/timeseries/action` on `analytics.controld.com`, and that route answers `401` to an API key the main API accepts — measured against a key returning `200` on `/profiles`, under four auth carriers. The GUI reaches it with a browser session token, a user credential with a one-month lifetime rather than anything an exporter can hold. The route it replaced answers a plain-text `404` on every path including `/`, with and without credentials.
-
-`SECURITY.md` and `CONTRIBUTING.md` now open with the baseline every exporter under `umatare5` shares and carry only what is specific to this one, so a convention stated once is no longer restated per repository.
-
-Release archives carry `LICENSE` and `NOTICE` alone. The exporter parses none of the files they held — `examples/prometheus*.yml` are a Prometheus server configuration and its rule files — and each is a click away on the page the archive was downloaded from.
-
-`README.md` gains a `## Collectors` section, folds `## Environment Variables` into `## Flags` and delegates every mechanism to the page that owns it. The reference pages under `docs/` now carry the request count, the endpoint behaviour and the per-family facts the README only summarised.
-
-A failed organization fetch no longer costs the whole scrape. The organization collector built its metrics before it read the fetch error, so a non-2xx answer from `/organizations/organization` dereferenced a nil response and panicked. The recovered panic answered `500` with no family and no log line — the collector now reads the error first and leaves the five behind it to publish.
-
-The empty-payload guards never fired, because each tested a concrete response against a type switch matching only `[]any` and `map[string]any`. A `200` carrying an empty collection therefore reached code that assumed at least one element. Each guard now reads its own slice.
-
-`ControlDMetricsMissing` read `absent(controld_network_health_code)`, which a revoked key cannot trigger because `/network` answers without a token. It now reads that family beside `controld_profile_rules_total`, so a revoked key and a failed `/network` call each fire it.
-
-The contributor pages now carry a claim and a link where they carried a mechanism. `AGENTS.md` keeps its seven sections and rewrites Domain Knowledge around what Control D does, `CONTRIBUTING.md` states which CI jobs a path filter gates, and `SECURITY.md` names the calls each mode makes.
-
-More statements were corrected against the source. A field the API stops sending publishes as `0` rather than being withheld, a token without access to an endpoint answers `403` with `40301`, the listen defaults live in `internal/cli`, and the organization response spells that field `stats_endpoint`.
-
-### Metrics
-
-- Removed `controld_stats_last_queries_count`, the only series carrying the `type` label.
-
-### Flags
-
-None.
+> - `controld_stats_last_queries_count` and its `type` label are removed, with the `stats` collector behind them.
+> - `controld_profile_ip_filters_total` now reports the IP filter count instead of duplicating the content filter count.
 
 ## [v1.2.1]
 
-This release reports a failed Control D API call by its HTTP status. No metric, label, flag or HELP string changes.
-
-A request that answers with a non-2xx status is now an error before the body is decoded. `controld_stats_last_queries_count` has been unavailable since Control D removed the analytics endpoint it reads, and that failure logged as `invalid character 'p' after top-level value` because the plain-text `404 page not found` body was decoded as JSON; it now names the status and the endpoint. The metric stays unavailable — only the diagnosis changes.
-
-### Metrics
-
-None.
-
-### Flags
-
-None.
+- [#75](https://github.com/umatare5/controld-exporter/pull/75) – Release v1.2.1
+- [#74](https://github.com/umatare5/controld-exporter/pull/74) – Report HTTP failures by status instead of a JSON parse error
 
 ## [v1.2.0]
 
-This release rebuilds the distribution on Go 1.27 and moves container publishing to GoReleaser `dockers_v2`. No metric, label, flag or HELP string changes.
+- [#73](https://github.com/umatare5/controld-exporter/pull/73) – Release v1.2.0
+- [#72](https://github.com/umatare5/controld-exporter/pull/72) – Migrate GoReleaser to dockers_v2 and ship licence notices
+- [#71](https://github.com/umatare5/controld-exporter/pull/71) – Refresh the Makefile with the shared development targets
+- [#70](https://github.com/umatare5/controld-exporter/pull/70) – Install the shared pre-commit stack and strict docs lint
 
 > [!IMPORTANT]
 >
-> ### BREAKING CHANGE
+> **BREAKING CHANGE**
 >
 > - Per-arch image tags (`latest-amd64`, `v1.1.0-arm64`, and the other `-amd64`/`-arm64` suffixes) and the standalone `v1` tag are no longer published; the existing ones stay frozen at v1.1.0. Pull the multi-arch tags (`latest`, `vX.Y.Z`, `vX.Y`) instead.
 > - `docker run` without arguments now starts the exporter instead of printing help, matching the README quick start.
-
-The binaries build with Go 1.27 and pinned `CGO_ENABLED=0` on every platform. The image declares port `10034/tcp` and carries the third-party license notices, and this release's archives added `CHANGELOG.md`, `SECURITY.md` and `NOTICE` beside the binary.
-
-### Metrics
-
-None.
-
-### Flags
-
-None.
 
 ## [v1.1.0]
 
