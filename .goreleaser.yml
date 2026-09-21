@@ -54,6 +54,7 @@ dockers_v2:
     tags:
       - latest
       - "{{ .Tag }}"
+      - "v{{ .Major }}"
       - "v{{ .Major }}.{{ .Minor }}"
     platforms:
       - linux/amd64
@@ -95,7 +96,7 @@ release:
     # Show the help
     docker run --rm ghcr.io/umatare5/controld-exporter:{{ .Tag }} --help
 
-    # Run With environment variables
+    # Run with environment variables
     docker run --rm -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:{{ .Tag }}
     ```
 
