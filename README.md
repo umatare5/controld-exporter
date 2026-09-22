@@ -72,7 +72,7 @@ This exporter uses command-line flags for all configuration.
 
 ### Flags
 
-`controld-exporter --help` prints the following flags.
+The exporter supports the following command-line flags:
 
 ```text
 NAME:
