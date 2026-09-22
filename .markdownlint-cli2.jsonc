@@ -77,9 +77,9 @@
           "match_case": true,
           "headings": [
             "## Overview", "*",
+            "## Installation", "*",
             "## Quick Start", "*",
-            "## Flags", "*",
-            "## Endpoints", "*",
+            "## Configuration", "*",
             "## Metrics", "*",
             "## Examples", "*",
             "## Documentation", "*",
