@@ -72,7 +72,7 @@ This exporter uses command-line flags for all configuration.
 
 ### Flags
 
-`controld-exporter --help` prints the following flags.
+The exporter supports the following command-line flags:
 
 ```text
 NAME:
@@ -190,7 +190,7 @@ The two patterns below cover the common use cases.
 CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter
 ```
 
-**Business Pattern**: Every organization series registers, and each sub-organization is read under its own scope.
+**Business Pattern**: Set the `--controld.business-mode` flag when running the exporter.
 
 ```bash
 CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter --controld.business-mode
