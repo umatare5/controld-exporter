@@ -29,22 +29,17 @@ This exporter allows a Prometheus instance to monitor service health, profiles, 
 - 🏢 **Organization Support**: Fetch members, profiles, routers and users for the organization and sub-orgs.
 
 > [!NOTE]
->
 > Control D is a subscription service, so this exporter needs a token from a paid account once the free trial ends. For the plans and their limits, refer to [Control D - Personal Plans](https://controld.com/plans) and [Control D - Business Pricing](https://controld.com/pricing).
 
 ## Installation
 
-This exporter supports both container images and OS-specific binaries installations.
-
-**A. Using Container**
+This exporter supports container images and OS-specific binaries.
 
 ```bash
 docker pull ghcr.io/umatare5/controld-exporter
 ```
 
-**B. Using OS-Specific binaries**
-
-Download from [Releases](https://github.com/umatare5/controld-exporter/releases). `linux_(amd64|arm64)`, `darwin_(amd64|arm64)` and `windows_amd64` are supported.
+Or, download the binaries from [Releases](https://github.com/umatare5/controld-exporter/releases). `(linux|darwin)_(amd64|arm64)` and `windows_amd64` are supported.
 
 ## Quick Start
 
@@ -62,19 +57,22 @@ export CTRLD_API_KEY="your-control-d-api-token"
 docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:v1.3.0
 ```
 
-**3. Scrape it**
+**3. Scrape the metrics**
 
 ```bash
-curl -s http://localhost:10034/metrics
+curl http://localhost:10034/metrics
 ```
 
 > [!TIP]
->
-> See [Metrics](#metrics) for available metrics, and [Prometheus Configuration](#prometheus-configuration) for the job and the alerting rules.
+> See [Metrics](#metrics) for the complete metrics, and [Prometheus Configuration](#prometheus-configuration) for scrape jobs and alerting rules.
 
-## Flags
+## Configuration
 
-The exporter supports the following command-line flags:
+This exporter uses command-line flags for all configuration.
+
+### Flags
+
+`controld-exporter --help` prints the following flags.
 
 ```text
 NAME:
@@ -97,14 +95,14 @@ GLOBAL OPTIONS:
    --version, -v                           print the version
 ```
 
-## Endpoints
+### Endpoints
 
-The exporter serves two endpoints. See [Endpoints](docs/architecture.md#endpoints) for the details.
+The exporter exposes these endpoints. See [Endpoints](docs/architecture.md#endpoints) for what each status code means.
 
-| Path       | Detail                                             |
-| :--------- | :------------------------------------------------- |
-| `/`        | Landing page, reached at <http://localhost:10034/> |
-| `/metrics` | Metrics endpoint, moved by `--web.telemetry-path`  |
+| Path       | Description                                     |
+| :--------- | :---------------------------------------------- |
+| `/`        | Landing page, confirming the exporter is up     |
+| `/metrics` | Metrics endpoint, set by `--web.telemetry-path` |
 
 ## Metrics
 
@@ -180,25 +178,32 @@ The exporter publishes no series about itself, so a failed scrape shows as missi
 
 ## Examples
 
+There are several operational examples below.
+
 ### Exporter Configuration
 
-By default, the exporter runs in personal mode:
+The two patterns below cover the common use cases.
+
+**Personal Pattern**: By default, the exporter reads the account the API key belongs to.
 
 ```bash
-$ CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter
-time="2026-01-01T00:00:00+09:00" level=info msg="Starting the personal mode exporter on port 10034."
+CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter
 ```
 
-To run it for the organizations, activate the business mode with `--controld.business-mode`.
+**Business Pattern**: Every organization series registers, and each sub-organization is read under its own scope.
+
+```bash
+CTRLD_API_KEY="your-control-d-api-token" ./controld-exporter --controld.business-mode
+```
 
 ### Prometheus Configuration
 
-There are several Prometheus configuration examples provided below:
+See the following Prometheus configuration examples:
 
-- **Example Job:** Add from [`examples/prometheus.yml`](./examples/prometheus.yml) to your Prometheus.
-- **Example Alerting Rules:** Add from [`examples/prometheus_alert_rules.yml`](./examples/prometheus_alert_rules.yml) to your Prometheus.
+- **Example Job**: Add from [`examples/prometheus.yml`](./examples/prometheus.yml) to your Prometheus.
+- **Example Alerting Rules**: Add from [`examples/prometheus_alert_rules.yml`](./examples/prometheus_alert_rules.yml) to your Prometheus.
 
-### Grafana Configuration
+### Grafana Dashboard
 
 Import [`examples/control-d-exporter-dashboard.json`](./examples/control-d-exporter-dashboard.json) and visualize the metrics.
 
@@ -208,14 +213,14 @@ Import [`examples/control-d-exporter-dashboard.json`](./examples/control-d-expor
 
 ## Documentation
 
-The reference pages under [`docs/`](docs/) carry the behaviour behind the metrics above.
+The following pages detail additional information.
 
 - **[Architecture](docs/architecture.md)** – the scrape path, the absence rules and others.
 
 ## Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the development setup, test conventions and others.
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for development setup, test conventions and others.
 
 ## License
 
-MIT. The binary statically links Apache-2.0, MIT and BSD 3-Clause dependencies, whose notices are reproduced in [`NOTICE`](NOTICE) and shipped alongside [`LICENSE`](LICENSE) in every release archive and container image.
+MIT. The binary statically links Apache-2.0, MIT and BSD 3-Clause dependencies. Their notices are reproduced in [`NOTICE`](NOTICE) and shipped alongside [`LICENSE`](LICENSE) in every release archive and container image.
