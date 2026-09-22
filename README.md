@@ -45,19 +45,19 @@ Or, download the binaries from [Releases](https://github.com/umatare5/controld-e
 
 This exporter needs an API key. See **[Control D Getting Started Guide](https://docs.controld.com/reference/get-started)** to get an API key first.
 
-**1. Set the API key**
+### 1. Set the API key
 
 ```bash
 export CTRLD_API_KEY="your-control-d-api-token"
 ```
 
-**2. Run the exporter with Docker**
+### 2. Run the exporter with Docker
 
 ```bash
 docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:v1.3.0
 ```
 
-**3. Scrape the metrics**
+### 3. Scrape the metrics
 
 ```bash
 curl http://localhost:10034/metrics
