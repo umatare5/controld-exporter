@@ -34,10 +34,8 @@ help:
 	@echo "  - pre-commit: https://pre-commit.com/#install"
 	@echo "  - gitleaks: https://github.com/gitleaks/gitleaks#installing"
 
-build: $(BINARY_PATH)
-
-# Build the binary
-$(BINARY_PATH):
+# Runs go build every time: it tracks every input, while a file rule sees only the binary.
+build:
 	mkdir -p $(BUILD_DIR)
 	go build $(BUILD_FLAGS) -o $(BINARY_PATH) ./cmd
 
