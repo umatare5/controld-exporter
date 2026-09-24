@@ -34,6 +34,7 @@ help:
 	@echo "  - golangci-lint: https://golangci-lint.run/docs/welcome/install/local/"
 	@echo "  - pre-commit: https://pre-commit.com/#install"
 	@echo "  - gitleaks: https://github.com/gitleaks/gitleaks#installing"
+	@echo "  - docker: https://docs.docker.com/get-started/get-docker/"
 
 # Runs go build every time: it tracks every input, while a file rule sees only the binary.
 build:
