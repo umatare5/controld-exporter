@@ -6,6 +6,7 @@ BUILD_DIR := ./tmp
 BINARY_PATH := $(BUILD_DIR)/$(BINARY_NAME)
 COVERAGE_DIR := ./coverage
 IMAGE_DIR := $(BUILD_DIR)/image
+DIST_DIR := $(BUILD_DIR)/dist
 GOARCH := $(shell go env GOARCH)
 
 # Go build flags
@@ -22,7 +23,7 @@ help:
 	@echo "  lint                 - Run linters (golangci-lint)"
 	@echo "  test-unit            - Run unit tests with colored output"
 	@echo "  test-unit-coverage   - Generate HTML coverage report"
-	@echo "  clean                - Remove build artifacts and backup files"
+	@echo "  clean                - Remove the build and coverage artifacts"
 	@echo "  image                - Build Docker image"
 	@echo "  pre-commit-install   - Install the pre-commit hooks"
 	@echo "  pre-commit-test      - Run every hook across the whole tree"
@@ -33,11 +34,10 @@ help:
 	@echo "  - golangci-lint: https://golangci-lint.run/docs/welcome/install/local/"
 	@echo "  - pre-commit: https://pre-commit.com/#install"
 	@echo "  - gitleaks: https://github.com/gitleaks/gitleaks#installing"
+	@echo "  - docker: https://docs.docker.com/get-started/get-docker/"
 
-build: $(BINARY_PATH)
-
-# Build the binary
-$(BINARY_PATH):
+# Runs go build every time: it tracks every input, while a file rule sees only the binary.
+build:
 	mkdir -p $(BUILD_DIR)
 	go build $(BUILD_FLAGS) -o $(BINARY_PATH) ./cmd
 
@@ -57,10 +57,9 @@ test-unit-coverage: test-unit
 	go tool cover -html=$(COVERAGE_DIR)/report.out -o $(COVERAGE_DIR)/report.html
 	@echo "Coverage report generated: $(COVERAGE_DIR)/report.html"
 
-# Clean build artifacts and backup files
+# BUILD_DIR is also the worktree root, so only the artifacts inside it are removed.
 clean:
-	rm -rf $(BUILD_DIR) $(COVERAGE_DIR)
-	find . -name "*.bak*" -type f -delete 2>/dev/null || true
+	rm -rf $(BINARY_PATH) $(IMAGE_DIR) $(DIST_DIR) $(COVERAGE_DIR)
 
 # Docker targets
 # The Dockerfile is written for GoReleaser, which hands docker a context holding
