@@ -22,7 +22,7 @@ const (
 var (
 	controldBillingStatus = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "billing", "status"),
-		"Transaction status of billing payments. ",
+		"Transaction status of billing payments.",
 		[]string{labelID},
 		nil,
 	)

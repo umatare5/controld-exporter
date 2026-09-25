@@ -13,7 +13,8 @@
   <p>
     <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/umatare5/controld-exporter?label=Latest%20version" />
     <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml"><img alt="Test and Build" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-test-build.yml/badge.svg?branch=main" /></a>
-    <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml"><img alt="govulncheck" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml/badge.svg?branch=main" /></a>
+    <a href="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml"><img alt="govulncheck" src="https://github.com/umatare5/controld-exporter/actions/workflows/go-vulncheck.yml/badge.svg?branch=main" /></a><br>
+    <img alt="Test Coverage" src="https://raw.githubusercontent.com/umatare5/controld-exporter/badges/coverage.svg" />
     <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" /></a>
   </p>
 

@@ -1,0 +1,79 @@
+{
+  "body": {
+    "categories": [
+      {
+        "PK": "audio",
+        "name": "Audio",
+        "description": "Audio streaming services and radio stations",
+        "count": 18
+      },
+      {
+        "PK": "career",
+        "name": "Career",
+        "description": "Career and education services",
+        "count": 21
+      },
+      {
+        "PK": "finance",
+        "name": "Finance",
+        "description": "Legacy finance and crypto services",
+        "count": 126
+      },
+      {
+        "PK": "gaming",
+        "name": "Gaming",
+        "description": "Gaming services and individual online games",
+        "count": 30
+      },
+      {
+        "PK": "hosting",
+        "name": "Hosting",
+        "description": "Web hosting, cloud services and CDNs",
+        "count": 77
+      },
+      {
+        "PK": "news",
+        "name": "News",
+        "description": "News and legacy media websites",
+        "count": 48
+      },
+      {
+        "PK": "recreation",
+        "name": "Recreation",
+        "description": "Travel and recreation websites and services",
+        "count": 16
+      },
+      {
+        "PK": "shop",
+        "name": "Shop",
+        "description": "Shopping and auction websites",
+        "count": 39
+      },
+      {
+        "PK": "social",
+        "name": "Social",
+        "description": "Social networks, messaging apps and email",
+        "count": 60
+      },
+      {
+        "PK": "tools",
+        "name": "Tools",
+        "description": "Business and productivity tools",
+        "count": 100
+      },
+      {
+        "PK": "vendors",
+        "name": "Vendors",
+        "description": "Internet of Things devices, services and vendors",
+        "count": 158
+      },
+      {
+        "PK": "video",
+        "name": "Video",
+        "description": "Video streaming services and live TV channels",
+        "count": 321
+      }
+    ]
+  },
+  "success": true
+}

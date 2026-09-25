@@ -1,0 +1,33 @@
+{
+  "body": {
+    "subscriptions": [
+      {
+        "id": "00000000-0000-0000-0000-000000000000",
+        "sub_id": "sub_000000000000000",
+        "user": "000000account",
+        "org": null,
+        "product": {
+          "proxy_access": 0,
+          "name": "Some Control",
+          "type": "standard",
+          "priority": 2,
+          "PK": 2
+        },
+        "method": "stripe",
+        "currency": "jpy",
+        "amount": 2,
+        "currency_amount": 280,
+        "started": "2025-04-05",
+        "ended": null,
+        "cancel_reason": null,
+        "price": 1,
+        "status": 1,
+        "state": "active",
+        "next_bill": 1791189786,
+        "PK": "sub_000000000000000",
+        "next_rebill_date": "2026-10-05"
+      }
+    ]
+  },
+  "success": true
+}

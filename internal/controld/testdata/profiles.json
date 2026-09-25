@@ -1,0 +1,54 @@
+{
+  "body": {
+    "profiles": [
+      {
+        "PK": "000000profile",
+        "user": "000000account",
+        "org": null,
+        "name": "Example Profile",
+        "featured": null,
+        "updated": 1776596302,
+        "disable": null,
+        "lock": null,
+        "profile": {
+          "flt": {
+            "count": 9
+          },
+          "cflt": {
+            "count": 0
+          },
+          "ipflt": {
+            "count": 1
+          },
+          "rule": {
+            "count": 3
+          },
+          "svc": {
+            "count": 4
+          },
+          "grp": {
+            "count": 0
+          },
+          "opt": {
+            "count": 2,
+            "data": [
+              {
+                "PK": "ai_malware",
+                "value": 0.9
+              },
+              {
+                "PK": "block_rfc1918",
+                "value": 1
+              }
+            ]
+          },
+          "da": {
+            "do": 1,
+            "status": 1
+          }
+        }
+      }
+    ]
+  },
+  "success": true
+}

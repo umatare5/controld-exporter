@@ -44,12 +44,13 @@ tests:
           - labels: 'ALERTS{alertname="ControlDMetricsMissing", alertstate="firing", severity="critical"}'
             value: 1
 
-  # The status turns non-zero at 2m and for: 5m puts the firing edge at 7m, so
-  # 6m must be silent. The zero head catches a comparison written as != null.
+  # The status leaves 1 at 2m and for: 5m puts the firing edge at 7m, so 6m must
+  # be silent. The settled head catches a comparison written against the wrong
+  # sentinel, which is what reading tx_status from a nested object produced.
   - interval: 1m
     input_series:
       - series: 'controld_billing_status{job="controld",instance="localhost:10034",id="pay_01"}'
-        values: "0 0 1+0x10"
+        values: "1 1 0+0x10"
     alert_rule_test:
       - eval_time: 6m
         alertname: BillingStatusFailed

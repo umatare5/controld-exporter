@@ -25,15 +25,17 @@ groups:
             and leaves up at 1, so absence is the only signal either term has.
 
       - alert: BillingStatusFailed
-        expr: controld_billing_status != 0
+        expr: controld_billing_status != 1
         for: 5m
         labels:
           severity: critical
         annotations:
-          summary: "Control D payment {{ $labels.id }} carries a non-zero transaction status"
+          summary: "Control D payment {{ $labels.id }} does not read as settled"
           description: >-
             The value is the transaction status Control D returned for this
-            payment, passed through unchanged. A failed charge suspends the
+            payment, passed through unchanged. Every settled payment measured on
+            a live account reads 1, and the enumeration is undocumented, so this
+            rule treats anything else as unsettled. A failed charge suspends the
             subscription the profiles depend on, so the filtering stops before
             any metric here reports it.
 

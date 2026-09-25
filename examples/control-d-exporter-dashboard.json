@@ -280,14 +280,14 @@
             {
               "options": {
                 "0": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "OK"
-                },
-                "1": {
                   "color": "red",
                   "index": 0,
                   "text": "NG"
+                },
+                "1": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "OK"
                 }
               },
               "type": "value"
@@ -297,11 +297,15 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "red"
+              },
+              {
+                "color": "green",
+                "value": 1
               },
               {
                 "color": "red",
-                "value": 1
+                "value": 2
               }
             ]
           }

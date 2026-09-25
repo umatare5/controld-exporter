@@ -14,3 +14,12 @@ func NewClient(apiKey string) *Client {
 		apiKey:  apiKey,
 	}
 }
+
+// NewClientWithBaseURL points a client at baseURL instead of the vendor host,
+// which is the seam a caller outside this package needs to serve its own doubles.
+func NewClientWithBaseURL(baseURL, apiKey string) *Client {
+	return &Client{
+		baseURL: baseURL,
+		apiKey:  apiKey,
+	}
+}

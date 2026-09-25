@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "body": {
+    "organization": {
+      "PK": "000000org",
+      "name": "Example Organization",
+      "type": "msp",
+      "date": "2025-04-05",
+      "status": 1,
+      "status_printed": "Active",
+      "billing_method": 1,
+      "billing_method_printed": "Invoice",
+      "contact_first_name": "Example",
+      "contact_last_name": "Operator",
+      "contact_email": "operator@example.com",
+      "website": "https://example.com",
+      "hubspot_company_url": "https://app.hubspot.com/contacts/0/company/0",
+      "trial_end": "2025-05-05",
+      "learned": 0,
+      "siem_enabled": 1,
+      "twofa_req": 1,
+      "price_users": 2,
+      "max_users": 50,
+      "max_profiles": 25,
+      "max_sub_orgs": 10,
+      "max_legacy_resolvers": 5,
+      "sso_provider": "okta",
+      "sso_email_domains": ["example.com"],
+      "okta_domain": "example.okta.com",
+      "okta_client_id": "0oa000000000000000",
+      "okta_client_secret": "REDACTED",
+      "members": { "count": 4 },
+      "profiles": { "count": 6, "max": 25 },
+      "users": { "count": 12, "price": 2, "max": 50 },
+      "routers": { "count": 3, "max": 10, "price": 1 },
+      "sub_organizations": { "count": 2, "max": 10 }
+    }
+  }
+}

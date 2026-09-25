@@ -25,15 +25,13 @@ type BillingPaymentsResponse struct {
 				ProxyAccess int    `json:"proxy_access"` // Proxy access level
 				PK          int    `json:"PK"`           // Primary key of the product
 			} `json:"product"`
-			Amount      int `json:"amount"`  // Payment amount
-			Balance     int `json:"balance"` // Remaining balance after the payment
-			Timestamp   int `json:"ts"`      // Timestamp of the payment
-			Transaction struct {
-				ID          string `json:"tx_id"`       // Transaction ID
-				Status      int    `json:"tx_status"`   // Status of the transaction
-				Refunded    int    `json:"tx_refunded"` // Refund status of the transaction
-				Fingerprint string `json:"fingerprint"` // Fingerprint of the transaction
-			} `json:"transaction"`
+			Amount    int `json:"amount"`  // Payment amount
+			Balance   int `json:"balance"` // Remaining balance after the payment
+			Timestamp int `json:"ts"`      // Timestamp of the payment
+			// The transaction fields sit beside the payment, not under a
+			// "transaction" object: no measured response carries one.
+			TxStatus   int `json:"tx_status"`   // Status of the transaction
+			TxRefunded int `json:"tx_refunded"` // Refund status of the transaction
 			PricePoint struct {
 				ProductID int    `json:"product_id"` // Product ID associated with the price point
 				Duration  int    `json:"duration"`   // Duration of the subscription in months
