@@ -35,14 +35,14 @@ func (c *Collector) collectBillingPayments(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(
 			controldBillingStatus,
 			prometheus.GaugeValue,
-			float64(payment.Transaction.Status),
+			float64(payment.TxStatus),
 			payment.PK,
 		)
 
 		ch <- prometheus.MustNewConstMetric(
 			controldBillingRefundedStatus,
 			prometheus.GaugeValue,
-			float64(payment.Transaction.Refunded),
+			float64(payment.TxRefunded),
 			payment.PK,
 		)
 
