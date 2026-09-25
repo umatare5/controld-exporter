@@ -2,6 +2,22 @@
 
 Notable changes to the metric surface, one section per release, listing the pull requests that release carries.
 
+## [v1.3.1]
+
+- [#99](https://github.com/umatare5/controld-exporter/pull/99) – test: cover the client and the collectors against measured replies
+- [#98](https://github.com/umatare5/controld-exporter/pull/98) – docs: write American English in the changelog and the build config
+- [#97](https://github.com/umatare5/controld-exporter/pull/97) – Rebuild on every make build and keep worktrees on make clean
+- [#96](https://github.com/umatare5/controld-exporter/pull/96) – Clarify command-line flags in README
+- [#95](https://github.com/umatare5/controld-exporter/pull/95) – docs: align README structure with the sibling exporters
+- [#94](https://github.com/umatare5/controld-exporter/pull/94) – Warn in every release note that a minor may move the metric surface
+
+> [!IMPORTANT]
+>
+> **BEHAVIOR CHANGE**
+>
+> - `controld_billing_status` reports the transaction status the reply carries, where every payment published `0` before. A settled payment reads `1`.
+> - The bundled alert rule and the Grafana panel move with it. `BillingStatusFailed` fires on `!= 1`, and the panel maps `1` to OK, so replace both if you deployed the versions v1.3.0 shipped.
+
 ## [v1.3.0]
 
 - [#92](https://github.com/umatare5/controld-exporter/pull/92) – Rebuild the reference set around one architecture page
@@ -51,6 +67,7 @@ Notable changes to the metric surface, one section per release, listing the pull
 
 This release takes dependency updates only. No metric, label, flag or HELP string changes.
 
+[v1.3.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.1
 [v1.3.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.0
 [v1.2.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.1
 [v1.2.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.0
