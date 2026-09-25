@@ -31,7 +31,7 @@ Keeping `scrape_timeout` strictly below this threshold ensures Prometheus abando
 
 Both paths answer on the address `--web.listen-address` and `--web.listen-port` bind, and neither authenticates. The network exposure is entirely up to the operator; [`SECURITY.md`](../SECURITY.md) specifies the operational security and egress patterns for these endpoints.
 
-| Path       | Methods | Status   | Behaviour                                      |
+| Path       | Methods | Status   | Behavior                                       |
 | :--------- | :------ | :------- | :--------------------------------------------- |
 | `/metrics` | Any     | 200, 500 | The metrics endpoint; configurable by the flag |
 | `/`        | Any     | 200      | Catch-all landing page, never 404              |

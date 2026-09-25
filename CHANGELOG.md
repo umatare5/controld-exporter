@@ -36,7 +36,7 @@ Notable changes to the metric surface, one section per release, listing the pull
 ## [v1.2.0]
 
 - [#73](https://github.com/umatare5/controld-exporter/pull/73) – Release v1.2.0
-- [#72](https://github.com/umatare5/controld-exporter/pull/72) – Migrate GoReleaser to dockers_v2 and ship licence notices
+- [#72](https://github.com/umatare5/controld-exporter/pull/72) – Migrate GoReleaser to dockers_v2 and ship license notices
 - [#71](https://github.com/umatare5/controld-exporter/pull/71) – Refresh the Makefile with the shared development targets
 - [#70](https://github.com/umatare5/controld-exporter/pull/70) – Install the shared pre-commit stack and strict docs lint
 
