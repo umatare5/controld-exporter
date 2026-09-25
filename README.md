@@ -55,7 +55,7 @@ export CTRLD_API_KEY="your-control-d-api-token"
 ### 2. Run the exporter with Docker
 
 ```bash
-docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:v1.3.0
+docker run -p 10034:10034 -e CTRLD_API_KEY ghcr.io/umatare5/controld-exporter:v1.3.1
 ```
 
 ### 3. Scrape the metrics
@@ -83,7 +83,7 @@ USAGE:
    controld-exporter [options...]
 
 VERSION:
-   1.3.0
+   1.3.1
 
 GLOBAL OPTIONS:
    --web.listen-address string             Address to bind the HTTP server to. (default: "0.0.0.0")
