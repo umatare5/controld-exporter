@@ -1,0 +1,38 @@
+{
+  "body": {
+    "devices": [
+      {
+        "PK": "000000device",
+        "ts": 1743955209,
+        "name": "Example Device",
+        "user": "000000account",
+        "stats": 2,
+        "device_id": "000000device",
+        "status": 1,
+        "client_count": 1,
+        "learn_ip": 0,
+        "ctrld": {
+          "status": 1,
+          "last_fetch": 1790340723,
+          "version": "v1.5.0",
+          "version_latest": "v1.5.7",
+          "update_status": "available"
+        },
+        "resolvers": {
+          "uid": "000000device",
+          "doh": "https://dns.controld.com/000000device",
+          "dot": "000000device.dns.controld.com",
+          "v6": ["2606:1a40::0", "2606:1a40:1::0"]
+        },
+        "icon": "desktop-mac",
+        "profile": {
+          "PK": "000000profile",
+          "updated": 1776596302,
+          "name": "Example Profile"
+        },
+        "ip_count": 0
+      }
+    ]
+  },
+  "success": true
+}

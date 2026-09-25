@@ -1,0 +1,53 @@
+{
+  "success": true,
+  "body": {
+    "sub_organizations": [
+      {
+        "PK": "000000sub1",
+        "name": "Example Branch One",
+        "date": "2025-04-06",
+        "status": 1,
+        "status_printed": "Active",
+        "billing_method_printed": "Invoice",
+        "contact_name": "Example Operator",
+        "contact_email": "branch-one@example.com",
+        "parent_profile": "000000profile",
+        "allow_overrides": "1",
+        "siem_enabled": 0,
+        "twofa_req": 1,
+        "max_users": 20,
+        "max_profiles": 10,
+        "max_legacy_resolvers": 2,
+        "parent_org": { "PK": "000000org", "name": "Example Organization" },
+        "sub_organizations": { "count": 0, "max": 0 },
+        "members": { "count": 2 },
+        "profiles": { "count": 3, "max": 10 },
+        "users": { "count": 5, "price": 2, "max": 20 },
+        "routers": { "count": 1, "max": 4, "price": 1 }
+      },
+      {
+        "PK": "000000sub2",
+        "name": "Example Branch Two",
+        "date": "2025-04-07",
+        "status": 1,
+        "status_printed": "Active",
+        "billing_method_printed": "Invoice",
+        "contact_name": "Example Operator",
+        "contact_email": "branch-two@example.com",
+        "parent_profile": "000000profile",
+        "allow_overrides": "0",
+        "siem_enabled": 0,
+        "twofa_req": 0,
+        "max_users": 20,
+        "max_profiles": 10,
+        "max_legacy_resolvers": 2,
+        "parent_org": { "PK": "000000org", "name": "Example Organization" },
+        "sub_organizations": { "count": 0, "max": 0 },
+        "members": { "count": 1 },
+        "profiles": { "count": 2, "max": 10 },
+        "users": { "count": 4, "price": 2, "max": 20 },
+        "routers": { "count": 0, "max": 4, "price": 1 }
+      }
+    ]
+  }
+}

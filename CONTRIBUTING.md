@@ -18,7 +18,7 @@ This page specifies what is particular to this one.
 These points are where this repository departs from the shared defaults.
 
 - **Do not assume every check runs.** Four are path-filtered: govulncheck, markdownlint, Link Check and actionlint.
-- **Do not lean on the coverage gate.** No test exists yet, so CI passes at 0 percent coverage until the first one lands.
+- **Keep coverage at 80 percent.** The gate fails the build below it, and the README badge carries the measured figure.
 - **Stamp the version with `make build`.** The `--help` transcript reads `dev` until the build stamps it.
 
 If the API key belongs to an organization:
@@ -27,11 +27,12 @@ If the API key belongs to an organization:
 
 ## Testing
 
-Testing here rests on the example rules rather than on Go tests.
+Go tests cover the client and the collectors, and the example rules are checked separately.
 
+- **Serve a measured reply.** The fixtures live in [`internal/controld/testdata/`](internal/controld/testdata).
+- **Redirect `baseURL` with `controld.NewClientWithBaseURL`.** A test outside the package has no other seam.
+- **Redact before a reply enters the tree.** Replace the keys, URLs and names, and keep the counts a metric reads.
 - **Check rules with `promtool`.** No Go test covers the alerting expressions, so CI lints and asserts them there.
-- **Redirect `baseURL` to an `httptest` server.** It is unexported, so only a test inside `internal/controld` can rewrite it.
-- **Keep a device or organization reply out of the tree.** It carries client hostnames, MAC addresses and SSO credentials.
 
 The `Prometheus Rules` job runs these three commands.
 

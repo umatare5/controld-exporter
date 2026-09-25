@@ -3,7 +3,9 @@ tmp/
 vendor/
 
 # Test data files
+# Only the redacted fixtures are tracked.
 testdata/
+!internal/controld/testdata/
 
 # Build artifacts
 *.exe
@@ -17,8 +19,6 @@ testdata/
 # Coverage files
 *.out
 coverage/*
-!coverage/report.out
-!coverage/report.html
 
 # Agent files
 .claude/*

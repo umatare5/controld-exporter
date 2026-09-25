@@ -1,0 +1,51 @@
+{
+  "body": {
+    "network": [
+      {
+        "iata_code": "AMS",
+        "city_name": "Amsterdam",
+        "country_name": "NL",
+        "location": {
+          "lat": 52.377956,
+          "long": 4.89707
+        },
+        "status": {
+          "api": 1,
+          "dns": 1,
+          "pxy": 1
+        }
+      },
+      {
+        "iata_code": "ATL",
+        "city_name": "Atlanta",
+        "country_name": "US",
+        "location": {
+          "lat": 33.783088112636555,
+          "long": -84.39823699888953
+        },
+        "status": {
+          "api": 1,
+          "dns": 1,
+          "pxy": -1
+        }
+      },
+      {
+        "iata_code": "NRT",
+        "city_name": "Tokyo",
+        "country_name": "JP",
+        "location": {
+          "lat": 35.765278,
+          "long": 140.385556
+        },
+        "status": {
+          "api": 1,
+          "dns": 1,
+          "pxy": 1
+        }
+      }
+    ],
+    "time": 1790344118,
+    "current_pop": "NRT"
+  },
+  "success": true
+}
