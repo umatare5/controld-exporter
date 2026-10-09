@@ -11,9 +11,9 @@ permissions:
 
 jobs:
   promtool:
-    uses: umatare5/common/.github/workflows/promtool.yml@3df623d482350006c12656381399db14f8879fcc # v0.19.0
+    uses: umatare5/common/.github/workflows/promtool.yml@2dc181f4ceb6cd36a063f968d42c22953b554efd # v0.22.0
     with:
-      promtool_version: "3.14.0"
+      promtool_version: "3.15.0"
       rule_files: |
         examples/prometheus_alert_rules.yml
       test_files: |
