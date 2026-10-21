@@ -2,6 +2,13 @@
 
 Notable changes to the metric surface, one section per release, listing the pull requests that release carries.
 
+## [v1.3.2]
+
+- [#104](https://github.com/umatare5/controld-exporter/pull/104) – Update module github.com/prometheus/client_golang to v1.25.0
+- [#103](https://github.com/umatare5/controld-exporter/pull/103) – Update all patch dependencies
+- [#102](https://github.com/umatare5/controld-exporter/pull/102) – Update all minor dependencies
+- [#101](https://github.com/umatare5/controld-exporter/pull/101) – Update all patch dependencies
+
 ## [v1.3.1]
 
 - [#99](https://github.com/umatare5/controld-exporter/pull/99) – test: cover the client and the collectors against measured replies
@@ -67,6 +74,7 @@ Notable changes to the metric surface, one section per release, listing the pull
 
 This release takes dependency updates only. No metric, label, flag or HELP string changes.
 
+[v1.3.2]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.2
 [v1.3.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.1
 [v1.3.0]: https://github.com/umatare5/controld-exporter/releases/tag/v1.3.0
 [v1.2.1]: https://github.com/umatare5/controld-exporter/releases/tag/v1.2.1
